@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Cinemachine;
 
-namespace Jun.Camera
+namespace Hun.Camera
 {
     public class MainCamera : MonoBehaviour
     {

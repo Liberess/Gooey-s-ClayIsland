@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Jun.World.Stage
+namespace Hun.Obstacle
 {
     public enum PortalType
     {

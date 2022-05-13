@@ -1,8 +1,9 @@
 using UnityEngine;
 
-namespace Jun.World.Stage {
-    public class Stage : MonoBehaviour {
-
+namespace Hun.World
+{
+    public class Stage : MonoBehaviour
+    {
         private bool isGameOver = false;
 
         private void Awake()

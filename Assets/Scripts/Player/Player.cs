@@ -1,21 +1,18 @@
-using Jun.Camera;
-using Jun.World.Stage;
-using Jun.World.Stage.Objects;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-namespace Jun.Player
+namespace Hun.Player
 {
     public class Player : MonoBehaviour
     {
-        [SerializeField] private MainCamera mainCamera;
+        [SerializeField] private Hun.Camera.MainCamera mainCamera;
         private CharacterController characterController;
-        private Hun.Player.Grappler grappler;
+        private Grappler grappler;
 
-        private Portal interactivePortal = null;
-        private CarriableStageObject interactiveCarriableObject = null;
+        private Hun.Obstacle.Portal interactivePortal = null;
+        private Hun.Obstacle.CarriableStageObject interactiveCarriableObject = null;
 
         [Header("== Movement Property ==")]
         [SerializeField, Range(0F, 10F)] private float movingSpeed = 2F;
@@ -51,7 +48,7 @@ namespace Jun.Player
             currentDashSpeed = 1f;
 
             if (mainCamera == null)
-                mainCamera = FindObjectOfType<MainCamera>();
+                mainCamera = FindObjectOfType<Hun.Camera.MainCamera>();
 
             SetupDashEvent();
 
@@ -90,7 +87,7 @@ namespace Jun.Player
         /// 포탈로 이동시 발생하는 메서드
         /// </summary>
         /// <param name="portal">포탈 오브젝트</param>
-        private void OnWalkedThroughPortal(Portal portal)
+        private void OnWalkedThroughPortal(Hun.Obstacle.Portal portal)
         {
             interactivePortal = portal;
         }
@@ -140,7 +137,7 @@ namespace Jun.Player
                     // TODO: 스테이지 이동 수정
                     print("TODO: 스테이지 이동 수정");
 
-                    if (interactivePortal.PortalType == PortalType.Stage)
+                    if (interactivePortal.PortalType == Obstacle.PortalType.Stage)
                         interactivePortal.ActiveStagePortal();
                     else
                         TeleportPlayerTransform(interactivePortal.transform);
@@ -174,11 +171,6 @@ namespace Jun.Player
                 movingVector.y = jumpPower;
             }
         }*/
-
-        private void OnCancel()
-        {
-            Debug.Log("OnCancel");
-        }
 
         /// <summary>
         /// 매 프레임 이동을 처리합니다
@@ -307,7 +299,7 @@ namespace Jun.Player
 
                     foreach (var c in colliders)
                     {
-                        if (c.TryGetComponent<CarriableStageObject>(out var o))
+                        if (c.TryGetComponent<Hun.Obstacle.CarriableStageObject>(out var o))
                         {
                             interactiveCarriableObject = o;
                         }
@@ -343,9 +335,9 @@ namespace Jun.Player
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Portal portal))
+            if (other.TryGetComponent(out Hun.Obstacle.Portal portal))
             {
-                if (portal.EftType == Portal.EffectType.Enter)
+                if (portal.EftType == Hun.Obstacle.Portal.EffectType.Enter)
                     TeleportPlayerTransform(portal.TargetPos);
                 else
                     OnWalkedThroughPortal(portal);

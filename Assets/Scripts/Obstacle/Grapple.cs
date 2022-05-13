@@ -3,63 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 using Hun.Player;
 
-public abstract class Grapple : MonoBehaviour
+namespace Hun.Obstacle
 {
-    protected Grappler grappler;
-    protected Grappler.GrapState grapState;
-
-    //public bool IsActive { get; protected set; }
-    public bool IsActive;
-    //public float PullTimer { get; protected set; }
-    public float PullTimer;
-    protected float pullMaxTime = 2.0f;
-
-    private Animator anim;
-
-    protected abstract void Initialize();
-    protected abstract void Complete();
-
-    private void Awake()
+    public abstract class Grapple : MonoBehaviour
     {
-        grappler = FindObjectOfType<Grappler>();
-        anim = GetComponent<Animator>();
-    }
+        protected Grappler grappler;
+        protected Grappler.GrapState grapState;
 
-    private void OnEnable()
-    {
-        Initialize();
-    }
+        //public bool IsActive { get; protected set; }
+        public bool IsActive;
+        //public float PullTimer { get; protected set; }
+        public float PullTimer;
+        protected float pullMaxTime = 2.0f;
 
-    public virtual void Progress()
-    {
-        if (!IsActive)
-            return;
+        private Animator anim;
 
-        if(PullTimer >= pullMaxTime)
+        protected abstract void Initialize();
+        protected abstract void Complete();
+
+        private void Awake()
         {
-            IsActive = false;
-            Complete();
+            grappler = FindObjectOfType<Grappler>();
+            anim = GetComponent<Animator>();
         }
-        else
+
+        private void OnEnable()
         {
-            PullTimer += Time.deltaTime;
+            Initialize();
         }
-    }
 
-    protected virtual void OnDown()
-    {
-        grappler.SetGrapState(grapState);
-    }
+        public virtual void Progress()
+        {
+            if (!IsActive)
+                return;
 
-    public void SetAnimTrigger(string triggerName) => anim.SetTrigger(triggerName);
+            if (PullTimer >= pullMaxTime)
+            {
+                IsActive = false;
+                Complete();
+            }
+            else
+            {
+                PullTimer += Time.deltaTime;
+            }
+        }
 
-    private void OnMouseEnter()
-    {
-        OnDown();
-    }
+        protected virtual void OnDown()
+        {
+            grappler.SetGrapState(grapState);
+        }
 
-    private void OnMouseDown()
-    {
-        OnDown();
+        public void SetAnimTrigger(string triggerName) => anim.SetTrigger(triggerName);
+
+        private void OnMouseEnter()
+        {
+            OnDown();
+        }
+
+        private void OnMouseDown()
+        {
+            OnDown();
+        }
     }
 }

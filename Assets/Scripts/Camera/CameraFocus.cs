@@ -1,7 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Jun.Camera {
+namespace Hun.Camera
+{
     public class CameraFocus : MonoBehaviour
     {
         [SerializeField] private bool isSwap = false;
