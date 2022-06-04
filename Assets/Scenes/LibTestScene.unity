@@ -146,7 +146,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 85505071}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 21.03, y: 15.578488, z: -15.745378}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -245,6 +245,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 946bb9a5cc9018e46ab81d4d2645a1d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clearObjCount: 0
+  quitPanel: {fileID: 0}
+  pausePanel: {fileID: 0}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +416,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraFocus: {fileID: 731099518}
+  virtualCamera: {fileID: 0}
+  currentFloorCenter: {fileID: 0}
+  floorCenterList: []
+  maxFloorCenterDistance: 0
+  playerPos: {fileID: 0}
   rotationSpeed: 0.15
+  zoomSpeed: 5
+  wheelState: 0
+  cameraDistances:
+  - 0
+  - 0
+  - 0
 --- !u!114 &330585550
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -626,10 +640,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c571a55cd35bb6449cd8f7460b56a79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLife: 3
   mainCamera: {fileID: 0}
   movingSpeed: 4
-  jumpPower: 6
+  dashSpeed: 1.5
+  ladderUpDownSpeed: 3
 --- !u!114 &428427400
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,8 +687,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0d458b480327b489d21975a83d79d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  originHealth: 100
-  health: 0
+  originHeart: 3
+  heart: 0
+  maxLife: 3
+  life: 0
 --- !u!1 &467622606
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,7 +714,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 467622606}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0.3222561, y: 15.578488, z: -15.745378}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -834,6 +850,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c97702f59dcbd1a4e89105e25b4e88b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isSwap: 0
   target: {fileID: 428427398}
 --- !u!1 &743908540
 GameObject:
@@ -1040,7 +1057,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 2.369469, y: 1}
+    m_SensorSize: {x: 1.7777778, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
