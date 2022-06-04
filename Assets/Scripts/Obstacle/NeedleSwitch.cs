@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hun.Obstacle
 {
-    public class Spike : MonoBehaviour, IObstacle
+    public class NeedleSwitch : MonoBehaviour, IObstacle
     {
         public void OnEnter()
         {
