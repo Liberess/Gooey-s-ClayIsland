@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: GmarketSansMedium
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: -1762699855
   material: {fileID: 5840612740088827414}
-  materialHashCode: 0
+  materialHashCode: -459984143
   m_Version: 1.1.0
   m_SourceFontFileGUID: 70e68aedf4918e14ba71b647ed189092
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 70e68aedf4918e14ba71b647ed189092,

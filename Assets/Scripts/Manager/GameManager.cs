@@ -9,7 +9,12 @@ namespace Hun.Manager
         private DataManager dataMgr;
 
         public int SceneIndex { get; private set; }
+
+        public GameSaveFile gameSaveFile;
         public int Coin { get; private set; }
+        public int PrismPiece { get; private set; }
+        public float PlayTime { get; private set; }
+
         [SerializeField] private int clearObjCount;
         public int ClearObjCount
         {
@@ -25,6 +30,9 @@ namespace Hun.Manager
                     UIManager.Instance.SetClearObjectCountUI(clearObjCount);
             }
         }
+
+        [SerializeField] private GameObject mainPanel;
+        [SerializeField] private GameObject menuPanel;
 
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
@@ -54,13 +62,12 @@ namespace Hun.Manager
         private void Update()
         {
             // Press Spacebar
-            if(SceneIndex == 0)
+            if (SceneIndex == 0)
             {
                 if(Input.GetKeyDown(KeyCode.Space))
                 {
-                    var canvas = GameObject.Find("Canvas");
-                    canvas.transform.Find("MainPanel").gameObject.SetActive(false);
-                    canvas.transform.Find("MenuPanel").gameObject.SetActive(true);
+                    mainPanel.SetActive(false);
+                    menuPanel.SetActive(true);
                 }
             }
 
@@ -150,12 +157,28 @@ namespace Hun.Manager
 
         public void StageClear()
         {
-            dataMgr.GameData.coin += Coin;
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
             dataMgr.GameData.gameState = GameState.Lobby;
             LoadScene("LobbyScene");
         }
 
         #region Game Load & Quit
+
+        public void StartGame(GameSaveFile saveFileNum)
+        {
+            gameSaveFile = saveFileNum;
+
+            if (dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].isSaved == false)
+            {
+                NewGame();
+            }
+            else
+            {
+                ContinueGame();
+            }
+        }
+
         /// <summary>
         /// 새로운 게임을 생성하는 함수이다.
         /// </summary>
