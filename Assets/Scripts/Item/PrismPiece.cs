@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Hun.Item
 {
-    public class ClearItem : MonoBehaviour, IItem
+    public class PrismPiece : MonoBehaviour, IItem
     {
         public void OnEnter()
         {
@@ -18,8 +18,8 @@ namespace Hun.Item
 
         private IEnumerator OnEnterCo()
         {
-            GetComponent<MeshRenderer>().enabled = false;
-            GetComponent<CapsuleCollider>().enabled = false;
+            GetComponentInChildren<MeshRenderer>().enabled = false;
+            GetComponent<SphereCollider>().enabled = false;
 
             yield return new WaitForSeconds(1f);
 
