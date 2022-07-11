@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
@@ -23,6 +24,18 @@ namespace Hun.Player
 
         private Vector3 movingInputValue;
         private Vector3 movingVector = Vector3.zero;
+
+        [Header("== Mouthful Property ==")]
+        //[HideInInspector] public ClayBlock targetEntity;
+        [SerializeField] private Transform mouthfulRoot;
+        [SerializeField] private float mouthfulRadius = 2f;
+        private float mouthfulDistance;
+
+        private ClayBlock targetClayBlock;
+        private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
+
+        private RaycastHit[] hits = new RaycastHit[10];
+        private bool HasMouthfulObj => targetClayBlock != null;
 
         private bool isInteracting = false;
         private bool isCarryingObject = false;
@@ -103,13 +116,36 @@ namespace Hun.Player
         }
 
         /// <summary>
-        /// 점프 키 입력시 발생하는 메서드
+        /// 머금기/뱉기 키(Space) 입력시 발생하는 메서드
         /// </summary>
-        /// <param name="inputValue">입력 값</param>
-/*        private void OnJump(InputValue inputValue)
+        private void OnMouthful()
         {
-            Jump();
-        }*/
+            if(targetClayBlock == null)
+            {
+                var direction = transform.forward;
+
+                //움직이는 궤적에 있는 콜라이더 감지
+                var size = Physics.SphereCastNonAlloc(mouthfulRoot.position, mouthfulRadius,
+                    direction, hits, mouthfulDistance, LayerMask.GetMask("ClayBlock"));
+
+                for (int i = 0; i < size; i++)
+                {
+                    if (hits[i].collider.TryGetComponent<ClayBlock>(out targetClayBlock))
+                    {
+                        targetClayBlock.OnMouthful();
+                        targetClayBlock.transform.SetParent(transform);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                targetClayBlock.transform.SetParent(null);
+                var targetPos = transform.position + (Vector3.up * 1.2f + Vector3.forward * 1f);
+                targetClayBlock.OnSpit(targetPos);
+                targetClayBlock = null;
+            }
+        }
 
         /// <summary>
         /// 인터랙트 키(Enter) 입력시 발생하는 메서드

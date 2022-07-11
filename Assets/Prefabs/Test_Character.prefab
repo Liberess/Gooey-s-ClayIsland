@@ -1176,6 +1176,8 @@ MonoBehaviour:
   movingSpeed: 2
   dashSpeed: 1.5
   ladderUpDownSpeed: 2
+  mouthfulRoot: {fileID: 5581272578141948316}
+  mouthfulRadius: 2
 --- !u!1 &2793658151324461903
 GameObject:
   m_ObjectHideFlags: 0
