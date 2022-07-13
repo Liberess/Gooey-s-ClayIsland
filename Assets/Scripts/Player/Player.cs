@@ -15,6 +15,8 @@ namespace Hun.Player
         private Hun.Obstacle.Portal interactivePortal = null;
         private Hun.Obstacle.CarriableStageObject interactiveCarriableObject = null;
 
+        [SerializeField] private Transform curCheckPoint;
+
         [Header("== Movement Property ==")]
         [SerializeField, Range(0F, 10F)] private float movingSpeed = 2F;
         //[SerializeField, Range(0F, 10F)] private float jumpPower = 3F;
@@ -186,6 +188,11 @@ namespace Hun.Player
             characterController.enabled = false;
             transform.position = targetPos.position;
             characterController.enabled = true;
+        }
+
+        public void TeleportToCheckPoint()
+        {
+            TeleportPlayerTransform(curCheckPoint);
         }
 
         /// <summary>

@@ -149,9 +149,9 @@ namespace Hun.Manager
         {
             //UIManager.Instance.SetClearObjectCountUI(++clearObjCount);
 
-            ++clearObjCount;
+            ++PrismPiece;
 
-            if(clearObjCount >= 2)
+            if(PrismPiece >= clearObjCount)
                 StageClear();
         }
 
@@ -159,8 +159,9 @@ namespace Hun.Manager
         {
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].prismPiece += PrismPiece;
             dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         #region Game Load & Quit

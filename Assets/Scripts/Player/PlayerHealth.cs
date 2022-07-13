@@ -9,6 +9,8 @@ namespace Hun.Entity.Player
         private void Start()
         {
             OnSpawned();
+            OnDeathEvent += RespawnCheckPoint;
+            OnGameOverEvent += LoadWorldMap;
             //Manager.UIManager.Instance.SetHeartUI(Heart);
         }
 
@@ -27,6 +29,16 @@ namespace Hun.Entity.Player
         {
             base.RestoreHeart(value);
             //Manager.UIManager.Instance.SetHeartUI(Heart);
+        }
+
+        private void RespawnCheckPoint()
+        {
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Hun.Player.Player>().TeleportToCheckPoint();
+        }
+
+        private void LoadWorldMap()
+        {
+            Manager.GameManager.Instance.LoadScene("WorldMapScene");
         }
     }
 }
