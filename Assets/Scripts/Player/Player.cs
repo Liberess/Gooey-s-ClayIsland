@@ -46,11 +46,11 @@ namespace Hun.Player
 
         private bool IsGrounded => characterController.isGrounded;
 
-        private Animator anim;
+        [SerializeField] private Animator anim;
 
         private void Awake()
         {
-            anim = GetComponent<Animator>();
+            anim = GetComponentInChildren<Animator>();
             characterController = GetComponent<CharacterController>();
             grappler = GetComponent<Hun.Player.Grappler>();
         }
