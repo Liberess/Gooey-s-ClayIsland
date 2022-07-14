@@ -131,7 +131,7 @@ namespace Hun.Manager
                 dataMgr.GameData.gameState = GameState.Lobby;
 
             Time.timeScale = 1f;
-            SceneManager.LoadScene(sceneName);
+            LoadingManager.LoadScene(sceneName);
         }
 
         public void LevelStart()
@@ -186,7 +186,7 @@ namespace Hun.Manager
         public void NewGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            SceneManager.LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace Hun.Manager
         public void ContinueGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            SceneManager.LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         /// <summary>

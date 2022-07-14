@@ -1,5 +1,6 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using TMPro;
 
 namespace Hun.Obstacle
 {
@@ -13,21 +14,44 @@ namespace Hun.Obstacle
         [SerializeField] private Material lockMat;
         [SerializeField] private Material OpenMat;
 
+        [Header("== Canvas ==")]
+        [SerializeField] private GameObject stageInfoUI;
+        [SerializeField] private TextMeshProUGUI stageInfoTxt;
+
+        [SerializeField] private Transform cameraTr;
+
         private Renderer objRenderer;
 
         private bool isOpen = false;
 
         private void Awake()
         {
-            objRenderer = GetComponent<Renderer>();
+            objRenderer = GetComponentInChildren<Renderer>();
+            stageInfoUI = GetComponentInChildren<Canvas>().gameObject;
+            stageInfoTxt = stageInfoUI.GetComponentInChildren<TextMeshProUGUI>();
+            cameraTr = GameObject.Find("Camera Group").transform.GetChild(1).transform;
         }
 
         private void Start()
         {
+            stageInfoUI.SetActive(false);
+            stageInfoTxt.text = "stage" + stageNum.ToString();
+
             CheckShineLamp();
+
             ////시작 시 이벤트를 등록해 줍니다.
             //SceneManager.sceneLoaded += LoadedsceneEvent;
         }
+
+        private void Update()
+        {
+            if(stageInfoUI.activeSelf)
+                stageInfoUI.transform.LookAt(cameraTr);
+
+            if(Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
+                Manager.GameManager.Instance.LoadScene(stageName);
+        }
+
         //private void LoadedsceneEvent(Scene scene, LoadSceneMode mode)
         //{
         //    CheckShineLamp();
@@ -46,9 +70,17 @@ namespace Hun.Obstacle
 
         private void OnTriggerEnter(Collider other)
         {
-            if (isOpen && other.CompareTag("Player"))
+            if (other.CompareTag("Player"))
             {
-                SceneManager.LoadScene(stageName);
+                stageInfoUI.SetActive(true);
+            }
+        }
+
+        private void OnTriggerExit(Collider other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                stageInfoUI.SetActive(false);
             }
         }
     }
