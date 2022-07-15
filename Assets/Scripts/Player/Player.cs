@@ -30,12 +30,13 @@ namespace Hun.Player
         [Header("== Mouthful Property ==")]
         //[HideInInspector] public ClayBlock targetEntity;
         [SerializeField] private Transform mouthfulRoot;
-        [SerializeField] private float mouthfulRadius = 2f;
-        private float mouthfulDistance;
+        [SerializeField] private float mouthfulDistance = 1f;
+        [SerializeField] private float spitRadius = 1f;
 
         private ClayBlock targetClayBlock;
         private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
 
+        private RaycastHit hitBlock;
         private RaycastHit[] hits = new RaycastHit[10];
         private bool HasMouthfulObj => targetClayBlock != null;
 
@@ -117,6 +118,7 @@ namespace Hun.Player
             movingInputValue = new Vector3(value.x, 0, value.y);
         }
 
+        #region Mouthful-Spit
         /// <summary>
         /// 머금기/뱉기 키(Space) 입력시 발생하는 메서드
         /// </summary>
@@ -124,30 +126,96 @@ namespace Hun.Player
         {
             if(targetClayBlock == null)
             {
-                var direction = transform.forward;
-
-                //움직이는 궤적에 있는 콜라이더 감지
-                var size = Physics.SphereCastNonAlloc(mouthfulRoot.position, mouthfulRadius,
-                    direction, hits, mouthfulDistance, LayerMask.GetMask("ClayBlock"));
-
-                for (int i = 0; i < size; i++)
-                {
-                    if (hits[i].collider.TryGetComponent<ClayBlock>(out targetClayBlock))
-                    {
-                        targetClayBlock.OnMouthful();
-                        targetClayBlock.transform.SetParent(transform);
-                        break;
-                    }
-                }
+                Mouthful();
             }
             else
             {
-                targetClayBlock.transform.SetParent(null);
-                var targetPos = transform.position + (Vector3.up * 1.2f + Vector3.forward * 1f);
-                targetClayBlock.OnSpit(targetPos);
-                targetClayBlock = null;
+                if (Physics.Raycast(mouthfulRoot.position,
+                    mouthfulRoot.forward, out hitBlock, mouthfulDistance))
+                {
+                    // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
+                    if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
+                    {
+                        if(targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
+                        {
+                            Debug.Log("합치기 진행");
+                            clayBlock.OnFusion();
+                            Destroy(targetClayBlock);
+                            targetClayBlock = null;
+                            return;
+                        }
+                    }
+                    else // 같은 ClayBlock이 아닌 다른 물체가 있다면, 뱉지도 합치지도 않는다.
+                    {
+                        return;
+                    }
+                }
+
+                // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
+                var targetVec = transform.position + transform.forward * 1f;
+                if (Physics.Raycast(targetVec, Vector3.down * 1.2f, out hitBlock,
+                    mouthfulDistance, LayerMask.GetMask("ClayBlock")))
+                {
+                    Spit();
+                }
+/*                    var colliders = Physics.OverlapSphere(targetVec, spitRadius);
+                if (colliders != null && colliders.Length > 0)
+                {
+                    List<GameObject> clayBlockList = new List<GameObject>();
+
+                    foreach (var col in colliders)
+                    {
+                        if (col.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
+                        {
+                            if (clayBlock.ClayBlockType == targetClayBlock.ClayBlockType)
+                                clayBlockList.Add(clayBlock.gameObject);
+                        }
+                    }
+
+                    var clayBlockObj = Utility.Utility.GetNearestObjectByList(
+                        clayBlockList, transform.position);
+
+                    clayBlockObj.GetComponent<ClayBlock>().OnFusion();
+                    Destroy(targetClayBlock);
+                    targetClayBlock = null;
+                }
+                else
+                {
+                    Spit();
+                }*/
             }
         }
+
+        /// <summary>
+        /// 앞에 Ray를 쏴서 ClayBlock이 있다면 머금기를 한다.
+        /// </summary>
+        private void Mouthful()
+        {
+            RaycastHit hit;
+
+            if (Physics.Raycast(mouthfulRoot.position,
+                mouthfulRoot.forward, out hit, mouthfulDistance))
+            {
+                if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
+                {
+                    targetClayBlock.OnMouthful();
+                    targetClayBlock.transform.SetParent(transform);
+                }
+            }
+        }
+
+        /// <summary>
+        /// ClayBlock을 합치지 않는 경우에 내뱉는다.
+        /// </summary>
+        private void Spit()
+        {
+            targetClayBlock.transform.SetParent(null);
+            //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
+            var targetPos = hitBlock.transform.position + Vector3.up * 1f;
+            targetClayBlock.OnSpit(targetPos);
+            targetClayBlock = null;
+        }
+        #endregion
 
         /// <summary>
         /// 인터랙트 키(Enter) 입력시 발생하는 메서드

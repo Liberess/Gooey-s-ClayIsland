@@ -10,7 +10,8 @@ public enum ClayBlockType
 
 public abstract class ClayBlock : MonoBehaviour
 {
-    public ClayBlockType ClayBlockType { get; protected set; }
+    [SerializeField] protected ClayBlockType clayBlockType;
+    public ClayBlockType ClayBlockType { get => clayBlockType; }
 
     public abstract void OnEnter();
     public abstract void OnStay();
@@ -21,7 +22,7 @@ public abstract class ClayBlock : MonoBehaviour
     /// </summary>
     public virtual void OnMouthful()
     {
-        Debug.Log("OnMouthful");
+
     }
     
     /// <summary>
@@ -29,6 +30,11 @@ public abstract class ClayBlock : MonoBehaviour
     /// </summary>
     public virtual void OnSpit(Vector3 targetPos)
     {
-        Debug.Log("OnSpit");
+        transform.rotation = Quaternion.identity;
+    }
+
+    public virtual void OnFusion()
+    {
+        Destroy(gameObject);
     }
 }
