@@ -15,9 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/WorldMapScene.unity
     guid: edd5b89d01d58824d9105795818ce479
   - enabled: 1
-    path: Assets/Scenes/MoonTestScene.unity
-    guid: 0befc6d1ebe165c45becf1ba86c311b9
-  - enabled: 1
     path: Assets/Scenes/Stage/Stage0Scene.unity
     guid: ad91745f47352493a92d5f35c1976899
   - enabled: 1

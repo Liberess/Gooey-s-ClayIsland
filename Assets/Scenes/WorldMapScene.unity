@@ -889,6 +889,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2978451355311963647, guid: f5d4c54784776494988b8f89c89880d9,
         type: 3}
+      propertyPath: stageName
+      value: Stage0Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 2978451355311963647, guid: f5d4c54784776494988b8f89c89880d9,
+        type: 3}
       propertyPath: requirementShineLampNum
       value: 2
       objectReference: {fileID: 0}
@@ -1348,6 +1353,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2978451355311963647, guid: f5d4c54784776494988b8f89c89880d9,
         type: 3}
+      propertyPath: stageName
+      value: Stage0Scene
+      objectReference: {fileID: 0}
+    - target: {fileID: 2978451355311963647, guid: f5d4c54784776494988b8f89c89880d9,
+        type: 3}
       propertyPath: requirementShineLampNum
       value: 1
       objectReference: {fileID: 0}
@@ -1669,6 +1679,11 @@ PrefabInstance:
         type: 3}
       propertyPath: stageNum
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2978451355311963647, guid: f5d4c54784776494988b8f89c89880d9,
+        type: 3}
+      propertyPath: stageName
+      value: Stage0Scene
       objectReference: {fileID: 0}
     - target: {fileID: 2978451355464006968, guid: f5d4c54784776494988b8f89c89880d9,
         type: 3}
