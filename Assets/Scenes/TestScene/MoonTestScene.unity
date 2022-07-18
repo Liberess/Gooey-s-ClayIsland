@@ -2369,6 +2369,11 @@ PrefabInstance:
       propertyPath: curCheckPoint
       value: 
       objectReference: {fileID: 531810759}
+    - target: {fileID: 8162055374896725013, guid: 0d68ad981a271ce449b9badbc5002568,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 26fa66bad20be7a4b9ee7c323b3a93be, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d68ad981a271ce449b9badbc5002568, type: 3}
 --- !u!1001 &4049542738519368220

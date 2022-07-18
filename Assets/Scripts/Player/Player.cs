@@ -126,10 +126,14 @@ namespace Hun.Player
         {
             if(targetClayBlock == null)
             {
+                anim.SetTrigger("isMouthful");
+
                 Mouthful();
             }
             else
             {
+                anim.SetTrigger("isMouthful");
+
                 if (Physics.Raycast(mouthfulRoot.position,
                     mouthfulRoot.forward, out hitBlock, mouthfulDistance))
                 {
