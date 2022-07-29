@@ -24,6 +24,7 @@ namespace Hun.Player
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
 
+        private bool isMove = true;
         private Vector3 movingInputValue;
         private Vector3 movingVector = Vector3.zero;
 
@@ -39,6 +40,19 @@ namespace Hun.Player
         private RaycastHit hitBlock;
         private RaycastHit[] hits = new RaycastHit[10];
         private bool HasMouthfulObj => targetClayBlock != null;
+        private const float minTimeBetMouthful = 1.0f; // 머금기 허용할 딜레이
+        private float lastMouthfulTime;
+        private bool IsMouthful
+        {
+            get
+            {
+                if (Time.time >= lastMouthfulTime + minTimeBetMouthful &&
+                    !anim.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Mouthful"))
+                    return true;
+
+                return false;
+            }
+        }
 
         private bool isInteracting = false;
         private bool isCarryingObject = false;
@@ -69,6 +83,8 @@ namespace Hun.Player
             SetupDashEvent();
 
             StartCoroutine(FindInterativeCarriableStageObject());
+
+            lastMouthfulTime = Time.time;
         }
 
         private void Update()
@@ -124,11 +140,13 @@ namespace Hun.Player
         /// </summary>
         private void OnMouthful()
         {
+            if (!IsMouthful)
+                return;
+
             if(targetClayBlock == null)
             {
-                anim.SetTrigger("isMouthful");
-
                 Mouthful();
+                StartCoroutine(CheckMouthfulAnimState());
             }
             else
             {
@@ -202,10 +220,16 @@ namespace Hun.Player
             {
                 if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
                 {
-                    targetClayBlock.OnMouthful();
-                    targetClayBlock.transform.SetParent(transform);
+                    if(targetClayBlock.IsMouthful)
+                    {
+                        targetClayBlock.OnMouthful();
+                        targetClayBlock.transform.SetParent(transform);
+                    }
                 }
             }
+
+            anim.SetTrigger("isMouthful");
+            lastMouthfulTime = Time.time;
         }
 
         /// <summary>
@@ -218,6 +242,23 @@ namespace Hun.Player
             var targetPos = hitBlock.transform.position + Vector3.up * 1f;
             targetClayBlock.OnSpit(targetPos);
             targetClayBlock = null;
+        }
+
+        private IEnumerator CheckMouthfulAnimState()
+        {
+            WaitForSeconds delay = new WaitForSeconds(0.1f);
+
+            isMove = false;
+
+            while(true)
+            {
+                yield return delay;
+
+                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                    break;
+            }
+
+            isMove = true;
         }
         #endregion
 
@@ -292,6 +333,12 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
+            if (!isMove)
+            {
+                CalculateGravityOn(ref movingVector);
+                return;
+            }
+
             if (grappler.IsGrappling)
                 return;
 
