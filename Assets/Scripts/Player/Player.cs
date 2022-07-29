@@ -23,6 +23,7 @@ namespace Hun.Player
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
+        public float playerGravityY = 1f;
 
         private bool isMove = true;
         private Vector3 movingInputValue;
@@ -372,10 +373,10 @@ namespace Hun.Player
                 {
                     var cameraYAxisRotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
 
-                    var tmp = movingVector.y;
+                    //var tmp = movingVector.y;
                     movingVector = cameraYAxisRotation * movingInputValue;
                     movingVector *= movingSpeed * currentDashSpeed;
-                    movingVector.y = tmp;
+                    //movingVector.y = tmp;
 
                     Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
                 }
@@ -420,8 +421,16 @@ namespace Hun.Player
         /// <param name="movingVector">¿Ãµø ∫§≈Õ</param>
         private void CalculateGravityOn(ref Vector3 movingVector)
         {
-            movingVector.y += Physics.gravity.y * Time.deltaTime;
+            if (playerGravityY < 1.0f)
+            {
+                movingVector.y += Physics.gravity.y * Time.deltaTime * playerGravityY;
+                //Debug.Log(movingVector.y);
+            }
+            else
+                movingVector.y += Physics.gravity.y * Time.deltaTime;
         }
+
+        public void TriggerSand() => movingVector = new Vector3(0f, -0.1f, 0f);
 
         #endregion
 
@@ -510,12 +519,18 @@ namespace Hun.Player
 
             if (other.TryGetComponent(out Hun.Item.IItem item))
                 item.OnEnter();
+
+            if (other.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnEnter();
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent(out IObstacle obstacle))
                 obstacle.OnExit();
+
+            if (other.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnExit();
         }
 
         public static event UnityAction<Player> PlayerSpawnedEvent;
