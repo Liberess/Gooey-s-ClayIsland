@@ -59,6 +59,7 @@ namespace Hun.Player
         private bool isCarryingObject = false;
 
         public bool IsLadderInside { get; private set; }
+        public bool IsTrampiline { get; private set; }
 
         private bool IsGrounded => characterController.isGrounded;
 
@@ -115,6 +116,12 @@ namespace Hun.Player
         /// </summary>
         /// <param name="value"> 사다리에 타고 있는지 없는지</param>
         public void SetLadderState(bool value) => IsLadderInside = value;
+
+        /// <summary>
+        /// 트램펄린에 타고 있는지/있지 않은지 상태 설정
+        /// </summary>
+        /// <param name="value"> 트램펄린에 타고 있는지 없는지</param>
+        public void SetTrampiline(bool value) => IsTrampiline = value;
 
         /// <summary>
         /// 포탈로 이동시 발생하는 메서드
@@ -305,6 +312,11 @@ namespace Hun.Player
             if (grappler.IsGrappling)
                 return;
 
+            if (IsTrampiline)
+            {
+                return;
+            }
+
             if (movingInputValue != Vector3.zero)
             {
                 if (IsLadderInside)
@@ -349,8 +361,8 @@ namespace Hun.Player
                 anim.SetBool("isWalk", false);
             }
 
-            // 공중에 떠있거나, 사다리에 타고 있지 않다면 중력을 적용한다.
-            if (!IsGrounded && !IsLadderInside)
+            // 공중에 떠있거나, 사다리에 타고 있지 않다면 중력을 적용한다. + 트램펄린
+            if (!IsGrounded && !IsLadderInside && !IsTrampiline)
                 CalculateGravityOn(ref movingVector);
 
             // 캐릭터 이동 입력값이 있고, 사다리에 타고 있지 않으면 (평소 땅에서 움직이는 상태)
@@ -397,6 +409,37 @@ namespace Hun.Player
                 currentDashSpeed = 1f;
                 anim.SetFloat("walkSpeed", 1);
             }
+        }
+
+        public void JumpToPosByTrampiline(Transform[] poses)
+        {
+            //anim.SetBool("isJump", true);
+            anim.SetBool("isWalk", false);
+            StartCoroutine(TrampilineJump(poses));
+        }
+
+        /// <summary>
+        /// 트램펄린에 닿았을 때 지정한 위치로 이동합니다.
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator TrampilineJump(Transform[] poses)
+        {
+            Look(Quaternion.LookRotation(poses[3].forward));
+
+            int index = 0;
+            while (index < poses.Length)
+            {
+                transform.position = Vector3.MoveTowards
+                    (transform.position, poses[index].transform.position, Time.deltaTime * currentDashSpeed * 3f);
+
+                if (transform.position == poses[index].transform.position)
+                    index++;
+
+                yield return new WaitForSeconds(0.001F);
+            }
+
+            IsTrampiline = false;
+            //anim.SetBool("isJump", false);
         }
 
         /// <summary>
