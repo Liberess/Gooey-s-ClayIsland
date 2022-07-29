@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -70,6 +71,26 @@ namespace Hun.Utility
                 success = true;
 
             return success;
+        }
+
+        public static GameObject GetNearestObjectByList(List<GameObject> list, Vector3 pos)
+        {
+            float minDistance = 1000.0f;
+            GameObject tempObj = null;
+
+            foreach (var obj in list)
+            {
+                float tempDistance = Vector3.Distance(
+                    pos, obj.transform.position);
+
+                if (tempDistance <= minDistance)
+                {
+                    tempObj = obj;
+                    minDistance = tempDistance;
+                }
+            }
+
+            return tempObj;
         }
     }
 }

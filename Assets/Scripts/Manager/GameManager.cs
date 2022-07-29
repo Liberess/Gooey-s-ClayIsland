@@ -131,7 +131,7 @@ namespace Hun.Manager
                 dataMgr.GameData.gameState = GameState.Lobby;
 
             Time.timeScale = 1f;
-            SceneManager.LoadScene(sceneName);
+            LoadingManager.LoadScene(sceneName);
         }
 
         public void LevelStart()
@@ -149,9 +149,9 @@ namespace Hun.Manager
         {
             //UIManager.Instance.SetClearObjectCountUI(++clearObjCount);
 
-            ++clearObjCount;
+            ++PrismPiece;
 
-            if(clearObjCount >= 2)
+            if(PrismPiece >= clearObjCount)
                 StageClear();
         }
 
@@ -159,8 +159,9 @@ namespace Hun.Manager
         {
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].prismPiece += PrismPiece;
             dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         #region Game Load & Quit
@@ -185,7 +186,7 @@ namespace Hun.Manager
         public void NewGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            SceneManager.LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         /// <summary>
@@ -194,7 +195,7 @@ namespace Hun.Manager
         public void ContinueGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            SceneManager.LoadScene("LobbyScene");
+            LoadScene("WorldMapScene");
         }
 
         /// <summary>

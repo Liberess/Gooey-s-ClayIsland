@@ -36,8 +36,8 @@ namespace Hun.Entity
         /// </summary>
         private void OnLifeChanged()
         {
-            if (life <= 0)
-                Die();
+            if (life < 0)
+                GameOver();
 
             Manager.UIManager.Instance.SetLifeUI(life);
         }
@@ -48,6 +48,7 @@ namespace Hun.Entity
             {
                 --Life;
                 heart = originHeart;
+                Die();
             }
 
             Manager.UIManager.Instance.SetHeartUI(heart);
@@ -56,6 +57,7 @@ namespace Hun.Entity
         public bool IsDead { get; protected set; }
 
         public event UnityAction OnDeathEvent;
+        public event UnityAction OnGameOverEvent;
 
         private const float minTimeBetDamaged = 0.1f; // 공격 허용할 딜레이
         private float lastDamagedTime;
@@ -116,6 +118,11 @@ namespace Hun.Entity
         public virtual void Die()
         {
             OnDeathEvent?.Invoke();
+        }
+
+        public virtual void GameOver()
+        {
+            OnGameOverEvent?.Invoke();
 
             IsDead = true;
         }

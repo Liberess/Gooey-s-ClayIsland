@@ -12,8 +12,14 @@ EditorBuildSettings:
     path: Assets/Scenes/LobbyScene.unity
     guid: f3d87f5050c11dc47b9d366cfba067e5
   - enabled: 1
+    path: Assets/Scenes/WorldMapScene.unity
+    guid: edd5b89d01d58824d9105795818ce479
+  - enabled: 1
     path: Assets/Scenes/Stage/Stage0Scene.unity
     guid: ad91745f47352493a92d5f35c1976899
+  - enabled: 1
+    path: Assets/Scenes/LoadingScene.unity
+    guid: 83f6bfce9523211479f4eaec636accbd
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b03cf2ab1273444429c58ee485bcbd8b,
       type: 2}
