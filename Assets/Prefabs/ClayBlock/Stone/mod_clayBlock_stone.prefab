@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8837515554490928583}
   - component: {fileID: 7989999539048412916}
   - component: {fileID: 8142501752166499890}
-  - component: {fileID: 655305355}
+  - component: {fileID: 876825672}
   m_Layer: 0
   m_Name: clay_block
   m_TagString: Untagged
@@ -98,7 +98,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &655305355
+--- !u!114 &876825672
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +107,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 818080451618899768}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ab757285a47a92d4b846c73db6e667df, type: 3}
+  m_Script: {fileID: 11500000, guid: fa8953ab46a652a448a314ac28daa112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   clayBlockType: 6

@@ -40,7 +40,7 @@ namespace Hun.Player
         private RaycastHit hitBlock;
         private RaycastHit[] hits = new RaycastHit[10];
         private bool HasMouthfulObj => targetClayBlock != null;
-        private const float minTimeBetMouthful = 1.0f; // 머금기 허용할 딜레이
+        private const float minTimeBetMouthful = 1.0f;
         private float lastMouthfulTime;
         private bool IsMouthful
         {
@@ -143,7 +143,7 @@ namespace Hun.Player
             if (!IsMouthful)
                 return;
 
-            if(targetClayBlock == null)
+            if (targetClayBlock == null)
             {
                 Mouthful();
                 StartCoroutine(CheckMouthfulAnimState());
@@ -220,7 +220,7 @@ namespace Hun.Player
             {
                 if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
                 {
-                    if(targetClayBlock.IsMouthful)
+                    if (targetClayBlock.IsMouthful)
                     {
                         targetClayBlock.OnMouthful();
                         targetClayBlock.transform.SetParent(transform);
@@ -229,7 +229,6 @@ namespace Hun.Player
             }
 
             anim.SetTrigger("isMouthful");
-            lastMouthfulTime = Time.time;
         }
 
         /// <summary>
@@ -246,11 +245,12 @@ namespace Hun.Player
 
         private IEnumerator CheckMouthfulAnimState()
         {
-            WaitForSeconds delay = new WaitForSeconds(0.1f);
+            WaitForSeconds delay = new WaitForSeconds(0.01f);
 
             isMove = false;
+            anim.SetBool("isWalk", false);
 
-            while(true)
+            while (true)
             {
                 yield return delay;
 
