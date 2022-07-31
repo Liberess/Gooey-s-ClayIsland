@@ -1,31 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Trampiline : MonoBehaviour, IObstacle
+namespace Hun.Obstacle
 {
-    private Hun.Player.Player player;
-
-    [SerializeField] private Transform[] poses;
-
-    private void Start()
+    public class Trampiline : BoardJudgmentObj, IObstacle
     {
-        player = FindObjectOfType<Hun.Player.Player>();
-    }
+        private Hun.Player.Player player;
 
-    public void OnEnter()
-    {
-        player.SetTrampiline(true);
-        OnInteract();
-    }
+        [SerializeField] private Transform[] poses;
+        [SerializeField] private Transform boardPos;
 
-    public void OnExit()
-    {
+        private void Start()
+        {
+            player = FindObjectOfType<Hun.Player.Player>();
+            ownCollider = GetComponent<BoxCollider>();
+            SetTriggerState(true);
+        }
 
-    }
+        public void OnEnter()
+        {
+            player.SetTrampilineState(true);
 
-    public void OnInteract()
-    {
-        player.JumpToPosByTrampiline(poses);
+            OnInteract();
+        }
+
+        public void OnExit()
+        {
+
+        }
+
+        public void OnInteract()
+        {
+            player.JumpToPosByTrampiline(poses);
+        }
     }
 }
