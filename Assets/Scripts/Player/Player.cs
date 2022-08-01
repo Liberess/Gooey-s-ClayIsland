@@ -125,16 +125,6 @@ namespace Hun.Player
             interactivePortal = portal;
         }
 
-        /// <summary>
-        /// 이동 키 입력시 발생하는 메서드
-        /// </summary>
-        /// <param name="inputValue">입력 값</param>
-        private void OnMove(InputValue inputValue)
-        {
-            var value = inputValue.Get<Vector2>();
-            movingInputValue = new Vector3(value.x, 0, value.y);
-        }
-
         #region Mouthful-Spit
         /// <summary>
         /// 머금기/뱉기 키(Space) 입력시 발생하는 메서드
@@ -181,31 +171,6 @@ namespace Hun.Player
                 {
                     Spit();
                 }
-/*                    var colliders = Physics.OverlapSphere(targetVec, spitRadius);
-                if (colliders != null && colliders.Length > 0)
-                {
-                    List<GameObject> clayBlockList = new List<GameObject>();
-
-                    foreach (var col in colliders)
-                    {
-                        if (col.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
-                        {
-                            if (clayBlock.ClayBlockType == targetClayBlock.ClayBlockType)
-                                clayBlockList.Add(clayBlock.gameObject);
-                        }
-                    }
-
-                    var clayBlockObj = Utility.Utility.GetNearestObjectByList(
-                        clayBlockList, transform.position);
-
-                    clayBlockObj.GetComponent<ClayBlock>().OnFusion();
-                    Destroy(targetClayBlock);
-                    targetClayBlock = null;
-                }
-                else
-                {
-                    Spit();
-                }*/
             }
         }
 
@@ -312,22 +277,19 @@ namespace Hun.Player
         /// <summary>
         /// 해당 방향으로 회전합니다.
         /// </summary>
-        private void Look(Quaternion rotation)
-        {
-            transform.rotation = rotation;
-        }
+        private void Look(Quaternion rotation) => transform.rotation = rotation;
 
         #region Movement (Move, Jump)
 
         /// <summary>
-        /// 점프
+        /// 이동 키 입력시 발생하는 메서드
         /// </summary>
-/*        private void Jump()
+        /// <param name="inputValue">입력 값</param>
+        private void OnMove(InputValue inputValue)
         {
-            if (IsGrounded) {
-                movingVector.y = jumpPower;
-            }
-        }*/
+            var value = inputValue.Get<Vector2>();
+            movingInputValue = new Vector3(value.x, 0, value.y);
+        }
 
         /// <summary>
         /// 매 프레임 이동을 처리합니다
@@ -401,18 +363,6 @@ namespace Hun.Player
                 else
                     anim.SetBool("isWalk", false);
             }
-            /*            if (movingInputValue != Vector3.zero)
-                        {
-                            if (movingVector != Vector3.zero && !IsLadderInside)
-                            {
-                                characterController.Move(movingVector * Time.deltaTime);
-                                anim.SetBool("isWalk", true);
-                            }
-                        }
-                        else
-                        {
-                            anim.SetBool("isWalk", false);
-                        }*/
         }
 
         /// <summary>
@@ -421,13 +371,7 @@ namespace Hun.Player
         /// <param name="movingVector">이동 벡터</param>
         private void CalculateGravityOn(ref Vector3 movingVector)
         {
-            if (playerGravityY < 1.0f)
-            {
-                movingVector.y += Physics.gravity.y * Time.deltaTime * playerGravityY;
-                //Debug.Log(movingVector.y);
-            }
-            else
-                movingVector.y += Physics.gravity.y * Time.deltaTime;
+            movingVector.y += Physics.gravity.y * Time.deltaTime * playerGravityY;
         }
 
         public void TriggerSand() => movingVector = new Vector3(0f, -0.1f, 0f);
