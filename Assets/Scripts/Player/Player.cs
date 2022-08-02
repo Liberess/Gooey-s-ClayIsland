@@ -23,6 +23,7 @@ namespace Hun.Player
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
+        [SerializeField, Range(0f, 10f)] private float JumpSpeed = 5f;
         [HideInInspector] public float playerGravityY = 1f;
 
         private bool isMove = true;
@@ -59,7 +60,8 @@ namespace Hun.Player
         private bool isCarryingObject = false;
 
         public bool IsLadderInside { get; private set; }
-        public bool IsTrampiline { get; private set; }
+        public bool IsTrampilineInside { get; private set; }
+        public bool IsCanonInside { get; private set; }
 
         private bool IsGrounded => characterController.isGrounded;
 
@@ -121,7 +123,13 @@ namespace Hun.Player
         /// 트램펄린에 타고 있는지/있지 않은지 상태 설정
         /// </summary>
         /// <param name="value"> 트램펄린에 타고 있는지 없는지</param>
-        public void SetTrampiline(bool value) => IsTrampiline = value;
+        public void SetTrampilineState(bool value) => IsTrampilineInside = value;
+
+        /// <summary>
+        /// 대포에 타고 있는지/있지 않은지 상태 설정
+        /// </summary>
+        /// <param name="value"> 트램펄린에 타고 있는지 없는지</param>
+        public void SetCanonState(bool value) => IsCanonInside = value;
 
         /// <summary>
         /// 포탈로 이동시 발생하는 메서드
@@ -156,7 +164,7 @@ namespace Hun.Player
                     // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
                     if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
                     {
-                        if(targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
+                        if (targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
                         {
                             Debug.Log("합치기 진행");
                             clayBlock.OnFusion();
@@ -309,13 +317,8 @@ namespace Hun.Player
                 return;
             }
 
-            if (grappler.IsGrappling)
+            if (grappler.IsGrappling || IsTrampilineInside || IsCanonInside)
                 return;
-
-            if (IsTrampiline)
-            {
-                return;
-            }
 
             if (movingInputValue != Vector3.zero)
             {
@@ -361,8 +364,8 @@ namespace Hun.Player
                 anim.SetBool("isWalk", false);
             }
 
-            // 공중에 떠있거나, 사다리에 타고 있지 않다면 중력을 적용한다. + 트램펄린
-            if (!IsGrounded && !IsLadderInside && !IsTrampiline)
+            // 공중에 떠있거나, 사다리에 타고 있지 않다면 중력을 적용한다.
+            if (!IsGrounded && !IsLadderInside)
                 CalculateGravityOn(ref movingVector);
 
             // 캐릭터 이동 입력값이 있고, 사다리에 타고 있지 않으면 (평소 땅에서 움직이는 상태)
@@ -409,37 +412,6 @@ namespace Hun.Player
                 currentDashSpeed = 1f;
                 anim.SetFloat("walkSpeed", 1);
             }
-        }
-
-        public void JumpToPosByTrampiline(Transform[] poses)
-        {
-            //anim.SetBool("isJump", true);
-            anim.SetBool("isWalk", false);
-            StartCoroutine(TrampilineJump(poses));
-        }
-
-        /// <summary>
-        /// 트램펄린에 닿았을 때 지정한 위치로 이동합니다.
-        /// </summary>
-        /// <returns></returns>
-        IEnumerator TrampilineJump(Transform[] poses)
-        {
-            Look(Quaternion.LookRotation(poses[3].forward));
-
-            int index = 0;
-            while (index < poses.Length)
-            {
-                transform.position = Vector3.MoveTowards
-                    (transform.position, poses[index].transform.position, Time.deltaTime * currentDashSpeed * 3f);
-
-                if (transform.position == poses[index].transform.position)
-                    index++;
-
-                yield return new WaitForSeconds(0.001F);
-            }
-
-            IsTrampiline = false;
-            //anim.SetBool("isJump", false);
         }
 
         /// <summary>
@@ -489,6 +461,74 @@ namespace Hun.Player
                     breakableWall.InteractWall();
                 }
             }
+        }
+
+        /// <summary>
+        /// 트램펄린에 닿았을 때 지정한 위치로 이동합니다.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="poses"> 위치 값 </param>
+        public void JumpToPosByTrampiline(Transform[] poses)
+        {
+            //anim.SetBool("isJump", true);
+            anim.SetBool("isWalk", false);
+            StartCoroutine(TrampilineJump(poses));
+        }
+
+        IEnumerator TrampilineJump(Transform[] poses)
+        {
+            Look(Quaternion.LookRotation(poses[3].forward));
+
+            int index = 0;
+            while (index < poses.Length)
+            {
+                transform.position = Vector3.MoveTowards
+                    (transform.position, poses[index].transform.position, Time.deltaTime * JumpSpeed);
+
+                if (transform.position == poses[index].transform.position)
+                    index++;
+
+                yield return new WaitForSeconds(0.001F);
+            }
+
+            IsTrampilineInside = false;
+            //anim.SetBool("isJump", false);
+        }
+
+        /// <summary>
+        /// 대포에 닿았을 때 지정한 위치로 이동합니다.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="canonPos"> 대포 위치 값 </param>
+        /// <param name="destPos"> 목적 위치 값 </param>
+        public void FiredToPosByCanon(Transform canonPos, Vector3 destPos)
+        {
+            //anim.SetBool("isFired", true);
+            anim.SetBool("isWalk", false); //Test
+
+            StartCoroutine(CanonFired(canonPos, destPos));
+        }
+
+        IEnumerator CanonFired(Transform canonPos, Vector3 destPos)
+        {
+            Look(Quaternion.LookRotation(canonPos.transform.forward));
+
+            Vector3 newPos = canonPos.transform.position;
+            newPos.y = newPos.y - 0.5f;
+            transform.position = newPos;
+
+            yield return new WaitForSeconds(1F);
+
+            while (transform.position != destPos)
+            {
+                transform.position = Vector3.MoveTowards
+                    (transform.position, destPos, Time.deltaTime * movingSpeed);
+
+                yield return new WaitForSeconds(0.001F);
+            }
+
+            IsCanonInside = false;
+            //anim.SetBool("isFired", false);
         }
 
         private void OnTriggerEnter(Collider other)

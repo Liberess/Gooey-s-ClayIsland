@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Hun.Obstacle
 {
-    public class Trampiline : BoardJudgmentObj, IObstacle
+    public class Trampiline : BoardJudgmentObj
     {
         private Hun.Player.Player player;
 
@@ -16,21 +16,37 @@ namespace Hun.Obstacle
             SetTriggerState(true);
         }
 
-        public void OnEnter()
+        public override void OnEnter()
         {
             player.SetTrampilineState(true);
 
-            OnInteract();
-        }
-
-        public void OnExit()
-        {
-
-        }
-
-        public void OnInteract()
-        {
             player.JumpToPosByTrampiline(poses);
+        }
+
+        public override void OnExit()
+        {
+
+        }
+
+        public override void OnMouthful()
+        {
+            if (!IsMouthful)
+                return;
+
+            base.OnMouthful();
+
+            gameObject.SetActive(false);
+        }
+
+        public override void OnSpit(Vector3 targetPos)
+        {
+            if (!IsMouthful)
+                return;
+
+            base.OnSpit(targetPos);
+
+            gameObject.transform.position = targetPos;
+            gameObject.SetActive(true);
         }
     }
 }
