@@ -109,10 +109,10 @@ namespace Hun.Entity
             if (IsDead)
                 return;
 
-            if (heart + value >= originHeart)
-                heart = originHeart;
+            if (Heart + value >= originHeart)
+                Heart = originHeart;
             else
-                heart += value;
+                Heart += value;
         }
 
         public virtual void Die()

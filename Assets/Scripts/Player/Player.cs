@@ -206,6 +206,9 @@ namespace Hun.Player
                         targetClayBlock.OnMouthful();
                         targetClayBlock.transform.SetParent(transform);
                     }
+
+                    if (targetClayBlock.ClayBlockType == ClayBlockType.Apple)
+                        targetClayBlock = null;
                 }
             }
 
