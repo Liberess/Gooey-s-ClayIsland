@@ -110,4 +110,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3accebcdc31d1b54ba1771f66d88f966, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clayBlockType: 7
+  clayBlockType: 8

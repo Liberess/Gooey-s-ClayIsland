@@ -477,6 +477,18 @@ namespace Hun.Player
                 clayBlock.OnExit();
         }
 
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnEnter();
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnExit();
+        }
+
         public static event UnityAction<Player> PlayerSpawnedEvent;
         public event UnityAction PlayerDiedEvent;
     }

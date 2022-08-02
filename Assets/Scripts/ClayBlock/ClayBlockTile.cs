@@ -6,6 +6,8 @@ public class ClayBlockTile : ClayBlock
 {
     public override void OnEnter()
     {
+        var player = FindObjectOfType<Hun.Player.Player>();
+
         switch (clayBlockType)
         {
             case ClayBlockType.Grass:
@@ -13,17 +15,36 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Mud:
                 break;
             case ClayBlockType.Sand:
-                var player = FindObjectOfType<Hun.Player.Player>();
-                player.TriggerSand();
-                player.playerGravityY = 0.001f;
                 break;
             case ClayBlockType.Ice:
+                var dir = (player.transform.position - transform.position).normalized;
+                Debug.Log(dir);
+
+                if(Mathf.Abs(dir.z) > Mathf.Abs(dir.x))
+                {
+                    if (dir.z > 0)
+                        Debug.Log("back");
+                    else
+                        Debug.Log("forward");
+                }
+                else
+                {
+                    if (dir.x > 0)
+                        Debug.Log("left");
+                    else
+                        Debug.Log("right");
+                }
+
                 break;
             case ClayBlockType.Lime:
                 break;
             case ClayBlockType.Oil:
                 break;
             case ClayBlockType.Stone:
+                break;
+            case ClayBlockType.Water:
+                player.TriggerSand();
+                player.playerGravityY = 0.001f;
                 break;
         }
     }
@@ -46,6 +67,8 @@ public class ClayBlockTile : ClayBlock
                 break;
             case ClayBlockType.Stone:
                 break;
+            case ClayBlockType.Water:
+                break;
         }
     }
 
@@ -58,8 +81,6 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Mud:
                 break;
             case ClayBlockType.Sand:
-                var player = FindObjectOfType<Hun.Player.Player>();
-                player.playerGravityY = 1f;
                 break;
             case ClayBlockType.Ice:
                 break;
@@ -68,6 +89,10 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Oil:
                 break;
             case ClayBlockType.Stone:
+                break;
+            case ClayBlockType.Water:
+                var player = FindObjectOfType<Hun.Player.Player>();
+                player.playerGravityY = 1f;
                 break;
         }
     }
