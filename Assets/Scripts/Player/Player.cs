@@ -23,7 +23,7 @@ namespace Hun.Player
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
-        public float playerGravityY = 1f;
+        [HideInInspector] public float playerGravityY = 1f;
 
         private bool isMove = true;
         private Vector3 movingInputValue;
@@ -35,7 +35,7 @@ namespace Hun.Player
         [SerializeField] private float mouthfulDistance = 1f;
         [SerializeField] private float spitRadius = 1f;
 
-        private ClayBlock targetClayBlock;
+        [SerializeField] private ClayBlock targetClayBlock;
         private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
 
         private RaycastHit hitBlock;

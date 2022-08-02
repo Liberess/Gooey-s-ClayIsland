@@ -28,7 +28,7 @@ namespace Hun.Item
 
         public void UseItem()
         {
-            Manager.GameManager.Instance.GetClearObject();
+            Manager.GameManager.Instance.StageClear();
             Destroy(gameObject);
         }
     }

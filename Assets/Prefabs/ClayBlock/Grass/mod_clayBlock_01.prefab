@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8837515554490928583}
   - component: {fileID: 7989999539048412916}
   - component: {fileID: 3895694419211957035}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: clay_block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
