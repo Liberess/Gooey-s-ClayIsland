@@ -10,6 +10,7 @@ TagManager:
   - FloorCenter
   - PieceStar
   - ClayBlock
+  - ShineTower
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Player
   - Enemy
   - Obstacle
-  - YuME_TileMap
+  - ShineTower
   - Grapple
   - BorderLine
   - Interactable

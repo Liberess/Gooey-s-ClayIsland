@@ -12,24 +12,7 @@ namespace Hun.Manager
 
         public GameSaveFile gameSaveFile;
         public int Coin { get; private set; }
-        public int PrismPiece { get; private set; }
         public float PlayTime { get; private set; }
-
-        [SerializeField] private int clearObjCount;
-        public int ClearObjCount
-        {
-            get => clearObjCount;
-            private set
-            {
-                if (clearObjCount < 0)
-                    clearObjCount = 0;
-                else
-                    clearObjCount = value;
-
-                if(UIManager.Instance != null)
-                    UIManager.Instance.SetClearObjectCountUI(clearObjCount);
-            }
-        }
 
         [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject menuPanel;
@@ -50,11 +33,6 @@ namespace Hun.Manager
             dataMgr = DataManager.Instance;
 
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
-
-            if (SceneIndex == 0)
-            {
-                ClearObjCount = 0;
-            }
 
             Coin = 0;
         }
@@ -145,21 +123,10 @@ namespace Hun.Manager
             UIManager.Instance.SetCoinUI(Coin);
         }
 
-        public void GetClearObject()
-        {
-            //UIManager.Instance.SetClearObjectCountUI(++clearObjCount);
-
-            ++PrismPiece;
-
-            if(PrismPiece >= clearObjCount)
-                StageClear();
-        }
-
         public void StageClear()
         {
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
-            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].prismPiece += PrismPiece;
             dataMgr.GameData.gameState = GameState.Lobby;
             LoadScene("WorldMapScene");
         }

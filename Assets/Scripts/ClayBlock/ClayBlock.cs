@@ -5,13 +5,15 @@ using UnityEngine;
 
 public enum ClayBlockType
 {
-    Grass = 0, Mud, Sand, Ice, Lime, Oil
+    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp
 }
 
 public abstract class ClayBlock : MonoBehaviour
 {
     [SerializeField] protected ClayBlockType clayBlockType;
     public ClayBlockType ClayBlockType { get => clayBlockType; }
+
+    public bool IsMouthful => clayBlockType != ClayBlockType.Stone;
 
     public abstract void OnEnter();
     public abstract void OnStay();

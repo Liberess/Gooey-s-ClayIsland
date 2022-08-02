@@ -23,7 +23,10 @@ namespace Hun.Player
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
+        [SerializeField, Range(0f, 10f)] private float JumpSpeed = 5f;
+        [HideInInspector] public float playerGravityY = 1f;
 
+        private bool isMove = true;
         private Vector3 movingInputValue;
         private Vector3 movingVector = Vector3.zero;
 
@@ -33,17 +36,32 @@ namespace Hun.Player
         [SerializeField] private float mouthfulDistance = 1f;
         [SerializeField] private float spitRadius = 1f;
 
-        private ClayBlock targetClayBlock;
+        [SerializeField] private ClayBlock targetClayBlock;
         private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
 
         private RaycastHit hitBlock;
         private RaycastHit[] hits = new RaycastHit[10];
         private bool HasMouthfulObj => targetClayBlock != null;
+        private const float minTimeBetMouthful = 1.0f;
+        private float lastMouthfulTime;
+        private bool IsMouthful
+        {
+            get
+            {
+                if (Time.time >= lastMouthfulTime + minTimeBetMouthful &&
+                    !anim.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Mouthful"))
+                    return true;
+
+                return false;
+            }
+        }
 
         private bool isInteracting = false;
         private bool isCarryingObject = false;
 
         public bool IsLadderInside { get; private set; }
+        public bool IsTrampilineInside { get; private set; }
+        public bool IsCanonInside { get; private set; }
 
         private bool IsGrounded => characterController.isGrounded;
 
@@ -69,6 +87,8 @@ namespace Hun.Player
             SetupDashEvent();
 
             StartCoroutine(FindInterativeCarriableStageObject());
+
+            lastMouthfulTime = Time.time;
         }
 
         private void Update()
@@ -100,6 +120,18 @@ namespace Hun.Player
         public void SetLadderState(bool value) => IsLadderInside = value;
 
         /// <summary>
+        /// 트램펄린에 타고 있는지/있지 않은지 상태 설정
+        /// </summary>
+        /// <param name="value"> 트램펄린에 타고 있는지 없는지</param>
+        public void SetTrampilineState(bool value) => IsTrampilineInside = value;
+
+        /// <summary>
+        /// 대포에 타고 있는지/있지 않은지 상태 설정
+        /// </summary>
+        /// <param name="value"> 트램펄린에 타고 있는지 없는지</param>
+        public void SetCanonState(bool value) => IsCanonInside = value;
+
+        /// <summary>
         /// 포탈로 이동시 발생하는 메서드
         /// </summary>
         /// <param name="portal">포탈 오브젝트</param>
@@ -108,27 +140,19 @@ namespace Hun.Player
             interactivePortal = portal;
         }
 
-        /// <summary>
-        /// 이동 키 입력시 발생하는 메서드
-        /// </summary>
-        /// <param name="inputValue">입력 값</param>
-        private void OnMove(InputValue inputValue)
-        {
-            var value = inputValue.Get<Vector2>();
-            movingInputValue = new Vector3(value.x, 0, value.y);
-        }
-
         #region Mouthful-Spit
         /// <summary>
         /// 머금기/뱉기 키(Space) 입력시 발생하는 메서드
         /// </summary>
         private void OnMouthful()
         {
-            if(targetClayBlock == null)
-            {
-                anim.SetTrigger("isMouthful");
+            if (!IsMouthful)
+                return;
 
+            if (targetClayBlock == null)
+            {
                 Mouthful();
+                StartCoroutine(CheckMouthfulAnimState());
             }
             else
             {
@@ -140,7 +164,7 @@ namespace Hun.Player
                     // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
                     if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
                     {
-                        if(targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
+                        if (targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
                         {
                             Debug.Log("합치기 진행");
                             clayBlock.OnFusion();
@@ -162,31 +186,6 @@ namespace Hun.Player
                 {
                     Spit();
                 }
-/*                    var colliders = Physics.OverlapSphere(targetVec, spitRadius);
-                if (colliders != null && colliders.Length > 0)
-                {
-                    List<GameObject> clayBlockList = new List<GameObject>();
-
-                    foreach (var col in colliders)
-                    {
-                        if (col.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
-                        {
-                            if (clayBlock.ClayBlockType == targetClayBlock.ClayBlockType)
-                                clayBlockList.Add(clayBlock.gameObject);
-                        }
-                    }
-
-                    var clayBlockObj = Utility.Utility.GetNearestObjectByList(
-                        clayBlockList, transform.position);
-
-                    clayBlockObj.GetComponent<ClayBlock>().OnFusion();
-                    Destroy(targetClayBlock);
-                    targetClayBlock = null;
-                }
-                else
-                {
-                    Spit();
-                }*/
             }
         }
 
@@ -202,10 +201,15 @@ namespace Hun.Player
             {
                 if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
                 {
-                    targetClayBlock.OnMouthful();
-                    targetClayBlock.transform.SetParent(transform);
+                    if (targetClayBlock.IsMouthful)
+                    {
+                        targetClayBlock.OnMouthful();
+                        targetClayBlock.transform.SetParent(transform);
+                    }
                 }
             }
+
+            anim.SetTrigger("isMouthful");
         }
 
         /// <summary>
@@ -218,6 +222,24 @@ namespace Hun.Player
             var targetPos = hitBlock.transform.position + Vector3.up * 1f;
             targetClayBlock.OnSpit(targetPos);
             targetClayBlock = null;
+        }
+
+        private IEnumerator CheckMouthfulAnimState()
+        {
+            WaitForSeconds delay = new WaitForSeconds(0.01f);
+
+            isMove = false;
+            anim.SetBool("isWalk", false);
+
+            while (true)
+            {
+                yield return delay;
+
+                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                    break;
+            }
+
+            isMove = true;
         }
         #endregion
 
@@ -270,29 +292,32 @@ namespace Hun.Player
         /// <summary>
         /// 해당 방향으로 회전합니다.
         /// </summary>
-        private void Look(Quaternion rotation)
-        {
-            transform.rotation = rotation;
-        }
+        private void Look(Quaternion rotation) => transform.rotation = rotation;
 
         #region Movement (Move, Jump)
 
         /// <summary>
-        /// 점프
+        /// 이동 키 입력시 발생하는 메서드
         /// </summary>
-/*        private void Jump()
+        /// <param name="inputValue">입력 값</param>
+        private void OnMove(InputValue inputValue)
         {
-            if (IsGrounded) {
-                movingVector.y = jumpPower;
-            }
-        }*/
+            var value = inputValue.Get<Vector2>();
+            movingInputValue = new Vector3(value.x, 0, value.y);
+        }
 
         /// <summary>
         /// 매 프레임 이동을 처리합니다
         /// </summary>
         private void UpdateMovement()
         {
-            if (grappler.IsGrappling)
+            if (!isMove)
+            {
+                CalculateGravityOn(ref movingVector);
+                return;
+            }
+
+            if (grappler.IsGrappling || IsTrampilineInside || IsCanonInside)
                 return;
 
             if (movingInputValue != Vector3.zero)
@@ -325,10 +350,10 @@ namespace Hun.Player
                 {
                     var cameraYAxisRotation = Quaternion.Euler(0, mainCamera.transform.eulerAngles.y, 0);
 
-                    var tmp = movingVector.y;
+                    //var tmp = movingVector.y;
                     movingVector = cameraYAxisRotation * movingInputValue;
                     movingVector *= movingSpeed * currentDashSpeed;
-                    movingVector.y = tmp;
+                    //movingVector.y = tmp;
 
                     Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
                 }
@@ -353,18 +378,6 @@ namespace Hun.Player
                 else
                     anim.SetBool("isWalk", false);
             }
-            /*            if (movingInputValue != Vector3.zero)
-                        {
-                            if (movingVector != Vector3.zero && !IsLadderInside)
-                            {
-                                characterController.Move(movingVector * Time.deltaTime);
-                                anim.SetBool("isWalk", true);
-                            }
-                        }
-                        else
-                        {
-                            anim.SetBool("isWalk", false);
-                        }*/
         }
 
         /// <summary>
@@ -373,8 +386,10 @@ namespace Hun.Player
         /// <param name="movingVector">이동 벡터</param>
         private void CalculateGravityOn(ref Vector3 movingVector)
         {
-            movingVector.y += Physics.gravity.y * Time.deltaTime;
+            movingVector.y += Physics.gravity.y * Time.deltaTime * playerGravityY;
         }
+
+        public void TriggerSand() => movingVector = new Vector3(0f, -0.1f, 0f);
 
         #endregion
 
@@ -448,6 +463,74 @@ namespace Hun.Player
             }
         }
 
+        /// <summary>
+        /// 트램펄린에 닿았을 때 지정한 위치로 이동합니다.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="poses"> 위치 값 </param>
+        public void JumpToPosByTrampiline(Transform[] poses)
+        {
+            //anim.SetBool("isJump", true);
+            anim.SetBool("isWalk", false);
+            StartCoroutine(TrampilineJump(poses));
+        }
+
+        IEnumerator TrampilineJump(Transform[] poses)
+        {
+            Look(Quaternion.LookRotation(poses[3].forward));
+
+            int index = 0;
+            while (index < poses.Length)
+            {
+                transform.position = Vector3.MoveTowards
+                    (transform.position, poses[index].transform.position, Time.deltaTime * JumpSpeed);
+
+                if (transform.position == poses[index].transform.position)
+                    index++;
+
+                yield return new WaitForSeconds(0.001F);
+            }
+
+            IsTrampilineInside = false;
+            //anim.SetBool("isJump", false);
+        }
+
+        /// <summary>
+        /// 대포에 닿았을 때 지정한 위치로 이동합니다.
+        /// </summary>
+        /// <returns></returns>
+        /// <param name="canonPos"> 대포 위치 값 </param>
+        /// <param name="destPos"> 목적 위치 값 </param>
+        public void FiredToPosByCanon(Transform canonPos, Vector3 destPos)
+        {
+            //anim.SetBool("isFired", true);
+            anim.SetBool("isWalk", false); //Test
+
+            StartCoroutine(CanonFired(canonPos, destPos));
+        }
+
+        IEnumerator CanonFired(Transform canonPos, Vector3 destPos)
+        {
+            Look(Quaternion.LookRotation(canonPos.transform.forward));
+
+            Vector3 newPos = canonPos.transform.position;
+            newPos.y = newPos.y - 0.5f;
+            transform.position = newPos;
+
+            yield return new WaitForSeconds(1F);
+
+            while (transform.position != destPos)
+            {
+                transform.position = Vector3.MoveTowards
+                    (transform.position, destPos, Time.deltaTime * movingSpeed);
+
+                yield return new WaitForSeconds(0.001F);
+            }
+
+            IsCanonInside = false;
+            //anim.SetBool("isFired", false);
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out Hun.Obstacle.Portal portal))
@@ -463,12 +546,30 @@ namespace Hun.Player
 
             if (other.TryGetComponent(out Hun.Item.IItem item))
                 item.OnEnter();
+
+            if (other.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnEnter();
         }
 
         private void OnTriggerExit(Collider other)
         {
             if (other.TryGetComponent(out IObstacle obstacle))
                 obstacle.OnExit();
+
+            if (other.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnExit();
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnEnter();
+        }
+
+        private void OnCollisionExit(Collision collision)
+        {
+            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnExit();
         }
 
         public static event UnityAction<Player> PlayerSpawnedEvent;
