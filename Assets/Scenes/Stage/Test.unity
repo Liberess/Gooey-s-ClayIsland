@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18938646, g: 0.5368748, b: 0.8418526, a: 1}
+  m_IndirectSpecularColor: {r: 0.18945017, g: 0.53696156, b: 0.84190863, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -7038,26 +7038,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1141025298}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1159907517 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1402562878254309523, guid: 0d68ad981a271ce449b9badbc5002568,
-    type: 3}
-  m_PrefabInstance: {fileID: 4008699536392817752}
-  m_PrefabAsset: {fileID: 0}
---- !u!136 &1159907525
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1159907517}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.35
-  m_Height: 1
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1001 &1182635923
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13137,36 +13117,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4008699535988263639, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: obj
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4008699535988263639, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: curCheckPoint
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 4008699535988263640, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: m_Height
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4008699535988263640, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: m_Radius
-      value: 0.3
-      objectReference: {fileID: 0}
-    - target: {fileID: 4008699535988263640, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8162055374896725013, guid: 0d68ad981a271ce449b9badbc5002568,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 26fa66bad20be7a4b9ee7c323b3a93be, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d68ad981a271ce449b9badbc5002568, type: 3}
 --- !u!1001 &4119539694527062964

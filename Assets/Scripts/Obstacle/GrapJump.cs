@@ -8,14 +8,14 @@ namespace Hun.Obstacle
     {
         protected override void Complete()
         {
-   
+            
         }
 
         protected override void Initialize()
         {
             IsActive = true;
             PullTimer = 0.0f;
-            grapState = Player.Grappler.GrapState.Jump;
+            grapState = Player.PlayerGrappler.GrapState.Jump;
         }
     }
 }

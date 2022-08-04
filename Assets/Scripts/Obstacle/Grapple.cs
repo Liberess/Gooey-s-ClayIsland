@@ -7,8 +7,8 @@ namespace Hun.Obstacle
 {
     public abstract class Grapple : MonoBehaviour
     {
-        protected Grappler grappler;
-        protected Grappler.GrapState grapState;
+        protected PlayerGrappler grappler;
+        protected PlayerGrappler.GrapState grapState;
 
         //public bool IsActive { get; protected set; }
         public bool IsActive;
@@ -23,7 +23,7 @@ namespace Hun.Obstacle
 
         private void Awake()
         {
-            grappler = FindObjectOfType<Grappler>();
+            grappler = FindObjectOfType<PlayerGrappler>();
             anim = GetComponent<Animator>();
         }
 

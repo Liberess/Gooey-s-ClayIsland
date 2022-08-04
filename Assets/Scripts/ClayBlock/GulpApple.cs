@@ -1,15 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Hun.Player;
 
 public class GulpApple : ClayBlock
 {
-    [SerializeField] private Hun.Entity.Player.PlayerHealth playerHealth;
+    [SerializeField] private PlayerHealth playerHealth;
 
     private void Start()
     {
-        playerHealth = 
-            GameObject.FindGameObjectWithTag("Player").GetComponent<Hun.Entity.Player.PlayerHealth>();
+        playerHealth = FindObjectOfType<PlayerController>().GetComponent<PlayerHealth>();
     }
 
     public override void OnEnter()
