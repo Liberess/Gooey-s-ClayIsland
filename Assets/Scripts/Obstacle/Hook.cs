@@ -8,7 +8,7 @@ namespace Hun.Obstacle
     {
         [SerializeField, Range(0f, 50f)] private float hookForce = 25f;
 
-        private Hun.Player.Grappler grappler;
+        private Hun.Player.PlayerGrappler grappler;
         private Transform shootTransform;
         private Transform targetTransform;
 
@@ -35,7 +35,7 @@ namespace Hun.Obstacle
             lineRen.SetPositions(positions);
         }
 
-        public void InitializeHook(Hun.Player.Grappler _grappler, Transform hookPos, Transform _shootTransform)
+        public void InitializeHook(Hun.Player.PlayerGrappler _grappler, Transform hookPos, Transform _shootTransform)
         {
             grappler = _grappler;
             transform.forward = _shootTransform.forward;

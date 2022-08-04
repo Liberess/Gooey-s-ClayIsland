@@ -11,7 +11,7 @@ namespace Hun.Camera
         private void Start()
         {
             if (target == null)
-                target = FindObjectOfType<Player.Player>().transform;
+                target = FindObjectOfType<Player.PlayerController>().transform;
         }
 
         private void Update()

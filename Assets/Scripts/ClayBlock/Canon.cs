@@ -1,10 +1,11 @@
 using UnityEngine;
+using Hun.Player;
 
 namespace Hun.Obstacle
 {
     public class Canon : BoardJudgmentObj
     {
-        private Hun.Player.Player player;
+        private PlayerController player;
 
         private Vector3 destPos;
 
@@ -12,7 +13,7 @@ namespace Hun.Obstacle
 
         private void Start()
         {
-            player = FindObjectOfType<Hun.Player.Player>();
+            player = FindObjectOfType<PlayerController>();
             ownCollider = GetComponent<BoxCollider>();
             SetTriggerState(true);
         }
@@ -24,13 +25,13 @@ namespace Hun.Obstacle
 
             if (Physics.Raycast(gameObject.transform.position, gameObject.transform.forward, out hit, 100, layerMask))
             {
-                player.SetCanonState(true);
+                player.PlayerInteract.SetCanonState(true);
 
                 destPos.x = hit.transform.position.x;
                 destPos.y = hit.transform.position.y - 0.5f;
                 destPos.z = hit.transform.position.z - 1f;
 
-                player.FiredToPosByCanon(gameObject.transform, destPos);
+                player.PlayerInteract.FiredToPosByCanon(gameObject.transform, destPos);
             }
 
             Debug.Log(destPos);

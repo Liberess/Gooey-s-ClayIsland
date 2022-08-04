@@ -47,7 +47,7 @@ namespace Hun.Camera
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
 
             if (playerPos == null)
-                playerPos = FindObjectOfType<Player.Player>().transform;
+                playerPos = FindObjectOfType<Player.PlayerController>().transform;
 
             if (floorCenterList.Count <= 0)
             {

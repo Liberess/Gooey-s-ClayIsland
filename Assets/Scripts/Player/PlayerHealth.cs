@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Hun.Entity;
 
-namespace Hun.Entity.Player
+namespace Hun.Player
 {
     public class PlayerHealth : LivingEntity
     {
@@ -33,7 +34,8 @@ namespace Hun.Entity.Player
 
         private void RespawnCheckPoint()
         {
-            GameObject.FindGameObjectWithTag("Player").GetComponent<Hun.Player.Player>().TeleportToCheckPoint();
+            GameObject.FindGameObjectWithTag("Player").
+                GetComponent<PlayerController>().TeleportToCheckPoint();
         }
 
         private void LoadWorldMap()

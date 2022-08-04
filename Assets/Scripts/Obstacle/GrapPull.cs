@@ -10,7 +10,7 @@ namespace Hun.Obstacle
         {
             IsActive = true;
             PullTimer = 0.0f;
-            grapState = Player.Grappler.GrapState.Pull;
+            grapState = Player.PlayerGrappler.GrapState.Pull;
         }
 
         protected override void Complete()

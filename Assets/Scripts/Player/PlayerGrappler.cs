@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 namespace Hun.Player
 {
-    public class Grappler : MonoBehaviour
+    public class PlayerGrappler : MonoBehaviour
     {
         public enum GrapState { Jump, Pull, Destroy };
         private CharacterController characterController;

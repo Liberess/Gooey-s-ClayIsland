@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class ClayBlockTile : ClayBlock
 {
+    private Hun.Player.PlayerController playerCtrl;
+
+    private void Awake()
+    {
+        playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
+    }
+
     public override void OnEnter()
     {
-        var player = FindObjectOfType<Hun.Player.Player>();
-
         switch (clayBlockType)
         {
             case ClayBlockType.Grass:
@@ -17,8 +22,7 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 break;
             case ClayBlockType.Ice:
-                var dir = (player.transform.position - transform.position).normalized;
-                Debug.Log(dir);
+                var dir = (playerCtrl.transform.position - transform.position).normalized;
 
                 if(Mathf.Abs(dir.z) > Mathf.Abs(dir.x))
                 {
@@ -43,8 +47,8 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Stone:
                 break;
             case ClayBlockType.Water:
-                player.TriggerSand();
-                player.playerGravityY = 0.001f;
+                playerCtrl.PlayerMovement.InitializeMovingVector();
+                playerCtrl.PlayerMovement.playerGravityY = 0.001f;
                 break;
         }
     }
@@ -91,8 +95,7 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Stone:
                 break;
             case ClayBlockType.Water:
-                var player = FindObjectOfType<Hun.Player.Player>();
-                player.playerGravityY = 1f;
+                playerCtrl.PlayerMovement.playerGravityY = 1f;
                 break;
         }
     }

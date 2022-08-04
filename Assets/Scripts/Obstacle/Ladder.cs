@@ -6,16 +6,16 @@ namespace Hun.Obstacle
 {
     public class Ladder : MonoBehaviour, IObstacle
     {
-        private Hun.Player.Player player;
+        private Hun.Player.PlayerController player;
 
         private void Start()
         {
-            player = FindObjectOfType<Hun.Player.Player>();
+            player = FindObjectOfType<Hun.Player.PlayerController>();
         }
 
         public void OnEnter()
         {
-            player.SetLadderState(true);
+            player.PlayerInteract.SetLadderState(true);
         }
 
         public void OnInteract()
@@ -25,7 +25,7 @@ namespace Hun.Obstacle
 
         public void OnExit()
         {
-            player.SetLadderState(false);
+            player.PlayerInteract.SetLadderState(false);
         }
     }
 }

@@ -8,14 +8,14 @@ namespace Hun.World
 
         private void Awake()
         {
-            Player.Player.PlayerSpawnedEvent += OnPlayerSpawned;
+            Player.PlayerController.PlayerSpawnedEvent += OnPlayerSpawned;
         }
 
         /// <summary>
         /// 플레이어 스폰시 호출되는 메서드
         /// </summary>
         /// <param name="player">플레이어 오브젝트</param>
-        private void OnPlayerSpawned(Player.Player player)
+        private void OnPlayerSpawned(Player.PlayerController player)
         {
             //player.Life = player.maxLife;
             player.PlayerDiedEvent += OnPlayerDied;
