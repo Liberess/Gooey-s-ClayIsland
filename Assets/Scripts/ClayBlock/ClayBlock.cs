@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum ClayBlockType
 {
-    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp
+    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple
 }
 
 public abstract class ClayBlock : MonoBehaviour
