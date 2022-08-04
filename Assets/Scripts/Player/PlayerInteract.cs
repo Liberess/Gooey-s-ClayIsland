@@ -89,6 +89,24 @@ namespace Hun.Player
         }
 
         /// <summary>
+        ///  마우스 왼쪽키를 눌렀을 때 발생하는 Mouse Input 이벤트이다.
+        /// </summary>
+        private void OnMouseInteract()
+        {
+            Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Interactable")))
+            {
+                if (hit.collider.TryGetComponent(out Hun.Item.PieceStar pieceStar))
+                    pieceStar.UseItem();
+
+                if (hit.collider.TryGetComponent(out BreakableWall breakableWall))
+                    breakableWall.InteractWall();
+            }
+        }
+
+        /// <summary>
         /// 포탈로 이동시 발생하는 메서드
         /// </summary>
         public void OnWalkedThroughPortal(Portal portal) => interactivePortal = portal;
@@ -117,24 +135,7 @@ namespace Hun.Player
             }
         }
 
-        /// <summary>
-        ///  마우스 왼쪽키를 눌렀을 때 발생하는 Mouse Input 이벤트이다.
-        /// </summary>
-        private void OnMouseInteract()
-        {
-            Ray ray = UnityEngine.Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, Mathf.Infinity, LayerMask.GetMask("Interactable")))
-            {
-                if (hit.collider.TryGetComponent(out Hun.Item.PieceStar pieceStar))
-                    pieceStar.UseItem();
-
-                if (hit.collider.TryGetComponent(out BreakableWall breakableWall))
-                    breakableWall.InteractWall();
-            }
-        }
-
+        #region Trampiline
         /// <summary>
         /// 트램펄린에 닿았을 때 지정한 위치로 이동합니다.
         /// </summary>
@@ -166,7 +167,9 @@ namespace Hun.Player
             IsTrampilineInside = false;
             //anim.SetBool("isJump", false);
         }
+        #endregion
 
+        #region Canon
         /// <summary>
         /// 대포에 닿았을 때 지정한 위치로 이동합니다.
         /// </summary>
@@ -202,5 +205,6 @@ namespace Hun.Player
             IsCanonInside = false;
             //anim.SetBool("isFired", false);
         }
+        #endregion
     }
 }

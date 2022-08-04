@@ -23,7 +23,6 @@ public class ClayBlockTile : ClayBlock
                 break;
             case ClayBlockType.Ice:
                 var dir = (playerCtrl.transform.position - transform.position).normalized;
-                Debug.Log(dir);
 
                 if(Mathf.Abs(dir.z) > Mathf.Abs(dir.x))
                 {

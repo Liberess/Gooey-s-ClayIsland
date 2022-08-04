@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2732161415515966143}
   - component: {fileID: 3103050034810417233}
   - component: {fileID: 1720687264958808517}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: mod_ShineLamp
   m_TagString: ClayBlock
   m_Icon: {fileID: 0}

@@ -9,7 +9,6 @@ namespace Hun.Player
         private PlayerController playerCtrl;
 
         [Header("== Mouthful Property ==")]
-        //[HideInInspector] public ClayBlock targetEntity;
         [SerializeField] private Transform mouthfulRoot;
         [SerializeField] private float mouthfulDistance = 1f;
         [SerializeField] private float spitRadius = 1f;
@@ -65,8 +64,8 @@ namespace Hun.Player
             {
                 anim.SetTrigger("isMouthful");
 
-                if (Physics.Raycast(mouthfulRoot.position,
-                    mouthfulRoot.forward, out hitBlock, mouthfulDistance))
+                if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
+                    out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
                     // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
                     if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
@@ -87,7 +86,7 @@ namespace Hun.Player
                 }
 
                 // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
-                var targetVec = transform.position + transform.forward * 1f;
+                var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
                 if (Physics.Raycast(targetVec, Vector3.down * 1.2f, out hitBlock,
                     mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
@@ -103,8 +102,8 @@ namespace Hun.Player
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(mouthfulRoot.position,
-                mouthfulRoot.forward, out hit, mouthfulDistance))
+            if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
+                out hit, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
             {
                 if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
                 {
