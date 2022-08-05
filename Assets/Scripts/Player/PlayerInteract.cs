@@ -15,8 +15,27 @@ namespace Hun.Player
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
 
-        public bool IsCanonInside { get; private set; }
         public bool IsLadderInside { get; set; }
+        public bool IsIceInside
+        {
+            get
+            {
+                var colliders = Physics.OverlapSphere(transform.position, 0.7f,
+                    LayerMask.GetMask("ClayBlock"));
+
+                foreach(var collider in colliders)
+                {
+                    if (collider.TryGetComponent(out ClayBlock clayBlock))
+                    {
+                        if(clayBlock.ClayBlockType == ClayBlockType.Ice)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+        public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
         private Animator anim;

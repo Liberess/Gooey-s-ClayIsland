@@ -25,7 +25,31 @@ namespace Hun.Player
         private Rigidbody rigid;
         private Animator anim;
 
-        private bool IsGrounded => Mathf.Abs(rigid.velocity.y) == 0f;
+        private bool IsGrounded
+        {
+            get
+            {
+                if (!(Mathf.Abs(rigid.velocity.y) < 0f || Mathf.Abs(rigid.velocity.y) > 0f))
+                {
+                    return true;
+                }
+                else
+                {
+                    var colliders = Physics.OverlapSphere(transform.position, 0.3f,
+                        LayerMask.GetMask("ClayBlock"));
+
+                    if (colliders.Length > 0)
+                        return true;
+                }
+
+                Debug.Log("Fall Anim 추가");
+                //anim.SetBool("");
+                return false;
+            }
+        }
+
+
+        private bool isMoveForceCoroutineing = false;
 
         private void Awake()
         {
@@ -56,6 +80,38 @@ namespace Hun.Player
         }
 
         #region Movement (Move, Look)
+        public void AddMoveForce(Vector3 dir)
+        {
+            if(!isMoveForceCoroutineing)
+                StartCoroutine(AddMoveForceCo(dir));
+        }
+
+        public IEnumerator AddMoveForceCo(Vector3 dir)
+        {
+            isMoveForceCoroutineing = true;
+            SetMovement(false);
+            anim.SetBool("isWalk", false);
+
+            while(true)
+            {
+                if(!playerCtrl.PlayerInteract.IsIceInside)
+                        break;
+
+                rigid.velocity = dir * 5f;
+
+                playerBody.transform.rotation = Quaternion.LookRotation(dir);
+
+                yield return Time.deltaTime;
+            }
+
+            SetMovement(true);
+            rigid.velocity = rigid.angularVelocity = Vector3.zero;
+
+            isMoveForceCoroutineing = false;
+
+            yield return null;
+        }
+
         public void SetMovement(bool value) => IsMove = value;
 
         /// <summary>
@@ -78,7 +134,7 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
-            if (!IsMove)
+            if (!IsMove || !IsGrounded)
                 return;
 
             if (movingInputValue != Vector3.zero) //움직임 입력값이 있다면

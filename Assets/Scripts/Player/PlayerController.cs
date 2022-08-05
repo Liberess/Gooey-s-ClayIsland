@@ -46,7 +46,7 @@ namespace Hun.Player
             TeleportPlayerTransform(curCheckPoint);
         }
 
-        private void OnTriggerEnter(Collider other)
+/*        private void OnTriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out Hun.Obstacle.Portal portal))
             {
@@ -73,7 +73,7 @@ namespace Hun.Player
 
             if (other.TryGetComponent(out ClayBlock clayBlock))
                 clayBlock.OnExit();
-        }
+        }*/
 
         private void OnCollisionEnter(Collision collision)
         {

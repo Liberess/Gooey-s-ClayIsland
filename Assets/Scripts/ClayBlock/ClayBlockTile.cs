@@ -23,22 +23,24 @@ public class ClayBlockTile : ClayBlock
                 break;
             case ClayBlockType.Ice:
                 var dir = (playerCtrl.transform.position - transform.position).normalized;
+                Vector3 dirVec = Vector3.zero;
 
                 if(Mathf.Abs(dir.z) > Mathf.Abs(dir.x))
                 {
                     if (dir.z > 0)
-                        Debug.Log("back");
+                        dirVec = Vector3.back;
                     else
-                        Debug.Log("forward");
+                        dirVec = Vector3.forward;
                 }
                 else
                 {
                     if (dir.x > 0)
-                        Debug.Log("left");
+                        dirVec = Vector3.left;
                     else
-                        Debug.Log("right");
+                        dirVec = Vector3.right;
                 }
 
+                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
                 break;
             case ClayBlockType.Lime:
                 break;

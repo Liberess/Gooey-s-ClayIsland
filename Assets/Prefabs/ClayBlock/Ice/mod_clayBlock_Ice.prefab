@@ -13,8 +13,7 @@ GameObject:
   - component: {fileID: 7989999539048412916}
   - component: {fileID: 757265114565971742}
   - component: {fileID: 1748554901213536001}
-  - component: {fileID: 2016213793}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: clay_block
   m_TagString: ClayBlock
   m_Icon: {fileID: 0}
@@ -112,22 +111,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clayBlockType: 3
---- !u!54 &2016213793
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 818080451618899768}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 0
-  m_IsKinematic: 1
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!1 &1241308611840935574
 GameObject:
   m_ObjectHideFlags: 0
