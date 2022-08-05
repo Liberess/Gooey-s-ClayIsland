@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Hun.Manager;
 
 public class ClayBlockTile : ClayBlock
 {
     private Hun.Player.PlayerController playerCtrl;
+
+    private GameObject currentTemperPrefab = null;
 
     private void Awake()
     {
@@ -121,5 +124,56 @@ public class ClayBlockTile : ClayBlock
 
         gameObject.transform.position = targetPos;
         gameObject.SetActive(true);
+    }
+
+    public override void OnFusion(ClayBlock blockA, ClayBlock blockB)
+    {
+        Instantiate(currentTemperPrefab, blockB.transform.position, Quaternion.identity);
+        base.OnFusion(blockA, blockB); //Destroy
+    }
+
+    public bool IsSuccessFusion(ClayBlock blockA, ClayBlock blockB)
+    {
+        bool isSuccess = false;
+
+        switch (blockA.ClayBlockType)
+        {
+            case ClayBlockType.Grass:
+                if (blockB.ClayBlockType == ClayBlockType.Grass)
+                {
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Canon);
+                }
+                else if(blockB.ClayBlockType == ClayBlockType.Sand)
+                {
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                }
+                isSuccess = true;
+                break;
+            case ClayBlockType.Mud:
+                isSuccess = true;
+                break;
+            case ClayBlockType.Sand:
+                if (blockB.ClayBlockType == ClayBlockType.Grass)
+                {
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                }
+                isSuccess = true;
+                break;
+            case ClayBlockType.Ice:
+                isSuccess = true;
+                break;
+            case ClayBlockType.Lime:
+                isSuccess = true;
+                break;
+            case ClayBlockType.Oil:
+                isSuccess = true;
+                break;
+        }
+
+        OnFusion(blockA, blockB);
+        return isSuccess;
     }
 }

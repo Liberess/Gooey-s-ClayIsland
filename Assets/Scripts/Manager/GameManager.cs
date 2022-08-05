@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +20,12 @@ namespace Hun.Manager
 
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
+
+        [Header("== Temper Object Prefabs =="), Space(10)]
+        [SerializeField] private List<GameObject> temperObjPrefabList = new List<GameObject>();
+        public List<GameObject> TemperObjPrefabList { get => temperObjPrefabList; }
+        public GameObject GetTemperPrefab(TemperObjectType type)
+            => temperObjPrefabList[(int)type];
 
         private void Awake()
         {

@@ -68,19 +68,14 @@ namespace Hun.Player
                 if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                     out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
-                    // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
-                    if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
+                    if (hitBlock.collider.TryGetComponent(out ClayBlockTile clayBlock))
                     {
-                        if (targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
-                        {
-                            Debug.Log("합치기 진행");
-                            clayBlock.OnFusion();
-                            Destroy(targetClayBlock);
+                        if (clayBlock.IsSuccessFusion(targetClayBlock, clayBlock))
                             targetClayBlock = null;
-                            return;
-                        }
+
+                        return;
                     }
-                    else // 같은 ClayBlock이 아닌 다른 물체가 있다면, 뱉지도 합치지도 않는다.
+                    else
                     {
                         return;
                     }
@@ -127,6 +122,9 @@ namespace Hun.Player
         /// </summary>
         private void Spit()
         {
+            if (targetClayBlock == null)
+                return;
+
             targetClayBlock.transform.SetParent(null);
             //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
             var targetPos = hitBlock.transform.position + Vector3.up * 1f;
