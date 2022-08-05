@@ -145,7 +145,9 @@ namespace Hun.Player
             {
                 yield return delay;
 
-                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                Debug.Log("check");
+
+                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                     break;
             }
 
