@@ -170,6 +170,7 @@ namespace Hun.Player
         IEnumerator TrampilineJump(float force, Transform[] poses)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(poses[3].forward));
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
 
             int index = 0;
             while (index < poses.Length)
@@ -184,6 +185,7 @@ namespace Hun.Player
             }
 
             IsTrampilineInside = false;
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isJump", false);
         }
         #endregion
@@ -206,8 +208,9 @@ namespace Hun.Player
         IEnumerator CanonFired(Transform canonPos, Vector3 destPos)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(canonPos.transform.forward));
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
 
-            Vector3 newPos = canonPos.transform.position;
+            Vector3 newPos = canonPos.position;
             newPos.y = newPos.y - 0.5f;
             transform.position = newPos;
 
@@ -222,6 +225,7 @@ namespace Hun.Player
             }
 
             IsCanonInside = false;
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isFired", false);
         }
         #endregion

@@ -137,6 +137,9 @@ namespace Hun.Player
             if (!IsMove || !IsGrounded)
                 return;
 
+            if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
+                return;
+
             if (movingInputValue != Vector3.zero) //움직임 입력값이 있다면
             {
                 anim.SetBool("isWalk", true);
@@ -189,8 +192,9 @@ namespace Hun.Player
 
         private void UpdateGravity()
         {
-            // 사다리 또는 트램펄린에 타고 있으면 중력이 작용하지 않는다.
-            if (playerCtrl.PlayerInteract.IsLadderInside || playerCtrl.PlayerInteract.IsTrampilineInside)
+            // 사다리 또는 트램펄린, 대포에 타고 있으면 중력이 작용하지 않는다.
+            if (playerCtrl.PlayerInteract.IsLadderInside || playerCtrl.PlayerInteract.IsTrampilineInside
+                || playerCtrl.PlayerInteract.IsCanonInside)
                 rigid.useGravity = false;
             else
                 rigid.useGravity = true;
