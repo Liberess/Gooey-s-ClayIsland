@@ -63,6 +63,7 @@ namespace Hun.Player
             else
             {
                 anim.SetTrigger("isMouthful");
+                StartCoroutine(CheckMouthfulAnimState());
 
                 if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                     out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
@@ -144,8 +145,6 @@ namespace Hun.Player
             while (true)
             {
                 yield return delay;
-
-                Debug.Log("check");
 
                 if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                     break;
