@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18923822, g: 0.5368129, b: 0.84182304, a: 1}
+  m_IndirectSpecularColor: {r: 0.18938832, g: 0.5369624, b: 0.84191316, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1215,7 +1215,7 @@ PrefabInstance:
     - target: {fileID: 1905536352877403180, guid: b722a1884dee5c14cadeb4fcb18bc65f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 4.01
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1905536352877403180, guid: b722a1884dee5c14cadeb4fcb18bc65f,
         type: 3}
@@ -1260,12 +1260,12 @@ PrefabInstance:
     - target: {fileID: 7650534236821257880, guid: b722a1884dee5c14cadeb4fcb18bc65f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.02
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7650534236821257880, guid: b722a1884dee5c14cadeb4fcb18bc65f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -1.07
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b722a1884dee5c14cadeb4fcb18bc65f, type: 3}
@@ -8082,20 +8082,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 818080451618899768, guid: 6d7cc918143b64bbd87d198d7f1dd069,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
-      objectReference: {fileID: 0}
     - target: {fileID: 1241308611840935574, guid: 6d7cc918143b64bbd87d198d7f1dd069,
         type: 3}
       propertyPath: m_Name
       value: mod_HeartApple
-      objectReference: {fileID: 0}
-    - target: {fileID: 1241308611840935574, guid: 6d7cc918143b64bbd87d198d7f1dd069,
-        type: 3}
-      propertyPath: m_Layer
-      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 1905536352877403180, guid: 6d7cc918143b64bbd87d198d7f1dd069,
         type: 3}
@@ -14464,6 +14454,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Test_Character_Mogu
       objectReference: {fileID: 0}
+    - target: {fileID: 1402562878254309523, guid: 0d68ad981a271ce449b9badbc5002568,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1746612897704786473, guid: 0d68ad981a271ce449b9badbc5002568,
         type: 3}
       propertyPath: m_RootOrder
@@ -14477,12 +14472,12 @@ PrefabInstance:
     - target: {fileID: 1746612897704786473, guid: 0d68ad981a271ce449b9badbc5002568,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.57
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1746612897704786473, guid: 0d68ad981a271ce449b9badbc5002568,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.02
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1746612897704786473, guid: 0d68ad981a271ce449b9badbc5002568,
         type: 3}

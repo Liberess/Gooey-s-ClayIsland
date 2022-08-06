@@ -21,10 +21,16 @@ namespace Hun.Obstacle
 
         public override void OnEnter()
         {
-            if (!Physics.Raycast(transform.position, boardCheckPos.position - transform.position, 1))
+            int layerMask = (-1) - (1 << LayerMask.NameToLayer("Player"));
+            if (!Physics.Raycast(transform.position, boardCheckPos.position - transform.position, 1, layerMask))
             {
                 player.PlayerInteract.SetTrampilineState(true);
-                player.PlayerInteract.JumpToPosByTrampiline(force, poses);
+                player.PlayerInteract.JumpToPosByTrampiline(force, poses, true);
+            }
+            else
+            {
+                player.PlayerInteract.SetTrampilineState(true);
+                player.PlayerInteract.JumpToPosByTrampiline(force, poses, false);
             }
 
             Debug.DrawRay(transform.position, boardCheckPos.position - transform.position, Color.red, 3);
@@ -57,21 +63,33 @@ namespace Hun.Obstacle
 
             // player오브젝트가 targetPos를 바라보는 방향으로 회전
             Vector3 dir = targetPos - player.gameObject.transform.position;
+            dir = dir.normalized;
 
-            dir.x = 0;
-            dir.z = 0;
-
-            if (45 < dir.y || dir.y <= 135)
-                dir.y = 90;
-            else if (135 < dir.y || dir.y <= 225)
-                dir.y = 180;
-            else if (225 < dir.y || dir.y <= 315)
-                dir.y = -90;
-            else if (315 < dir.y || dir.y <= 405)
-                dir.y = 0;
+            if (0.5 < dir.x && dir.x <= 1)
+            {
+                dir = new Vector3(1, 0, 0);
+            }
+            else if (0 < dir.x && dir.x <= 0.5)
+            {
+                if (0 < dir.z)
+                    dir = new Vector3(0, 0, 1);
+                else
+                    dir = new Vector3(0, 0, -1);
+            }
+            else if (-0.5 < dir.x && dir.x <= 0)
+            {
+                if (0 < dir.z)
+                    dir = new Vector3(0, 0, 1);
+                else
+                    dir = new Vector3(0, 0, -1);
+            }
+            else if (-1 <= dir.x && dir.x <= -0.5)
+            {
+                dir = new Vector3(-1, 0, 0);
+            }
 
             gameObject.transform.position = targetPos;
-            transform.rotation = Quaternion.Euler(dir);
+            transform.rotation = Quaternion.LookRotation(dir);
 
             gameObject.SetActive(true);
         }

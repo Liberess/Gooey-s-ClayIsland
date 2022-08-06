@@ -160,14 +160,14 @@ namespace Hun.Player
         /// </summary>
         /// <returns></returns>
         /// <param name="poses"> À§Ä¡ °ª </param>
-        public void JumpToPosByTrampiline(float force, Transform[] poses)
+        public void JumpToPosByTrampiline(float force, Transform[] poses, bool isSuccese)
         {
             //anim.SetBool("isJump", true);
             anim.SetBool("isWalk", false);
-            StartCoroutine(TrampilineJump(force, poses));
+            StartCoroutine(TrampilineJump(force, poses, isSuccese));
         }
 
-        IEnumerator TrampilineJump(float force, Transform[] poses)
+        IEnumerator TrampilineJump(float force, Transform[] poses, bool isSuccese)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(poses[3].forward));
             gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
@@ -180,6 +180,18 @@ namespace Hun.Player
 
                 if (transform.position == poses[index].transform.position)
                     index++;
+                
+                if(index == 5 && !isSuccese)
+                {
+                    Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
+                    rigid.AddForce((transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
+                    gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
+
+                    yield return new WaitForSeconds(1F);
+
+                    rigid.velocity = Vector3.zero;
+                    break;
+                }
 
                 yield return new WaitForSeconds(0.001F);
             }
