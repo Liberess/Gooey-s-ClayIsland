@@ -43,6 +43,7 @@ public abstract class ClayBlock : MonoBehaviour
     public virtual void OnFusion(ClayBlock blockA, ClayBlock blockB)
     {
         Destroy(blockB);
+        Destroy(blockB.gameObject);
         Destroy(blockA);
         Destroy(blockA.gameObject);
     }

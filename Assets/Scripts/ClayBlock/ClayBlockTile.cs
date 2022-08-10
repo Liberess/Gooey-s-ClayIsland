@@ -7,11 +7,47 @@ public class ClayBlockTile : ClayBlock
 {
     private Hun.Player.PlayerController playerCtrl;
 
+    [SerializeField] private LayerMask targetLayer;
     private GameObject currentTemperPrefab = null;
+    private DirectionVector directionVector = new DirectionVector();
+
+    private BoxCollider boxCol;
 
     private void Awake()
     {
         playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
+        boxCol = GetComponentInChildren<BoxCollider>();
+
+        var defaultVec = transform.position + Vector3.up;
+
+        Vector3[] newVecs =
+            {
+                defaultVec + Vector3.forward,
+                defaultVec + Vector3.back,
+                defaultVec + Vector3.left,
+                defaultVec + Vector3.right
+            };
+
+        directionVector.SetVectors(newVecs);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.Lerp(Color.white, Color.red, 0.5f);
+        Vector3 gizmosVec = transform.position + Vector3.forward + Vector3.up;
+        Gizmos.DrawSphere(gizmosVec, 0.5f);
+
+        Gizmos.color = Color.Lerp(Color.white, Color.yellow, 0.5f);
+        gizmosVec = transform.position + Vector3.back + Vector3.up;
+        Gizmos.DrawSphere(gizmosVec, 0.5f);
+
+        Gizmos.color = Color.Lerp(Color.white, Color.green, 0.5f);
+        gizmosVec = transform.position + Vector3.left + Vector3.up;
+        Gizmos.DrawSphere(gizmosVec, 0.5f);
+
+        Gizmos.color = Color.Lerp(Color.white, Color.blue, 0.5f);
+        gizmosVec = transform.position + Vector3.right + Vector3.up;
+        Gizmos.DrawSphere(gizmosVec, 0.5f);
     }
 
     public override void OnEnter()
@@ -25,6 +61,10 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 break;
             case ClayBlockType.Ice:
+                var target = boxCol.center + transform.parent.position + transform.up;
+                Collider[] colliders = Physics.OverlapBox(target, boxCol.size / 2,
+                    Quaternion.identity, targetLayer);
+
                 var dir = (playerCtrl.transform.position - transform.position).normalized;
                 Vector3 dirVec = Vector3.zero;
 
