@@ -101,15 +101,16 @@ namespace Hun.Player
             if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                 out hit, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
             {
-                if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
+                if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
-                    if (targetClayBlock.IsMouthful)
+                    if (clayBlock.IsMouthful)
                     {
-                        targetClayBlock.OnMouthful();
-                        targetClayBlock.transform.SetParent(transform);
+                        clayBlock.OnMouthful();
+                        clayBlock.transform.SetParent(transform);
+                        targetClayBlock = clayBlock;
                     }
 
-                    if (targetClayBlock.ClayBlockType == ClayBlockType.Apple)
+                    if (clayBlock.ClayBlockType == ClayBlockType.Apple)
                         targetClayBlock = null;
                 }
             }

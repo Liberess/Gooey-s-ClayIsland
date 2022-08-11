@@ -168,6 +168,9 @@ public class ClayBlockTile : ClayBlock
 
     public override void OnFusion(ClayBlock blockA, ClayBlock blockB)
     {
+        if (blockA == null || blockB == null)
+            throw new System.Exception("blockA 또는 blockB의 값이 null입니다.");
+
         Instantiate(currentTemperPrefab, blockB.transform.position, Quaternion.identity);
         base.OnFusion(blockA, blockB); //Destroy
     }
@@ -176,20 +179,27 @@ public class ClayBlockTile : ClayBlock
     {
         bool isSuccess = false;
 
+        currentTemperPrefab = null;
+
         switch (blockA.ClayBlockType)
         {
             case ClayBlockType.Grass:
                 if (blockB.ClayBlockType == ClayBlockType.Grass)
                 {
+                    isSuccess = true;
                     currentTemperPrefab = GameManager.Instance.
                         GetTemperPrefab(TemperObjectType.Canon);
                 }
-                else if(blockB.ClayBlockType == ClayBlockType.Sand)
+                else if (blockB.ClayBlockType == ClayBlockType.Sand)
                 {
+                    isSuccess = true;
                     currentTemperPrefab = GameManager.Instance.
                         GetTemperPrefab(TemperObjectType.Trampoline);
                 }
-                isSuccess = true;
+                else
+                {
+                    isSuccess = false;
+                }
                 break;
             case ClayBlockType.Mud:
                 isSuccess = true;
@@ -197,10 +207,11 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 if (blockB.ClayBlockType == ClayBlockType.Grass)
                 {
+                    isSuccess = true;
                     currentTemperPrefab = GameManager.Instance.
                         GetTemperPrefab(TemperObjectType.Trampoline);
                 }
-                isSuccess = true;
+                isSuccess = false;
                 break;
             case ClayBlockType.Ice:
                 isSuccess = true;
@@ -211,9 +222,15 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Oil:
                 isSuccess = true;
                 break;
+            case ClayBlockType.Stone: isSuccess = false; break;
+            case ClayBlockType.Water: isSuccess = false; break;
+            case ClayBlockType.ShineLamp: isSuccess = false; break;
+            case ClayBlockType.Apple: isSuccess = false; break;
         }
 
-        OnFusion(blockA, blockB);
+        if (isSuccess && currentTemperPrefab != null)
+            OnFusion(blockA, blockB);
+
         return isSuccess;
     }
 }

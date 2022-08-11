@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18936862, g: 0.5368641, b: 0.84188086, a: 1}
+  m_IndirectSpecularColor: {r: 0.18944162, g: 0.5369324, b: 0.841934, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -10244,36 +10244,9 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
         type: 3}
-      propertyPath: gameState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
-        type: 3}
       propertyPath: pausePanel
       value: 
       objectReference: {fileID: 1591175782}
-    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
-        type: 3}
-      propertyPath: clearObjCount
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
-        type: 3}
-      propertyPath: temperObjPrefabList.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
-        type: 3}
-      propertyPath: temperObjPrefabList.Array.data[0]
-      value: 
-      objectReference: {fileID: 1241308611840935574, guid: 0bc269828e1764bf6a1a7943f491aee2,
-        type: 3}
-    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
-        type: 3}
-      propertyPath: temperObjPrefabList.Array.data[1]
-      value: 
-      objectReference: {fileID: 1241308611840935574, guid: 39135e427339a42fa89c98194cb658b4,
-        type: 3}
     - target: {fileID: 5379791760422926806, guid: 94068aebab2fb344b9328a98acbe248c,
         type: 3}
       propertyPath: m_Name
