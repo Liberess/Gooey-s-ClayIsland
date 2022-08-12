@@ -18,6 +18,7 @@ namespace Hun.Player
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
         [HideInInspector] public float playerGravityY = 1f;
         public bool IsMove { get; private set; }
+        public bool IsOverIce { get; private set; }
 
         private Vector3 movingInputValue;
         private Vector3 movingVector = Vector3.zero;
@@ -88,6 +89,7 @@ namespace Hun.Player
 
         public IEnumerator AddMoveForceCo(Vector3 dir)
         {
+            IsOverIce = true;
             isMoveForceCoroutineing = true;
             SetMovement(false);
             anim.SetBool("isWalk", false);
@@ -107,6 +109,7 @@ namespace Hun.Player
             SetMovement(true);
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
+            IsOverIce = false;
             isMoveForceCoroutineing = false;
 
             yield return null;

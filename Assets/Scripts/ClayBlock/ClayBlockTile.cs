@@ -18,7 +18,7 @@ public class ClayBlockTile : ClayBlock
         playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
         boxCol = GetComponentInChildren<BoxCollider>();
 
-        var defaultVec = transform.position + Vector3.up;
+        var defaultVec = boxCol.center + transform.position + Vector3.up;
 
         Vector3[] newVecs =
             {
@@ -29,6 +29,10 @@ public class ClayBlockTile : ClayBlock
             };
 
         directionVector.SetVectors(newVecs);
+        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
+        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
+        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
+        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
     }
 
     private void OnDrawGizmosSelected()
@@ -61,29 +65,37 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 break;
             case ClayBlockType.Ice:
-                var target = boxCol.center + transform.parent.position + transform.up;
-                Collider[] colliders = Physics.OverlapBox(target, boxCol.size / 2,
-                    Quaternion.identity, targetLayer);
 
-                var dir = (playerCtrl.transform.position - transform.position).normalized;
+                if (playerCtrl.PlayerMovement.IsOverIce)
+                    break;
+
                 Vector3 dirVec = Vector3.zero;
 
-                if(Mathf.Abs(dir.z) > Mathf.Abs(dir.x))
+                for(int i = 0; i < directionVector.dirVectors.Length; i++)
                 {
-                    if (dir.z > 0)
-                        dirVec = Vector3.back;
+                    RaycastHit hit;
+                    if(Physics.Raycast(transform.position, directionVector.defaultVectors[i], out hit, 1f))
+                    {
+                        if(hit.collider.TryGetComponent(out ClayBlockTile clayBlockTile))
+                        {
+                            if (clayBlockTile.ClayBlockType == ClayBlockType.Ice)
+                                continue;
+                        }
+                    }
                     else
-                        dirVec = Vector3.forward;
-                }
-                else
-                {
-                    if (dir.x > 0)
-                        dirVec = Vector3.left;
-                    else
-                        dirVec = Vector3.right;
+                    {
+                        continue;
+                    }
+
+                    Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
+                        boxCol.size / 2, Quaternion.identity, targetLayer);
+
+                    if(colliders != null && colliders.Length > 0)
+                        dirVec = directionVector.currentVectors[i];
                 }
 
-                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
+                if (dirVec != Vector3.zero)
+                    playerCtrl.PlayerMovement.AddMoveForce(dirVec);
                 break;
             case ClayBlockType.Lime:
                 break;
