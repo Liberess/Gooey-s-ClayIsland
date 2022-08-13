@@ -11,29 +11,9 @@ public class ClayBlockTile : ClayBlock
     private GameObject currentTemperPrefab = null;
     private DirectionVector directionVector = new DirectionVector();
 
+    [SerializeField] private bool isPlayerOver = false; //플레이어가 내 위에 있음!
+
     private BoxCollider boxCol;
-
-    private void Awake()
-    {
-        playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
-        boxCol = GetComponentInChildren<BoxCollider>();
-
-        var defaultVec = boxCol.center + transform.position + Vector3.up;
-
-        Vector3[] newVecs =
-            {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
-            };
-
-        directionVector.SetVectors(newVecs);
-        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
-        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
-        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
-        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
-    }
 
     private void OnDrawGizmosSelected()
     {
@@ -59,6 +39,57 @@ public class ClayBlockTile : ClayBlock
         }
     }
 
+    private void Awake()
+    {
+        playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
+        boxCol = GetComponentInChildren<BoxCollider>();
+
+        var defaultVec = boxCol.center + transform.position + Vector3.up;
+
+        Vector3[] newVecs =
+            {
+                defaultVec + Vector3.forward,
+                defaultVec + Vector3.back,
+                defaultVec + Vector3.left,
+                defaultVec + Vector3.right
+            };
+
+        directionVector.SetVectors(newVecs);
+        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
+        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
+        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
+        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
+    }
+
+    private void Update()
+    {
+        if(isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
+        {
+            Vector3 dirVec = Vector3.zero;
+
+            for (int i = 0; i < directionVector.dirVectors.Length; i++)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(transform.position + Vector3.up,
+                    directionVector.defaultVectors[i], out hit, 1f, ~targetLayer))
+                {
+                    string dirStr = System.Enum.GetName(typeof(DirectionType), i);
+                    Debug.Log(dirStr + "방향은 " + hit.collider.name + "에 막혀있음");
+                    continue;
+                }
+
+                Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
+                    boxCol.size / 2, Quaternion.identity, targetLayer);
+
+                if (colliders != null && colliders.Length > 0)
+                    dirVec = directionVector.defaultVectors[i];
+            }
+
+            if (dirVec != Vector3.zero)
+                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
+        }
+    }
+
     public override void OnEnter()
     {
         switch (clayBlockType)
@@ -70,7 +101,7 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 break;
             case ClayBlockType.Ice:
-
+                isPlayerOver = true;
                 if (playerCtrl.PlayerMovement.IsOverIce)
                     break;
 
@@ -149,6 +180,7 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Sand:
                 break;
             case ClayBlockType.Ice:
+                isPlayerOver = false;
                 break;
             case ClayBlockType.Lime:
                 break;

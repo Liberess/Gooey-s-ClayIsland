@@ -92,6 +92,12 @@ namespace Hun.Player
             }
         }
 
+        private void OnCollisionStay(Collision collision)
+        {
+   /*         if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnStay();*/
+        }
+
         private void OnCollisionExit(Collision collision)
         {
             if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
