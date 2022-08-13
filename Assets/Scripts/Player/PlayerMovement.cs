@@ -91,17 +91,20 @@ namespace Hun.Player
         {
             IsOverIce = true;
             isMoveForceCoroutineing = true;
+            playerCtrl.PlayerInteract.SetSlipIceState(true);
             SetMovement(false);
             anim.SetBool("isWalk", false);
 
-            while(true)
+            while (true)
             {
-                if(!playerCtrl.PlayerInteract.IsIceInside)
-                        break;
+                Debug.Log("1");
 
                 rigid.velocity = dir * 5f;
 
                 playerBody.transform.rotation = Quaternion.LookRotation(dir);
+
+                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
+                    break;
 
                 yield return Time.deltaTime;
             }

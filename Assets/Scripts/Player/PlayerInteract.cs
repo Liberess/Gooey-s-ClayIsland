@@ -35,6 +35,7 @@ namespace Hun.Player
                 return false;
             }
         }
+        public bool IsSlipIce { get; private set; }
         public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
@@ -72,6 +73,8 @@ namespace Hun.Player
         /// 대포에 타고 있는지/있지 않은지 상태 설정
         /// </summary>
         public void SetCanonState(bool value) => IsCanonInside = value;
+
+        public void SetSlipIceState(bool value) => IsSlipIce = value;
 
         /// <summary>
         /// 인터랙트 키(Enter) 입력시 발생하는 메서드

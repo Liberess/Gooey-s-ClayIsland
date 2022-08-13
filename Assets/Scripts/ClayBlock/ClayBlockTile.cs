@@ -37,21 +37,26 @@ public class ClayBlockTile : ClayBlock
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.Lerp(Color.white, Color.red, 0.5f);
-        Vector3 gizmosVec = transform.position + Vector3.forward + Vector3.up;
-        Gizmos.DrawSphere(gizmosVec, 0.5f);
+        if (ClayBlockType != ClayBlockType.Ice)
+            return;
 
-        Gizmos.color = Color.Lerp(Color.white, Color.yellow, 0.5f);
-        gizmosVec = transform.position + Vector3.back + Vector3.up;
-        Gizmos.DrawSphere(gizmosVec, 0.5f);
+        Color[] colors = { Color.red, Color.yellow, Color.green, Color.blue };
 
-        Gizmos.color = Color.Lerp(Color.white, Color.green, 0.5f);
-        gizmosVec = transform.position + Vector3.left + Vector3.up;
-        Gizmos.DrawSphere(gizmosVec, 0.5f);
+        Vector3 defaultVec = transform.position + Vector3.up;
 
-        Gizmos.color = Color.Lerp(Color.white, Color.blue, 0.5f);
-        gizmosVec = transform.position + Vector3.right + Vector3.up;
-        Gizmos.DrawSphere(gizmosVec, 0.5f);
+        Vector3[] newVecs =
+            {
+                defaultVec + Vector3.forward,
+                defaultVec + Vector3.back,
+                defaultVec + Vector3.left,
+                defaultVec + Vector3.right
+            };
+
+        for (int i = 0; i < newVecs.Length; i++)
+        {
+            Gizmos.color = Color.Lerp(Color.white, colors[i], 0.5f);
+            Gizmos.DrawSphere(newVecs[i], 0.5f);
+        }
     }
 
     public override void OnEnter()

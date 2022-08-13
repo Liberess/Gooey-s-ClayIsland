@@ -11,6 +11,7 @@ namespace Hun.Player
 
         [Header("== Mouthful Property ==")]
         [SerializeField] private Transform mouthfulRoot;
+        public Transform MouthfulRoot { get => mouthfulRoot; }
         [SerializeField] private float mouthfulDistance = 1f;
         [SerializeField] private float spitRadius = 1f;
 
