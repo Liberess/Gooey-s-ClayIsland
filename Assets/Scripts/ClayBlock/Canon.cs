@@ -31,14 +31,16 @@ namespace Hun.Obstacle
                 destPos = hit.transform.position;
                 destPos.y -= 0.5f;
 
-                if (destPos.x < transform.position.x)
-                    destPos.x += 1f;
-                else if (destPos.x > transform.position.x)
+                Vector3 dist = destPos - transform.position;
+
+                if (destPos.x - transform.position.x > 1)
                     destPos.x -= 1f;
-                else if (destPos.z < transform.position.z)
-                    destPos.z += 1f;
-                else
+                else if (destPos.x - transform.position.x < -1)
+                    destPos.x += 1f;
+                else if (destPos.z - transform.position.z > 1)
                     destPos.z -= 1f;
+                else if (destPos.z - transform.position.z < -1)
+                    destPos.z += 1f;
 
                 player.PlayerInteract.FiredToPosByCanon(transform, destPos);
             }
