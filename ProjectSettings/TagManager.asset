@@ -11,6 +11,8 @@ TagManager:
   - PieceStar
   - ClayBlock
   - ShineTower
+  - Canon
+  - Trampiline
   layers:
   - Default
   - TransparentFX

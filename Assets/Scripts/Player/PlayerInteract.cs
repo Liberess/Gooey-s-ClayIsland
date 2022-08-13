@@ -181,7 +181,7 @@ namespace Hun.Player
                 if (transform.position == poses[index].transform.position)
                     index++;
                 
-                if(index == 5 && !isSuccese)
+                if(index == 2 && !isSuccese)
                 {
                     Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
                     rigid.AddForce((transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);

@@ -43,7 +43,7 @@ namespace Hun.Player
                         return true;
                 }
 
-                Debug.Log("Fall Anim 추가");
+                //Debug.Log("Fall Anim 추가");
                 //anim.SetBool("");
                 return false;
             }

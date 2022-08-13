@@ -7,6 +7,7 @@ namespace Hun.Player
     public class PlayerMouthful : MonoBehaviour
     {
         private PlayerController playerCtrl;
+        private PlayerInteract playerInteract;
 
         [Header("== Mouthful Property ==")]
         [SerializeField] private Transform mouthfulRoot;
@@ -39,6 +40,7 @@ namespace Hun.Player
         {
             anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
+            playerInteract = GetComponent<PlayerInteract>();
         }
 
         private void Start()
@@ -53,6 +55,9 @@ namespace Hun.Player
         private void OnMouthful()
         {
             if (!IsMouthful)
+                return;
+
+            if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
                 return;
 
             if (targetClayBlock == null)

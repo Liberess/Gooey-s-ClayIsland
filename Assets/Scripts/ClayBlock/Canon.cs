@@ -21,7 +21,7 @@ namespace Hun.Obstacle
             RaycastHit hit;
             if (Physics.Raycast(transform.position, transform.forward, out hit, 100))
             {
-                if(hit.distance < 1.0f)
+                if (hit.distance < 1.0f)
                 {
                     return;
                 }
@@ -31,16 +31,19 @@ namespace Hun.Obstacle
                 destPos = hit.transform.position;
                 destPos.y -= 0.5f;
 
-                Vector3 dist = destPos - transform.position;
+                if (!hit.transform.gameObject.CompareTag("Trampiline"))
+                {
+                    Vector3 dist = destPos - transform.position;
 
-                if (destPos.x - transform.position.x > 1)
-                    destPos.x -= 1f;
-                else if (destPos.x - transform.position.x < -1)
-                    destPos.x += 1f;
-                else if (destPos.z - transform.position.z > 1)
-                    destPos.z -= 1f;
-                else if (destPos.z - transform.position.z < -1)
-                    destPos.z += 1f;
+                    if (destPos.x - transform.position.x > 1)
+                        destPos.x -= 1f;
+                    else if (destPos.x - transform.position.x < -1)
+                        destPos.x += 1f;
+                    else if (destPos.z - transform.position.z > 1)
+                        destPos.z -= 1f;
+                    else if (destPos.z - transform.position.z < -1)
+                        destPos.z += 1f;
+                }
 
                 player.PlayerInteract.FiredToPosByCanon(transform, destPos);
             }
