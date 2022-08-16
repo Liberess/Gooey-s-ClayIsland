@@ -20,7 +20,7 @@ namespace Hun.Player
         public bool IsMove { get; private set; }
         public bool IsOverIce { get; private set; }
 
-        private Vector3 movingInputValue;
+        public Vector3 MovingInputValue { get; private set; }
         private Vector3 movingVector = Vector3.zero;
 
         private Rigidbody rigid;
@@ -97,11 +97,9 @@ namespace Hun.Player
 
             while (true)
             {
-                Debug.Log("1");
-
                 //rigid.velocity = dir * 5f;
 
-                transform.Translate(dir * 5f * Time.deltaTime, Space.Self);
+                transform.Translate(dir * 5f * Time.deltaTime/*, Space.Self*/);
 
                 playerBody.transform.rotation = Quaternion.LookRotation(dir);
 
@@ -109,14 +107,12 @@ namespace Hun.Player
                 if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
-                if (playerCtrl.PlayerInteract.IsSlipIce &&
+/*                if (playerCtrl.PlayerInteract.IsSlipIce &&
                     Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
                 {
                     Debug.Log("걸림");
                     break;
-                }
-
-                Debug.Log(rigid.velocity);
+                }*/
 
                 yield return Time.deltaTime;
             }
@@ -144,7 +140,7 @@ namespace Hun.Player
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
-            movingInputValue = new Vector3(value.x, 0, value.y);
+            MovingInputValue = new Vector3(value.x, 0, value.y);
         }
 
         /// <summary>
@@ -158,7 +154,7 @@ namespace Hun.Player
             if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
                 return;
 
-            if (movingInputValue != Vector3.zero) //움직임 입력값이 있다면
+            if (MovingInputValue != Vector3.zero) //움직임 입력값이 있다면
             {
                 anim.SetBool("isWalk", true);
 
@@ -166,11 +162,11 @@ namespace Hun.Player
                 {
                     var cameraYAxisRotation = Quaternion.Euler(0, playerCtrl.MainCamera.transform.eulerAngles.y, 0);
 
-                    if (movingInputValue.z > 0)
+                    if (MovingInputValue.z > 0)
                     {
                         movingVector = Vector3.up * ladderUpDownSpeed;
                     }
-                    else if (movingInputValue.z < 0)
+                    else if (MovingInputValue.z < 0)
                     {
                         if (IsGrounded)
                             playerCtrl.PlayerInteract.IsLadderInside = false;
@@ -182,7 +178,7 @@ namespace Hun.Player
                         movingVector = Vector3.zero;
                     }
 
-                    Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
+                    Look(Quaternion.LookRotation(cameraYAxisRotation * MovingInputValue));
 
                     transform.Translate(movingVector * Time.deltaTime);
                     //characterController.Move(movingVector * Time.deltaTime);
@@ -192,11 +188,11 @@ namespace Hun.Player
                     var cameraYAxisRotation = Quaternion.Euler(0, playerCtrl.MainCamera.transform.eulerAngles.y, 0);
 
                     //var tmp = movingVector.y;
-                    movingVector = cameraYAxisRotation * movingInputValue;
+                    movingVector = cameraYAxisRotation * MovingInputValue;
                     movingVector *= moveSpeed * currentDashSpeed;
                     //movingVector.y = tmp;
 
-                    Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
+                    Look(Quaternion.LookRotation(cameraYAxisRotation * MovingInputValue));
 
                     transform.Translate(movingVector * Time.deltaTime);
                 }

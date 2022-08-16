@@ -65,18 +65,16 @@ public class ClayBlockTile : ClayBlock
     {
         if(isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
         {
+            if (!IsBlockedAround())
+                return;
+
             Vector3 dirVec = Vector3.zero;
 
             for (int i = 0; i < directionVector.dirVectors.Length; i++)
             {
-                RaycastHit hit;
                 if (Physics.Raycast(transform.position + Vector3.up,
-                    directionVector.defaultVectors[i], out hit, 1f, ~targetLayer))
-                {
-                    string dirStr = System.Enum.GetName(typeof(DirectionType), i);
-                    Debug.Log(dirStr + "방향은 " + hit.collider.name + "에 막혀있음");
+                    directionVector.defaultVectors[i], 1f, ~targetLayer))
                     continue;
-                }
 
                 Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
                     boxCol.size / 2, Quaternion.identity, targetLayer);
@@ -85,7 +83,7 @@ public class ClayBlockTile : ClayBlock
                     dirVec = directionVector.defaultVectors[i];
             }
 
-            if (dirVec != Vector3.zero)
+            if (dirVec != Vector3.zero && -playerCtrl.PlayerMovement.MovingInputValue == dirVec)
                 playerCtrl.PlayerMovement.AddMoveForce(dirVec);
         }
     }
@@ -192,6 +190,21 @@ public class ClayBlockTile : ClayBlock
                 playerCtrl.PlayerMovement.playerGravityY = 1f;
                 break;
         }
+    }
+
+    /// <summary>
+    /// 해당 블럭 위의 4방향이 막혔는지 확인한다.
+    /// </summary>
+    private bool IsBlockedAround()
+    {
+        for (int i = 0; i < directionVector.dirVectors.Length; i++)
+        {
+            if (Physics.Raycast(transform.position + Vector3.up,
+                    directionVector.defaultVectors[i], 1f, ~targetLayer))
+                return true;
+        }
+
+         return false;
     }
 
     public override void OnMouthful()
