@@ -18,6 +18,7 @@ namespace Hun.Camera
         [Header("Camera Control Compoent"), Space(5)]
         [SerializeField] private CameraFocus cameraFocus;
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
+        [SerializeField] private UnityEngine.Camera skyboxCamera;
         private CinemachineComponentBase componentBase;
 
         [Header("Camera Control Property"), Space(5)]
@@ -29,6 +30,7 @@ namespace Hun.Camera
         [SerializeField, Range(0, 10)] private int zoomSpeed = 5;
         [SerializeField] private WheelStateType wheelState;
         [SerializeField] private float[] cameraDistances = new float[3];
+        [SerializeField] private float[] skyboxCameraDistances = new float[3];
         private float currentWheelCount = 0f;
         private bool isRunningWheelCor = false;
         private bool isRunningInitWheelCor = false;
@@ -77,6 +79,7 @@ namespace Hun.Camera
 
             cameraFocus.transform.rotation = Quaternion.Lerp(
                 cameraFocus.transform.rotation, rotation, Time.deltaTime * 5f);
+            skyboxCamera.transform.rotation = cameraFocus.transform.rotation;
         }
 
         private IEnumerator CheckFloorCenter()
@@ -240,6 +243,11 @@ namespace Hun.Camera
                     var originSize = virtualCamera.m_Lens.OrthographicSize;
                     virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
                         originSize, cameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
+
+                    var fieldOfViewSize = skyboxCamera.fieldOfView;
+                    skyboxCamera.fieldOfView = Mathf.Lerp(
+                        fieldOfViewSize, skyboxCameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
+
 
                     var gap = (componentBase as CinemachineFramingTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
                     if (Mathf.Abs(gap) <= 0.05f)
