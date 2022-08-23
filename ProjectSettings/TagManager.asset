@@ -17,7 +17,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - FirstCam
+  - 
   - Water
   - UI
   - Player
@@ -29,11 +29,11 @@ TagManager:
   - Interactable
   - ClayBlock
   - SecondCam
-  - Skybox
+  - 
   - Postprocessing
   - 
-  - 
-  - 
+  - Near Camera
+  - Far Camera
   - 
   - 
   - 
