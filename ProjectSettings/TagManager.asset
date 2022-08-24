@@ -13,6 +13,8 @@ TagManager:
   - ShineTower
   - Canon
   - Trampiline
+  - FarCamera
+  - NearCamera
   layers:
   - Default
   - TransparentFX

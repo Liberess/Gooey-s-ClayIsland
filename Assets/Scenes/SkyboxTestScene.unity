@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.03801742, g: 0.4314541, b: 0.99999905, a: 1}
+  m_IndirectSpecularColor: {r: 0.038017422, g: 0.4314541, b: 0.99999905, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -22731,7 +22731,7 @@ GameObject:
   - component: {fileID: 1097092844}
   m_Layer: 16
   m_Name: Far Camera
-  m_TagString: Untagged
+  m_TagString: FarCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26337,7 +26337,7 @@ GameObject:
   - component: {fileID: 1306410822}
   m_Layer: 16
   m_Name: Near Camera
-  m_TagString: Untagged
+  m_TagString: NearCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

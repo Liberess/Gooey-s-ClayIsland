@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class SkyRotator : MonoBehaviour
 {
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        RenderSettings.skybox.SetFloat("_Rotation", Time.time * 0.5f);
+        try
+        {
+
+        }
+        catch
+        {
+            RenderSettings.skybox.SetFloat("_Rotation", Time.time * 0.5f);
+        }
     }
 }

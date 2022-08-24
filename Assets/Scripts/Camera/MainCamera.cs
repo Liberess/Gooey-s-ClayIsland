@@ -19,6 +19,7 @@ namespace Hun.Camera
         [SerializeField] private CameraFocus cameraFocus;
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
         [SerializeField] private UnityEngine.Camera skyboxCamera;
+        [SerializeField] private UnityEngine.Camera nearCamera;
         private CinemachineComponentBase componentBase;
 
         [Header("Camera Control Property"), Space(5)]
@@ -40,13 +41,21 @@ namespace Hun.Camera
         private Vector2 rotationDelta;
         private Quaternion rotation;
 
-        private void Start()
+        private void Awake()
         {
             if (cameraFocus == null)
                 cameraFocus = FindObjectOfType<CameraFocus>();
 
             if (virtualCamera == null)
                 virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+
+            if (skyboxCamera == null)
+                skyboxCamera = GameObject.FindGameObjectWithTag("FarCamera").
+                    GetComponent<UnityEngine.Camera>();
+
+            if (nearCamera == null)
+                nearCamera = GameObject.FindGameObjectWithTag("NearCamera").
+                    GetComponent<UnityEngine.Camera>();
 
             if (playerPos == null)
                 playerPos = FindObjectOfType<Player.PlayerController>().transform;
@@ -64,11 +73,12 @@ namespace Hun.Camera
 
             wheelState = WheelStateType.ZoomInPlayer;
             componentBase = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
+        }
 
+        private void Start()
+        {
             ResetRotation();
-
             StartCoroutine(CheckFloorCenter());
-
             SetCameraFocus();
         }
 
@@ -80,6 +90,7 @@ namespace Hun.Camera
             cameraFocus.transform.rotation = Quaternion.Lerp(
                 cameraFocus.transform.rotation, rotation, Time.deltaTime * 5f);
             skyboxCamera.transform.rotation = cameraFocus.transform.rotation;
+            nearCamera.transform.rotation = cameraFocus.transform.rotation;
         }
 
         private IEnumerator CheckFloorCenter()
