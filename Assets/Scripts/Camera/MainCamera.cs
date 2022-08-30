@@ -17,7 +17,8 @@ namespace Hun.Camera
 
         [Header("Camera Control Compoent"), Space(5)]
         [SerializeField] private CameraFocus cameraFocus;
-        [SerializeField] private CinemachineVirtualCamera virtualCamera;
+        //[SerializeField] private CinemachineVirtualCamera virtualCamera;
+        [SerializeField] private CinemachineFreeLook freeLookCamera;
         [SerializeField] private UnityEngine.Camera skyboxCamera;
         [SerializeField] private UnityEngine.Camera nearCamera;
         private CinemachineComponentBase componentBase;
@@ -31,7 +32,6 @@ namespace Hun.Camera
         [SerializeField, Range(0, 10)] private int zoomSpeed = 5;
         [SerializeField] private WheelStateType wheelState;
         [SerializeField] private float[] cameraDistances = new float[3];
-        [SerializeField] private float[] skyboxCameraDistances = new float[3];
         private float currentWheelCount = 0f;
         private bool isRunningWheelCor = false;
         private bool isRunningInitWheelCor = false;
@@ -39,15 +39,18 @@ namespace Hun.Camera
 
         private Vector3 eulerAngle;
         private Vector2 rotationDelta;
-        private Quaternion rotation;
+        //private Quaternion rotation;
 
         private void Awake()
         {
             if (cameraFocus == null)
                 cameraFocus = FindObjectOfType<CameraFocus>();
 
-            if (virtualCamera == null)
-                virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+            //if (virtualCamera == null)
+            //    virtualCamera = FindObjectOfType<CinemachineVirtualCamera>();
+
+            if (freeLookCamera == null)
+                freeLookCamera = FindObjectOfType<CinemachineFreeLook>();
 
             if (skyboxCamera == null)
                 skyboxCamera = GameObject.FindGameObjectWithTag("FarCamera").
@@ -72,7 +75,8 @@ namespace Hun.Camera
                 currentFloorCenter = floorCenterList[0];
 
             wheelState = WheelStateType.ZoomInPlayer;
-            componentBase = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
+            //componentBase = virtualCamera.GetCinemachineComponent(CinemachineCore.Stage.Body);
+            componentBase = freeLookCamera.GetRig(0).GetCinemachineComponent(CinemachineCore.Stage.Body);
         }
 
         private void Start()
@@ -87,8 +91,8 @@ namespace Hun.Camera
             RotationControl();
             ZoomControl();
 
-            cameraFocus.transform.rotation = Quaternion.Lerp(
-                cameraFocus.transform.rotation, rotation, Time.deltaTime * 5f);
+            //cameraFocus.transform.rotation = Quaternion.Lerp(
+            //    cameraFocus.transform.rotation, rotation, Time.deltaTime * 5f);
             skyboxCamera.transform.rotation = cameraFocus.transform.rotation;
             nearCamera.transform.rotation = cameraFocus.transform.rotation;
         }
@@ -127,19 +131,28 @@ namespace Hun.Camera
                 Hun.Manager.CursorManager.Instance.CursorHideAction();
                 Hun.Manager.CursorManager.Instance.ChangeCursor(Hun.Manager.CursorManager.CursorType.Arrow);
 
-                var rotationDelta = this.rotationDelta * rotationSpeed;
+                freeLookCamera.m_YAxis.m_InputAxisName = "Mouse Y";
+                freeLookCamera.m_XAxis.m_InputAxisName = "Mouse X";
 
-                eulerAngle.x -= rotationDelta.y;
-                eulerAngle.y += rotationDelta.x;
+                //var rotationDelta = this.rotationDelta * rotationSpeed;
 
-                eulerAngle.x = eulerAngle.x > 180 ? eulerAngle.x - 360 : eulerAngle.x;
-                eulerAngle.x = Mathf.Clamp(eulerAngle.x, -20F, 60F);
+                //eulerAngle.x -= rotationDelta.y;
+                //eulerAngle.y += rotationDelta.x;
 
-                rotation = Quaternion.Euler(eulerAngle);
+                //eulerAngle.x = eulerAngle.x > 180 ? eulerAngle.x - 360 : eulerAngle.x;
+                //eulerAngle.x = Mathf.Clamp(eulerAngle.x, -20F, 60F);
+
+                //rotation = Quaternion.Euler(eulerAngle);
             }
             else
             {
                 Hun.Manager.CursorManager.Instance.CursorShowAction();
+
+                freeLookCamera.m_YAxis.m_InputAxisName = null;
+                freeLookCamera.m_XAxis.m_InputAxisName = null;
+
+                freeLookCamera.m_YAxis.m_InputAxisValue = 0;
+                freeLookCamera.m_XAxis.m_InputAxisValue = 0;
             }
         }
 
@@ -244,27 +257,28 @@ namespace Hun.Camera
 
             while (true)
             {
-                if (componentBase is CinemachineFramingTransposer)
+                if (componentBase is CinemachineOrbitalTransposer)
                 {
                     //var originDistance = (componentBase as CinemachineFramingTransposer).m_CameraDistance;
                     //(componentBase as CinemachineFramingTransposer).m_CameraDistance =
                     //Mathf.Lerp(originDistance, cameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
                     //Mathf.SmoothStep(originDistance, cameraDistances[(int)wheelState], 0.5f);
 
-                    var originSize = virtualCamera.m_Lens.OrthographicSize;
-                    virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
+                    var originSize = freeLookCamera.m_Lens.OrthographicSize;
+                    freeLookCamera.m_Lens.OrthographicSize = Mathf.Lerp(
                         originSize, cameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
 
-                    var fieldOfViewSize = skyboxCamera.fieldOfView;
-                    skyboxCamera.fieldOfView = Mathf.Lerp(
-                        fieldOfViewSize, skyboxCameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
+                    //var gap = (componentBase as CinemachineOrbitalTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
+                    //if (Mathf.Abs(gap) <= 0.05f)
+                    //{
+                    //    (componentBase as CinemachineFramingTransposer).m_CameraDistance = cameraDistances[(int)wheelState];
+                    //    break;
+                    //}
 
-
-                    var gap = (componentBase as CinemachineFramingTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
+                    var gap = freeLookCamera.m_Lens.OrthographicSize - cameraDistances[(int)wheelState];
                     if (Mathf.Abs(gap) <= 0.05f)
                     {
-                        (componentBase as CinemachineFramingTransposer).m_CameraDistance = cameraDistances[(int)wheelState];
-                        break;
+                        freeLookCamera.m_Lens.OrthographicSize = cameraDistances[(int)wheelState];
                     }
 
 /*                    var gap = (componentBase as CinemachineFramingTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
@@ -273,7 +287,7 @@ namespace Hun.Camera
                 }
                 else // CinemachineVirtualCamera의 Body 설정이 Transposer라면
                 {
-                    virtualCamera.m_Lens.FieldOfView = cameraDistances[(int)wheelState] * 10f;
+                    freeLookCamera.m_Lens.FieldOfView = cameraDistances[(int)wheelState] * 10f;
                 }
 
                 yield return null;
@@ -303,8 +317,8 @@ namespace Hun.Camera
         private void ResetRotation()
         {
             cameraFocus.ResetRotation();
-            rotation = cameraFocus.transform.rotation;
-            eulerAngle = rotation.eulerAngles;
+            //rotation = cameraFocus.transform.rotation;
+            //eulerAngle = rotation.eulerAngles;
         }
     }
 }
