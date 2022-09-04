@@ -11,6 +11,10 @@ TagManager:
   - PieceStar
   - ClayBlock
   - ShineTower
+  - Canon
+  - Trampiline
+  - FarCamera
+  - NearCamera
   layers:
   - Default
   - TransparentFX
@@ -28,10 +32,10 @@ TagManager:
   - ClayBlock
   - 
   - 
+  - Postprocessing
   - 
-  - 
-  - 
-  - 
+  - Near Camera
+  - Far Camera
   - 
   - 
   - 

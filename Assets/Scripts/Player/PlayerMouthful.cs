@@ -7,9 +7,11 @@ namespace Hun.Player
     public class PlayerMouthful : MonoBehaviour
     {
         private PlayerController playerCtrl;
+        private PlayerInteract playerInteract;
 
         [Header("== Mouthful Property ==")]
         [SerializeField] private Transform mouthfulRoot;
+        public Transform MouthfulRoot { get => mouthfulRoot; }
         [SerializeField] private float mouthfulDistance = 1f;
         [SerializeField] private float spitRadius = 1f;
 
@@ -39,6 +41,7 @@ namespace Hun.Player
         {
             anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
+            playerInteract = GetComponent<PlayerInteract>();
         }
 
         private void Start()
@@ -55,6 +58,9 @@ namespace Hun.Player
             if (!IsMouthful)
                 return;
 
+            if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
+                return;
+
             if (targetClayBlock == null)
             {
                 Mouthful();
@@ -63,23 +69,19 @@ namespace Hun.Player
             else
             {
                 anim.SetTrigger("isMouthful");
+                StartCoroutine(CheckMouthfulAnimState());
 
                 if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                     out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
-                    // 앞에 같은 타입의 ClayBlock이 있다면 합치기를 한다.
-                    if (hitBlock.collider.TryGetComponent<ClayBlock>(out ClayBlock clayBlock))
+                    if (hitBlock.collider.TryGetComponent(out ClayBlockTile clayBlock))
                     {
-                        if (targetClayBlock.ClayBlockType == clayBlock.ClayBlockType)
-                        {
-                            Debug.Log("합치기 진행");
-                            clayBlock.OnFusion();
-                            Destroy(targetClayBlock);
+                        if (clayBlock.IsSuccessFusion(targetClayBlock, clayBlock))
                             targetClayBlock = null;
-                            return;
-                        }
+
+                        return;
                     }
-                    else // 같은 ClayBlock이 아닌 다른 물체가 있다면, 뱉지도 합치지도 않는다.
+                    else
                     {
                         return;
                     }
@@ -105,15 +107,16 @@ namespace Hun.Player
             if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                 out hit, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
             {
-                if (hit.collider.TryGetComponent<ClayBlock>(out targetClayBlock))
+                if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
-                    if (targetClayBlock.IsMouthful)
+                    if (clayBlock.IsMouthful)
                     {
-                        targetClayBlock.OnMouthful();
-                        targetClayBlock.transform.SetParent(transform);
+                        clayBlock.OnMouthful();
+                        clayBlock.transform.SetParent(transform);
+                        targetClayBlock = clayBlock;
                     }
 
-                    if (targetClayBlock.ClayBlockType == ClayBlockType.Apple)
+                    if (clayBlock.ClayBlockType == ClayBlockType.Apple)
                         targetClayBlock = null;
                 }
             }
@@ -126,6 +129,9 @@ namespace Hun.Player
         /// </summary>
         private void Spit()
         {
+            if (targetClayBlock == null)
+                return;
+
             targetClayBlock.transform.SetParent(null);
             //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
             var targetPos = hitBlock.transform.position + Vector3.up * 1f;
@@ -145,7 +151,7 @@ namespace Hun.Player
             {
                 yield return delay;
 
-                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                     break;
             }
 

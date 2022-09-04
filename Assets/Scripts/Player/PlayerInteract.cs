@@ -15,8 +15,28 @@ namespace Hun.Player
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
 
-        public bool IsCanonInside { get; private set; }
         public bool IsLadderInside { get; set; }
+        public bool IsIceInside
+        {
+            get
+            {
+                var colliders = Physics.OverlapSphere(transform.position, 0.7f,
+                    LayerMask.GetMask("ClayBlock"));
+
+                foreach(var collider in colliders)
+                {
+                    if (collider.TryGetComponent(out ClayBlock clayBlock))
+                    {
+                        if(clayBlock.ClayBlockType == ClayBlockType.Ice)
+                            return true;
+                    }
+                }
+
+                return false;
+            }
+        }
+        public bool IsSlipIce { get; private set; }
+        public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
         private Animator anim;
@@ -53,6 +73,8 @@ namespace Hun.Player
         /// 대포에 타고 있는지/있지 않은지 상태 설정
         /// </summary>
         public void SetCanonState(bool value) => IsCanonInside = value;
+
+        public void SetSlipIceState(bool value) => IsSlipIce = value;
 
         /// <summary>
         /// 인터랙트 키(Enter) 입력시 발생하는 메서드
@@ -141,16 +163,17 @@ namespace Hun.Player
         /// </summary>
         /// <returns></returns>
         /// <param name="poses"> 위치 값 </param>
-        public void JumpToPosByTrampiline(float force, Transform[] poses)
+        public void JumpToPosByTrampiline(float force, Transform[] poses, bool isSuccese)
         {
             //anim.SetBool("isJump", true);
             anim.SetBool("isWalk", false);
-            StartCoroutine(TrampilineJump(force, poses));
+            StartCoroutine(TrampilineJump(force, poses, isSuccese));
         }
 
-        IEnumerator TrampilineJump(float force, Transform[] poses)
+        IEnumerator TrampilineJump(float force, Transform[] poses, bool isSuccese)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(poses[3].forward));
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
 
             int index = 0;
             while (index < poses.Length)
@@ -160,11 +183,24 @@ namespace Hun.Player
 
                 if (transform.position == poses[index].transform.position)
                     index++;
+                
+                if(index == 2 && !isSuccese)
+                {
+                    Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
+                    rigid.AddForce((transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
+                    gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
+
+                    yield return new WaitForSeconds(1F);
+
+                    rigid.velocity = Vector3.zero;
+                    break;
+                }
 
                 yield return new WaitForSeconds(0.001F);
             }
 
             IsTrampilineInside = false;
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isJump", false);
         }
         #endregion
@@ -187,8 +223,9 @@ namespace Hun.Player
         IEnumerator CanonFired(Transform canonPos, Vector3 destPos)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(canonPos.transform.forward));
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
 
-            Vector3 newPos = canonPos.transform.position;
+            Vector3 newPos = canonPos.position;
             newPos.y = newPos.y - 0.5f;
             transform.position = newPos;
 
@@ -203,6 +240,7 @@ namespace Hun.Player
             }
 
             IsCanonInside = false;
+            gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isFired", false);
         }
         #endregion

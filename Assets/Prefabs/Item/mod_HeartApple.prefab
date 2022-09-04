@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7650534236821257880}
   - component: {fileID: 8837515554490928583}
   - component: {fileID: 7989999539048412916}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: clay_block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 1905536352877403180}
   - component: {fileID: 178229809097427868}
   - component: {fileID: 5196449502345150893}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: mod_HeartApple
   m_TagString: Untagged
   m_Icon: {fileID: 0}

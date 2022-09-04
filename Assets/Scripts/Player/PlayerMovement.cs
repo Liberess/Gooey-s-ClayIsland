@@ -18,14 +18,39 @@ namespace Hun.Player
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
         [HideInInspector] public float playerGravityY = 1f;
         public bool IsMove { get; private set; }
+        public bool IsOverIce { get; private set; }
 
-        private Vector3 movingInputValue;
+        public Vector3 MovingInputValue { get; private set; }
         private Vector3 movingVector = Vector3.zero;
 
         private Rigidbody rigid;
         private Animator anim;
 
-        private bool IsGrounded => Mathf.Abs(rigid.velocity.y) == 0f;
+        private bool IsGrounded
+        {
+            get
+            {
+                if (!(Mathf.Abs(rigid.velocity.y) < 0f || Mathf.Abs(rigid.velocity.y) > 0f))
+                {
+                    return true;
+                }
+                else
+                {
+                    var colliders = Physics.OverlapSphere(transform.position, 0.3f,
+                        LayerMask.GetMask("ClayBlock"));
+
+                    if (colliders.Length > 0)
+                        return true;
+                }
+
+                //Debug.Log("Fall Anim 추가");
+                //anim.SetBool("");
+                return false;
+            }
+        }
+
+
+        private bool isMoveForceCoroutineing = false;
 
         private void Awake()
         {
@@ -56,6 +81,51 @@ namespace Hun.Player
         }
 
         #region Movement (Move, Look)
+        public void AddMoveForce(Vector3 dir)
+        {
+            if(!isMoveForceCoroutineing)
+                StartCoroutine(AddMoveForceCo(dir));
+        }
+
+        public IEnumerator AddMoveForceCo(Vector3 dir)
+        {
+            IsOverIce = true;
+            isMoveForceCoroutineing = true;
+            playerCtrl.PlayerInteract.SetSlipIceState(true);
+            SetMovement(false);
+            anim.SetBool("isWalk", false);
+
+            while (true)
+            {
+                //rigid.velocity = dir * 5f;
+
+                transform.Translate(dir * 5f * Time.deltaTime/*, Space.Self*/);
+
+                playerBody.transform.rotation = Quaternion.LookRotation(dir);
+
+                //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
+                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
+                    break;
+
+/*                if (playerCtrl.PlayerInteract.IsSlipIce &&
+                    Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
+                {
+                    Debug.Log("걸림");
+                    break;
+                }*/
+
+                yield return Time.deltaTime;
+            }
+
+            SetMovement(true);
+            rigid.velocity = rigid.angularVelocity = Vector3.zero;
+
+            IsOverIce = false;
+            isMoveForceCoroutineing = false;
+
+            yield return null;
+        }
+
         public void SetMovement(bool value) => IsMove = value;
 
         /// <summary>
@@ -70,7 +140,7 @@ namespace Hun.Player
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
-            movingInputValue = new Vector3(value.x, 0, value.y);
+            MovingInputValue = new Vector3(value.x, 0, value.y);
         }
 
         /// <summary>
@@ -78,10 +148,13 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
-            if (!IsMove)
+            if (!IsMove || !IsGrounded)
                 return;
 
-            if (movingInputValue != Vector3.zero) //움직임 입력값이 있다면
+            if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
+                return;
+
+            if (MovingInputValue != Vector3.zero) //움직임 입력값이 있다면
             {
                 anim.SetBool("isWalk", true);
 
@@ -89,11 +162,11 @@ namespace Hun.Player
                 {
                     var cameraYAxisRotation = Quaternion.Euler(0, playerCtrl.MainCamera.transform.eulerAngles.y, 0);
 
-                    if (movingInputValue.z > 0)
+                    if (MovingInputValue.z > 0)
                     {
                         movingVector = Vector3.up * ladderUpDownSpeed;
                     }
-                    else if (movingInputValue.z < 0)
+                    else if (MovingInputValue.z < 0)
                     {
                         if (IsGrounded)
                             playerCtrl.PlayerInteract.IsLadderInside = false;
@@ -105,7 +178,7 @@ namespace Hun.Player
                         movingVector = Vector3.zero;
                     }
 
-                    Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
+                    Look(Quaternion.LookRotation(cameraYAxisRotation * MovingInputValue));
 
                     transform.Translate(movingVector * Time.deltaTime);
                     //characterController.Move(movingVector * Time.deltaTime);
@@ -115,11 +188,11 @@ namespace Hun.Player
                     var cameraYAxisRotation = Quaternion.Euler(0, playerCtrl.MainCamera.transform.eulerAngles.y, 0);
 
                     //var tmp = movingVector.y;
-                    movingVector = cameraYAxisRotation * movingInputValue;
+                    movingVector = cameraYAxisRotation * MovingInputValue;
                     movingVector *= moveSpeed * currentDashSpeed;
                     //movingVector.y = tmp;
 
-                    Look(Quaternion.LookRotation(cameraYAxisRotation * movingInputValue));
+                    Look(Quaternion.LookRotation(cameraYAxisRotation * MovingInputValue));
 
                     transform.Translate(movingVector * Time.deltaTime);
                 }
@@ -133,8 +206,9 @@ namespace Hun.Player
 
         private void UpdateGravity()
         {
-            // 사다리 또는 트램펄린에 타고 있으면 중력이 작용하지 않는다.
-            if (playerCtrl.PlayerInteract.IsLadderInside || playerCtrl.PlayerInteract.IsTrampilineInside)
+            // 사다리 또는 트램펄린, 대포에 타고 있으면 중력이 작용하지 않는다.
+            if (playerCtrl.PlayerInteract.IsLadderInside || playerCtrl.PlayerInteract.IsTrampilineInside
+                || playerCtrl.PlayerInteract.IsCanonInside)
                 rigid.useGravity = false;
             else
                 rigid.useGravity = true;
