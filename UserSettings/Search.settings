@@ -1,7 +1,7 @@
 trackSelection = true
 fetchPreview = true
 wantsMore = false
-keepOpen = false
+keepOpen = true
 queryFolder = "Assets"
 onBoardingDoNotAskAgain = true
 showPackageIndexes = false
@@ -13,6 +13,9 @@ scopes = {
 	"last_search.7BEC51F9" = ""
 	"OpenInspectorPreview.7BEC51F9" = "0"
 	"currentGroup.7BEC51F9" = "asset"
+	"last_search.8788AF05" = ""
+	"OpenInspectorPreview.8788AF05" = "1"
+	"currentGroup.8788AF05" = "scene"
 }
 providers = {
 	find = {
@@ -60,8 +63,37 @@ providers = {
 		priority = 210
 		defaultAction = null
 	}
+	menu = {
+		active = true
+		priority = 80
+		defaultAction = null
+	}
+	settings = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	help = {
+		active = true
+		priority = -1
+		defaultAction = null
+	}
+	calculator = {
+		active = true
+		priority = 10
+		defaultAction = null
+	}
+	static_methods = {
+		active = true
+		priority = 85
+		defaultAction = null
+	}
 }
 recentSearches = [
+	"p"
+	"t"
+	"m"
+	"d"
 ]
 searchItemFavorites = [
 ]
