@@ -21,19 +21,27 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Sea
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: e6b26ae3aa722d94dae916b26629296e,
+    type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap:
-    RenderType: Opaque
+  stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_73EEFF3:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_9B8D867F:
+        m_Texture: {fileID: 2800000, guid: 4f9e6fb683988cf4eb71519e0fd6b745, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -92,6 +100,16 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Vector1_12549AA: 0.59
+    - Vector1_238EC9A3: 0.3
+    - Vector1_42DF547C: 1
+    - Vector1_44647F2E: 40
+    - Vector1_530889D2: 0.856
+    - Vector1_55322685: 0
+    - Vector1_95FF30AC: 97
+    - Vector1_A56F83C9: 206
+    - Vector1_AD7F0061: 0.59
+    - Vector1_F5A1C629: 0.5
     - _AlphaClip: 0
     - _Blend: 0
     - _BumpScale: 1
@@ -109,6 +127,7 @@ Material:
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _QueueControl: 1
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _Smoothness: 0
@@ -119,6 +138,8 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_4CA557F2: {r: 0, g: 0.27415323, b: 0.8679245, a: 1}
+    - Color_9647173B: {r: 0, g: 0.17310214, b: 1, a: 1}
     - _BaseColor: {r: 0, g: 0.50063366, b: 0.990566, a: 1}
     - _Color: {r: 0, g: 0.50063366, b: 0.99056596, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
