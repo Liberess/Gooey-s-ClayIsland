@@ -9,21 +9,23 @@ namespace Hun.Manager
         public static GameManager Instance { get; private set; }
         private DataManager dataMgr;
 
-        public int SceneIndex { get; private set; }
-
         public GameSaveFile gameSaveFile;
+
         public int Coin { get; private set; }
         public float PlayTime { get; private set; }
+        public int SceneIndex { get; private set; }
 
+        [Space(10), Header("== Game Menu UI =="), Space(5)]
         [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject menuPanel;
-
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
 
-        [Header("== Temper Object Prefabs =="), Space(10)]
+        [Space(10), Header("== Clay Block Object Prefabs =="), Space(5)]
+        [SerializeField] private List<GameObject> clayBlockTilePrefabList = new List<GameObject>();
+        public GameObject GetClayBlockTilePrefab(ClayBlockType clayBlockType)
+            => clayBlockTilePrefabList[(int)clayBlockType];
         [SerializeField] private List<GameObject> temperObjPrefabList = new List<GameObject>();
-        public List<GameObject> TemperObjPrefabList { get => temperObjPrefabList; }
         public GameObject GetTemperPrefab(TemperObjectType type)
             => temperObjPrefabList[(int)type];
 

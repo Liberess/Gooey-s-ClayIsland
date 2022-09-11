@@ -66,7 +66,7 @@ namespace Hun.Player
                 Mouthful();
                 StartCoroutine(CheckMouthfulAnimState());
             }
-            else
+            else //Fusion or Spit or Division
             {
                 anim.SetTrigger("isMouthful");
                 StartCoroutine(CheckMouthfulAnimState());
@@ -76,7 +76,8 @@ namespace Hun.Player
                 {
                     if (hitBlock.collider.TryGetComponent(out ClayBlockTile clayBlock))
                     {
-                        if (clayBlock.IsSuccessFusion(targetClayBlock, clayBlock))
+                        if (clayBlock.IsSuccessFusion(targetClayBlock.
+                                GetComponent<ClayBlockTile>(), clayBlock))
                             targetClayBlock = null;
 
                         return;
@@ -87,8 +88,23 @@ namespace Hun.Player
                     }
                 }
 
-                // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
-                var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
+                if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
+                    out hitBlock, mouthfulDistance, LayerMask.GetMask("TemperObject")))
+                {
+                    if (hitBlock.collider.TryGetComponent(out ClayBlock clayBlock))
+                    {
+                        Debug.Log("asd");
+                        clayBlock.OnDivision();
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+
+                    // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
+                    var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
                 if (Physics.Raycast(targetVec, Vector3.down * 1.2f, out hitBlock,
                     mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
@@ -102,8 +118,9 @@ namespace Hun.Player
         /// </summary>
         private void Mouthful()
         {
-            RaycastHit hit;
+            anim.SetTrigger("isMouthful");
 
+            RaycastHit hit;
             if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                 out hit, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
             {
@@ -120,8 +137,22 @@ namespace Hun.Player
                         targetClayBlock = null;
                 }
             }
-
-            anim.SetTrigger("isMouthful");
+            else
+            {
+                if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
+                    out hit, mouthfulDistance, LayerMask.GetMask("TemperObject")))
+                {
+                    if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
+                    {
+                        clayBlock.OnDivision();
+                        return;
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7650534236821257880}
   - component: {fileID: 8837515554490928583}
   - component: {fileID: 7989999539048412916}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: clay_block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 1905536352877403180}
   - component: {fileID: 1098255760}
   - component: {fileID: 1098255758}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: mod_CanonClay
   m_TagString: Canon
   m_Icon: {fileID: 0}

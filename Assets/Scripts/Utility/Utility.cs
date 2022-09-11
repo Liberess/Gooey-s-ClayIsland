@@ -12,12 +12,18 @@ namespace Hun.Utility
         /// </summary>
         public static Vector3 GetRandPointOnNavMesh(Vector3 center, float distance, int areaMask)
         {
-            var randPos = Random.insideUnitSphere * distance + center;
-
+            Vector3 randPos = Vector3.zero;
             NavMeshHit hit;
-            NavMesh.SamplePosition(randPos, out hit, distance, areaMask);
 
-            return hit.position;
+            for(int i = 0; i < 30; i++)
+            {
+                randPos = Random.insideUnitSphere * distance + center;
+
+                if (NavMesh.SamplePosition(randPos, out hit, distance, areaMask))
+                    return hit.position;
+            }
+
+            return Vector3.zero;
         }
 
         /// <summary>
@@ -91,6 +97,14 @@ namespace Hun.Utility
             }
 
             return tempObj;
+        }
+
+        public static bool IsAlreadyExistInPosition(Vector3 pos,
+            GameObject srcObj, GameObject destObj)
+        {
+
+
+            return false;
         }
     }
 }

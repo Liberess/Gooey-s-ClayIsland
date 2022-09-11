@@ -233,7 +233,13 @@ public class ClayBlockTile : ClayBlock
         if (blockA == null || blockB == null)
             throw new System.Exception("blockA 또는 blockB의 값이 null입니다.");
 
-        Instantiate(currentTemperPrefab, blockB.transform.position, Quaternion.identity);
+        var tempObj = Instantiate(currentTemperPrefab,
+            blockB.transform.position, Quaternion.identity).GetComponent<ClayBlock>();
+        tempObj.currentClayBlockList.Clear();
+
+        tempObj.currentClayBlockList.Add(blockA);
+        tempObj.currentClayBlockList.Add(blockB);
+
         base.OnFusion(blockA, blockB); //Destroy
     }
 
