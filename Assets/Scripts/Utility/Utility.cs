@@ -99,10 +99,18 @@ namespace Hun.Utility
             return tempObj;
         }
 
-        public static bool IsAlreadyExistInPosition(Vector3 pos,
-            GameObject srcObj, GameObject destObj)
+        public static bool IsAlreadyExistInPosition(Vector3 targetPos,
+            float gap, List<Vector3> positions)
         {
-
+            foreach(var pos in positions)
+            {
+                float distance = Vector3.Distance(targetPos, pos);
+                if(distance > gap)
+                {
+                    Debug.Log("targetPos : " + targetPos);
+                    Debug.Log("distance : " + distance);
+                }
+            }
 
             return false;
         }

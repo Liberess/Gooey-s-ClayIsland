@@ -64,29 +64,41 @@ public abstract class ClayBlock : MonoBehaviour
         var boxCol = GetComponent<BoxCollider>();
         float rangeX = boxCol.bounds.size.x;
         float rangeZ = boxCol.bounds.size.z;
-        
-        foreach (var block in currentClayBlockList)
-        {
-            block.transform.SetParent(null);
-            var upPos = (block.transform.localScale * 0.5f) + block.transform.up;
 
-            for(int i = 0; i < 30; i++)
+        Vector3 targetPos = Vector3.zero;
+
+        for(int i = 0; i < currentClayBlockList.Count; i++)
+        {
+            Debug.Log("0");
+
+            currentClayBlockList[i].transform.SetParent(null);
+            var upPos = (currentClayBlockList[i].transform.localScale * 0.5f)
+                + currentClayBlockList[i].transform.up;
+
+            for (int j = 0; j < 30; j++)
             {
-                Vector3 targetPos = Hun.Utility.Utility.GetRandPointOnNavMesh(
+                targetPos = Hun.Utility.Utility.GetRandPointOnNavMesh(
                     transform.position + upPos, rangeX * 3f, UnityEngine.AI.NavMesh.AllAreas);
 
-                for(int j = 0; j < randPosList.Count; j++)
+                if (i == 0)
                 {
-                    float distance = Vector3.Distance(targetPos, randPosList[j]);
-                    if(distance > rangeX)
-                    {
-                        Debug.Log("1");
-                        randPosList.Add(targetPos);
-                        transform.position = targetPos;
-                        block.gameObject.SetActive(true);
-                        break;
-                    }
+                    j = 29;
+                    randPosList.Add(targetPos);
+                    transform.position = targetPos;
+                    currentClayBlockList[i].gameObject.SetActive(true);
+                    continue;
                 }
+
+                if (!Hun.Utility.Utility.IsAlreadyExistInPosition(targetPos, rangeX * 3f, randPosList))
+                {
+                    Debug.Log("2");
+                    randPosList.Add(targetPos);
+                    transform.position = targetPos;
+                    currentClayBlockList[i].gameObject.SetActive(true);
+                    break;
+                }
+
+                Debug.Log("3");
             }
         }
 

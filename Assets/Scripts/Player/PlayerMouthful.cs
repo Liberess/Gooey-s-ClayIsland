@@ -93,7 +93,6 @@ namespace Hun.Player
                 {
                     if (hitBlock.collider.TryGetComponent(out ClayBlock clayBlock))
                     {
-                        Debug.Log("asd");
                         clayBlock.OnDivision();
                         return;
                     }
