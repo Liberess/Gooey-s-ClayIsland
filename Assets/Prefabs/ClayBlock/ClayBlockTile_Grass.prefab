@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a4e010bfc2683430eae98fad85ac3022, type: 2}
+  - {fileID: 2100000, guid: 6c99987719f7b4028aa181b87591b49d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -111,6 +111,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clayBlockType: 0
+  currentClayBlockList: []
   targetLayer:
     serializedVersion: 2
     m_Bits: 0
