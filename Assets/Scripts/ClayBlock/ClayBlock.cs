@@ -20,7 +20,7 @@ public abstract class ClayBlock : MonoBehaviour
 
     public bool IsMouthful => clayBlockType != ClayBlockType.Stone;
 
-    public List<ClayBlock> currentClayBlockList = new List<ClayBlock>();
+    public ClayBlock[] currentClayBlocks = new ClayBlock[2];
 
     public abstract void OnEnter();
     public abstract void OnStay();
@@ -54,54 +54,70 @@ public abstract class ClayBlock : MonoBehaviour
 
     public virtual void OnDivision()
     {
-        List<Vector3> randPosList = new List<Vector3>();
+        var player = FindObjectOfType<Hun.Player.PlayerMouthful>();
 
-        int layerMask = (1 << LayerMask.GetMask("ClayBlock")) +
-            (1 << LayerMask.GetMask("TemperObject"));
-        Collider[] colliders = Physics.OverlapBox(transform.position, transform.localScale / 2,
-            Quaternion.identity, layerMask);
+        var srcClayBlock = currentClayBlocks[0];
+        var destClayBlock = currentClayBlocks[1];
+/*
+        var upPos1 = (srcClayBlock.transform.localScale * 0.5f)
+            + srcClayBlock.transform.up;
 
-        var boxCol = GetComponent<BoxCollider>();
-        float rangeX = boxCol.bounds.size.x;
-        float rangeZ = boxCol.bounds.size.z;
-
-        Vector3 targetPos = Vector3.zero;
-
-        for(int i = 0; i < currentClayBlockList.Count; i++)
+        var upPos2 = (destClayBlock.transform.localScale * 0.5f)
+            + destClayBlock.transform.up;
+*/
+        if(srcClayBlock.clayBlockType == ClayBlockType.Sand)
         {
-            Debug.Log("0");
+            player.SetTargetClayBlock(srcClayBlock);
+            SetClayBlock(true, player);
+        }
 
-            currentClayBlockList[i].transform.SetParent(null);
-            var upPos = (currentClayBlockList[i].transform.localScale * 0.5f)
-                + currentClayBlockList[i].transform.up;
+        if (srcClayBlock.clayBlockType == ClayBlockType.Ice
+    && destClayBlock.clayBlockType == ClayBlockType.Sand)
+        {
+            player.SetTargetClayBlock(destClayBlock);
+            SetClayBlock(false, player);
+        }
+        else
+        {
+            player.SetTargetClayBlock(srcClayBlock);
+            SetClayBlock(true, player);
+        }
 
-            for (int j = 0; j < 30; j++)
-            {
-                targetPos = Hun.Utility.Utility.GetRandPointOnNavMesh(
-                    transform.position + upPos, rangeX * 3f, UnityEngine.AI.NavMesh.AllAreas);
-
-                if (i == 0)
-                {
-                    j = 29;
-                    randPosList.Add(targetPos);
-                    transform.position = targetPos;
-                    currentClayBlockList[i].gameObject.SetActive(true);
-                    continue;
-                }
-
-                if (!Hun.Utility.Utility.IsAlreadyExistInPosition(targetPos, rangeX * 3f, randPosList))
-                {
-                    Debug.Log("2");
-                    randPosList.Add(targetPos);
-                    transform.position = targetPos;
-                    currentClayBlockList[i].gameObject.SetActive(true);
-                    break;
-                }
-
-                Debug.Log("3");
-            }
+        if (srcClayBlock.clayBlockType == ClayBlockType.Grass
+            && (destClayBlock.clayBlockType == ClayBlockType.Sand ||
+            destClayBlock.clayBlockType == ClayBlockType.Ice))
+        {
+            player.SetTargetClayBlock(destClayBlock);
+            SetClayBlock(false, player);
+        }
+        else
+        {
+            player.SetTargetClayBlock(srcClayBlock);
+            SetClayBlock(true, player);
         }
 
         Destroy(gameObject);
+    }
+
+    private void SetClayBlock(bool isSrc, Hun.Player.PlayerMouthful player)
+    {
+        if (isSrc)
+        {
+            currentClayBlocks[0].transform.SetParent(player.transform);
+            currentClayBlocks[0].gameObject.SetActive(false);
+
+            currentClayBlocks[1].transform.SetParent(null);
+            currentClayBlocks[1].transform.position = transform.position;
+            currentClayBlocks[1].gameObject.SetActive(true);
+        }
+        else
+        {
+            currentClayBlocks[0].transform.SetParent(null);
+            currentClayBlocks[0].transform.position = transform.position;
+            currentClayBlocks[0].gameObject.SetActive(true);
+
+            currentClayBlocks[1].transform.SetParent(player.transform);
+            currentClayBlocks[1].gameObject.SetActive(false);
+        }
     }
 }
