@@ -235,10 +235,10 @@ public class ClayBlockTile : ClayBlock
 
         var tempObj = Instantiate(currentTemperPrefab,
             blockB.transform.position, Quaternion.identity).GetComponent<ClayBlock>();
-        tempObj.currentClayBlockList.Clear();
+        tempObj.currentClayBlocks.Initialize();
 
-        tempObj.currentClayBlockList.Add(blockA);
-        tempObj.currentClayBlockList.Add(blockB);
+        tempObj.currentClayBlocks[0] = blockA;
+        tempObj.currentClayBlocks[1] = blockB;
 
         base.OnFusion(blockA, blockB); //Destroy
     }
@@ -279,7 +279,10 @@ public class ClayBlockTile : ClayBlock
                     currentTemperPrefab = GameManager.Instance.
                         GetTemperPrefab(TemperObjectType.Trampoline);
                 }
-                isSuccess = false;
+                else
+                {
+                    isSuccess = false;
+                }
                 break;
             case ClayBlockType.Ice:
                 isSuccess = true;

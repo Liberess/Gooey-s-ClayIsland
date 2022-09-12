@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 879659347}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: jumpPos3
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1674226562}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: jumpPos4
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -73,7 +73,7 @@ GameObject:
   - component: {fileID: 7650534236821257880}
   - component: {fileID: 8837515554490928583}
   - component: {fileID: 7989999539048412916}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: clay_block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -156,7 +156,7 @@ GameObject:
   - component: {fileID: 1905536352877403180}
   - component: {fileID: 3810455638357185065}
   - component: {fileID: 318206647}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: mod_TrampilineClay
   m_TagString: Trampiline
   m_Icon: {fileID: 0}
@@ -210,6 +210,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clayBlockType: 0
+  currentClayBlockList: []
   force: 5
   poses:
   - {fileID: 879659347}
@@ -226,7 +227,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9105305441574388196}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: jumpPos6
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
@@ -257,7 +258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1833460222951202487}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: check
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -288,7 +289,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5973086035298326223}
-  m_Layer: 13
+  m_Layer: 14
   m_Name: jumpPos5
   m_TagString: Untagged
   m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}

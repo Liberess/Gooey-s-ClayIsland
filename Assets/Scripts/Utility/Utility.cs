@@ -98,13 +98,5 @@ namespace Hun.Utility
 
             return tempObj;
         }
-
-        public static bool IsAlreadyExistInPosition(Vector3 pos,
-            GameObject srcObj, GameObject destObj)
-        {
-
-
-            return false;
-        }
     }
 }

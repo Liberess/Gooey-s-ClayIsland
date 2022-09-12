@@ -61,39 +61,47 @@ namespace Hun.Player
             if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
                 return;
 
-            if (targetClayBlock == null)
+            if (!targetClayBlock)
             {
+                Debug.Log("Mouthful");
                 Mouthful();
                 StartCoroutine(CheckMouthfulAnimState());
             }
             else //Fusion or Spit or Division
             {
+                Debug.Log("Fusion of Spit or Division");
                 anim.SetTrigger("isMouthful");
                 StartCoroutine(CheckMouthfulAnimState());
 
-                if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
-                    out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
+                if(targetClayBlock)
                 {
-                    if (hitBlock.collider.TryGetComponent(out ClayBlockTile clayBlock))
+                    //앞에 ClayBlock이 있다면 Fusion
+                    if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
+                        out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                     {
-                        if (clayBlock.IsSuccessFusion(targetClayBlock.
-                                GetComponent<ClayBlockTile>(), clayBlock))
-                            targetClayBlock = null;
+                        if (hitBlock.collider.TryGetComponent(out ClayBlockTile clayBlock))
+                        {
+                            if (clayBlock.IsSuccessFusion(targetClayBlock.
+                                    GetComponent<ClayBlockTile>(), clayBlock))
+                            {
+                                targetClayBlock = null;
+                            }
 
-                        return;
-                    }
-                    else
-                    {
-                        return;
+                            return;
+                        }
+                        else
+                        {
+                            return;
+                        }
                     }
                 }
 
+                //앞에 TemperObject가 있다면 Division
                 if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                     out hitBlock, mouthfulDistance, LayerMask.GetMask("TemperObject")))
                 {
                     if (hitBlock.collider.TryGetComponent(out ClayBlock clayBlock))
                     {
-                        Debug.Log("asd");
                         clayBlock.OnDivision();
                         return;
                     }
@@ -103,8 +111,8 @@ namespace Hun.Player
                     }
                 }
 
-                    // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
-                    var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
+                // 다시 뱉을 때 앞에 걸리는 것도 없고, 아래에 ClayBlock이 있으면 뱉을 수 있다.
+                var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
                 if (Physics.Raycast(targetVec, Vector3.down * 1.2f, out hitBlock,
                     mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
@@ -160,14 +168,17 @@ namespace Hun.Player
         /// </summary>
         private void Spit()
         {
-            if (targetClayBlock == null)
-                return;
-
-            targetClayBlock.transform.SetParent(null);
-            //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
-            var targetPos = hitBlock.transform.position + Vector3.up * 1f;
-            targetClayBlock.OnSpit(targetPos);
-            targetClayBlock = null;
+            Debug.Log("Spit");
+            if(targetClayBlock)
+            {
+                Debug.Log("1");
+                targetClayBlock.transform.SetParent(null);
+                //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
+                var targetPos = hitBlock.transform.position + Vector3.up * 1f;
+                targetClayBlock.OnSpit(targetPos);
+                targetClayBlock = null;
+                //currentClayBlock = null;
+            }
         }
 
         private IEnumerator CheckMouthfulAnimState()
@@ -188,6 +199,8 @@ namespace Hun.Player
 
             playerCtrl.PlayerMovement.SetMovement(true);
         }
+
+        public void SetTargetClayBlock(ClayBlock clayBlock) => targetClayBlock = clayBlock;
         #endregion
     }
 }
