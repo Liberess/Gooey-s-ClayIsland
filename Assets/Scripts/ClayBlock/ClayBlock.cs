@@ -20,7 +20,7 @@ public abstract class ClayBlock : MonoBehaviour
 
     public bool IsMouthful => clayBlockType != ClayBlockType.Stone;
 
-    public ClayBlock[] currentClayBlocks = new ClayBlock[2];
+    [HideInInspector] public ClayBlock[] currentClayBlocks = new ClayBlock[2];
 
     public abstract void OnEnter();
     public abstract void OnStay();

@@ -8,11 +8,13 @@ public class ClayBlockTile : ClayBlock
     private Hun.Player.PlayerController playerCtrl;
 
     [SerializeField] private LayerMask targetLayer;
+    [SerializeField, Range(0f, 5f)] private float moveSpeed = 2f;
     private GameObject currentTemperPrefab = null;
     private DirectionVector directionVector = new DirectionVector();
 
     [SerializeField] private bool isPlayerOver = false; //플레이어가 내 위에 있음!
 
+    private Animator anim;
     private BoxCollider boxCol;
 
     private void OnDrawGizmosSelected()
@@ -42,6 +44,8 @@ public class ClayBlockTile : ClayBlock
     private void Awake()
     {
         playerCtrl = FindObjectOfType<Hun.Player.PlayerController>();
+
+        anim = GetComponentInChildren<Animator>();
         boxCol = GetComponentInChildren<BoxCollider>();
 
         var defaultVec = boxCol.center + transform.position + Vector3.up;
@@ -213,8 +217,35 @@ public class ClayBlockTile : ClayBlock
             return;
 
         base.OnMouthful();
+        StopAllCoroutines();
+        StartCoroutine(MouthfulCo());
+    }
 
+    private IEnumerator MouthfulCo()
+    {
+        anim.SetTrigger("DoMouthful");
+        boxCol.enabled = false;
+
+        if(clayBlockType == ClayBlockType.Sand)
+            GetComponent<Rigidbody>().useGravity = false;
+
+        var playerMouthRoot = FindObjectOfType<Hun.Player.PlayerMouthful>().MouthfulRoot;
+
+        while(true)
+        {
+            float distance = Vector3.Distance(transform.position, playerMouthRoot.transform.position);
+            if (distance <= 0.001f)
+                break;
+
+            transform.position = Vector3.MoveTowards(transform.position,
+                playerMouthRoot.transform.position, moveSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        boxCol.enabled = true;
         gameObject.SetActive(false);
+
+        yield return null;
     }
 
     public override void OnSpit(Vector3 targetPos)
@@ -224,8 +255,40 @@ public class ClayBlockTile : ClayBlock
 
         base.OnSpit(targetPos);
 
-        gameObject.transform.position = targetPos;
         gameObject.SetActive(true);
+        StopAllCoroutines();
+        StartCoroutine(SpitCo(targetPos));
+    }
+
+    private IEnumerator SpitCo(Vector3 targetPos)
+    {
+        anim.SetTrigger("DoSpit");
+
+        var playerMouthRoot = FindObjectOfType<Hun.Player.PlayerMouthful>().MouthfulRoot;
+        transform.position = playerMouthRoot.position;
+        boxCol.enabled = false;
+
+        if (clayBlockType == ClayBlockType.Sand)
+            GetComponent<Rigidbody>().useGravity = false;
+
+        while (true)
+        {
+            float distance = Vector3.Distance(transform.position, targetPos);
+            if (distance <= 0.001f)
+                break;
+
+            transform.position = Vector3.MoveTowards(transform.position,
+                targetPos, moveSpeed * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        gameObject.transform.position = targetPos;
+        boxCol.enabled = true;
+
+        if (clayBlockType == ClayBlockType.Sand)
+            GetComponent<Rigidbody>().useGravity = true;
+
+        yield return null;
     }
 
     public override void OnFusion(ClayBlock blockA, ClayBlock blockB)

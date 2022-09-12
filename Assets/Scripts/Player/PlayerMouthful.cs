@@ -58,18 +58,18 @@ namespace Hun.Player
             if (!IsMouthful)
                 return;
 
+            lastMouthfulTime = Time.time;
+
             if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
                 return;
 
             if (!targetClayBlock)
             {
-                Debug.Log("Mouthful");
                 Mouthful();
                 StartCoroutine(CheckMouthfulAnimState());
             }
             else //Fusion or Spit or Division
             {
-                Debug.Log("Fusion of Spit or Division");
                 anim.SetTrigger("isMouthful");
                 StartCoroutine(CheckMouthfulAnimState());
 
@@ -168,10 +168,8 @@ namespace Hun.Player
         /// </summary>
         private void Spit()
         {
-            Debug.Log("Spit");
             if(targetClayBlock)
             {
-                Debug.Log("1");
                 targetClayBlock.transform.SetParent(null);
                 //var targetPos = transform.position + (Vector3.up * 0.5f + transform.forward * 1.5f);
                 var targetPos = hitBlock.transform.position + Vector3.up * 1f;
