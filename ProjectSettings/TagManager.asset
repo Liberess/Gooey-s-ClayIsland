@@ -32,8 +32,8 @@ TagManager:
   - ClayBlock
   - TemperObject
   - 
-  - Postprocessing
-  - 
+  - Post Processing
+  - UI Post Processing
   - Near Camera
   - Far Camera
   - VFX
