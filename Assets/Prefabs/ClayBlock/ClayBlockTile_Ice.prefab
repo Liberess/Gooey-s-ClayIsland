@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2092588857018975269}
   - component: {fileID: 8748850138753891791}
   - component: {fileID: 7758696302893116880}
+  - component: {fileID: 6707562887772041075}
   m_Layer: 13
   m_Name: ClayBlockTile_Ice
   m_TagString: ClayBlock
@@ -27,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8697039751060059625}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0.188}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -111,6 +112,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clayBlockType: 3
+  currentClayBlocks:
+  - {fileID: 0}
+  - {fileID: 0}
   targetLayer:
     serializedVersion: 2
     m_Bits: 64
+  moveSpeed: 2
+  isPlayerOver: 0
+--- !u!95 &6707562887772041075
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8697039751060059625}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 1ef376e58b5b8e24fa385b02cd7f630a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

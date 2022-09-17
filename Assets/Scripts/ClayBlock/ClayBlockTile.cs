@@ -67,7 +67,7 @@ public class ClayBlockTile : ClayBlock
 
     private void Update()
     {
-        if(isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
+        if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
         {
             if (!IsBlockedAround())
                 return;
@@ -109,12 +109,12 @@ public class ClayBlockTile : ClayBlock
 
                 Vector3 dirVec = Vector3.zero;
 
-                for(int i = 0; i < directionVector.dirVectors.Length; i++)
+                for (int i = 0; i < directionVector.dirVectors.Length; i++)
                 {
                     RaycastHit hit;
-                    if(Physics.Raycast(transform.position, directionVector.defaultVectors[i], out hit, 1f))
+                    if (Physics.Raycast(transform.position, directionVector.defaultVectors[i], out hit, 1f))
                     {
-                        if(hit.collider.TryGetComponent(out ClayBlockTile clayBlockTile))
+                        if (hit.collider.TryGetComponent(out ClayBlockTile clayBlockTile))
                         {
                             if (clayBlockTile.ClayBlockType == ClayBlockType.Ice)
                                 continue;
@@ -128,7 +128,7 @@ public class ClayBlockTile : ClayBlock
                     Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
                         boxCol.size / 2, Quaternion.identity, targetLayer);
 
-                    if(colliders != null && colliders.Length > 0)
+                    if (colliders != null && colliders.Length > 0)
                         dirVec = directionVector.currentVectors[i];
                 }
 
@@ -208,7 +208,7 @@ public class ClayBlockTile : ClayBlock
                 return true;
         }
 
-         return false;
+        return false;
     }
 
     public override void OnMouthful()
@@ -226,12 +226,12 @@ public class ClayBlockTile : ClayBlock
         anim.SetTrigger("DoMouthful");
         boxCol.enabled = false;
 
-        if(clayBlockType == ClayBlockType.Sand)
+        if (clayBlockType == ClayBlockType.Sand)
             GetComponent<Rigidbody>().useGravity = false;
 
         var playerMouthRoot = FindObjectOfType<Hun.Player.PlayerMouthful>().MouthfulRoot;
 
-        while(true)
+        while (true)
         {
             float distance = Vector3.Distance(transform.position, playerMouthRoot.transform.position);
             if (distance <= 0.001f)
@@ -306,64 +306,88 @@ public class ClayBlockTile : ClayBlock
         base.OnFusion(blockA, blockB); //Destroy
     }
 
+    private bool IsSuccessGetTemperPrefab(ref bool isSuccess,
+        ClayBlockType srcType, ClayBlockType destType, ref GameObject temperPrefab)
+    {
+        // 같은 타입의 블럭이라면 합칠 수 없다.
+        if (srcType == destType)
+        {
+            isSuccess = false;
+            return false;
+        }
+
+        // 무지개 블럭만 합칠 수 있다.
+        if (srcType != ClayBlockType.Rainbow && destType != ClayBlockType.Rainbow)
+        {
+            isSuccess = false;
+            return false;
+        }
+
+        // BlockB의 타입에 맞춰서 점토 장치를 합성한다.
+        if (srcType == ClayBlockType.Rainbow)
+        {
+            switch (destType)
+            {
+                case ClayBlockType.Grass:
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Canon);
+                    isSuccess = true;
+                    return true;
+
+                case ClayBlockType.Sand:
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                    isSuccess = true;
+                    return true;
+
+                case ClayBlockType.Ice:
+                    Debug.Log("탱탱볼 추가");
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                    isSuccess = true;
+                    return true;
+            }
+        }
+        else if (destType == ClayBlockType.Rainbow)
+        {
+            switch (srcType)
+            {
+                case ClayBlockType.Grass:
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Canon);
+                    isSuccess = true;
+                    return true;
+
+                case ClayBlockType.Sand:
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                    isSuccess = true;
+                    return true;
+
+                case ClayBlockType.Ice:
+                    Debug.Log("탱탱볼 추가");
+                    currentTemperPrefab = GameManager.Instance.
+                        GetTemperPrefab(TemperObjectType.Trampoline);
+                    isSuccess = true;
+                    return true;
+            }
+        }
+
+        isSuccess = false;
+        return false;
+    }
+
     public bool IsSuccessFusion(ClayBlock blockA, ClayBlock blockB)
     {
         bool isSuccess = false;
-
         currentTemperPrefab = null;
 
-        switch (blockA.ClayBlockType)
+        if(IsSuccessGetTemperPrefab(ref isSuccess, blockA.ClayBlockType,
+            blockB.ClayBlockType, ref currentTemperPrefab))
         {
-            case ClayBlockType.Grass:
-                if (blockB.ClayBlockType == ClayBlockType.Grass)
-                {
-                    isSuccess = true;
-                    currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Canon);
-                }
-                else if (blockB.ClayBlockType == ClayBlockType.Sand)
-                {
-                    isSuccess = true;
-                    currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
-                }
-                else
-                {
-                    isSuccess = false;
-                }
-                break;
-            case ClayBlockType.Mud:
-                isSuccess = true;
-                break;
-            case ClayBlockType.Sand:
-                if (blockB.ClayBlockType == ClayBlockType.Grass)
-                {
-                    isSuccess = true;
-                    currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
-                }
-                else
-                {
-                    isSuccess = false;
-                }
-                break;
-            case ClayBlockType.Ice:
-                isSuccess = true;
-                break;
-            case ClayBlockType.Lime:
-                isSuccess = true;
-                break;
-            case ClayBlockType.Oil:
-                isSuccess = true;
-                break;
-            case ClayBlockType.Stone: isSuccess = false; break;
-            case ClayBlockType.Water: isSuccess = false; break;
-            case ClayBlockType.ShineLamp: isSuccess = false; break;
-            case ClayBlockType.Apple: isSuccess = false; break;
+            if(isSuccess && currentTemperPrefab)
+                OnFusion(blockA, blockB);
         }
-
-        if (isSuccess && currentTemperPrefab != null)
-            OnFusion(blockA, blockB);
 
         return isSuccess;
     }

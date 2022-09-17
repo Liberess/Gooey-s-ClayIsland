@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum ClayBlockType
 {
-    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple
+    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple, Rainbow
 }
 
 public enum TemperObjectType
@@ -65,35 +65,15 @@ public abstract class ClayBlock : MonoBehaviour
         var upPos2 = (destClayBlock.transform.localScale * 0.5f)
             + destClayBlock.transform.up;
 */
-        if(srcClayBlock.clayBlockType == ClayBlockType.Sand)
+        if(srcClayBlock.clayBlockType == ClayBlockType.Rainbow)
         {
             player.SetTargetClayBlock(srcClayBlock);
             SetClayBlock(true, player);
-        }
-
-        if (srcClayBlock.clayBlockType == ClayBlockType.Ice
-    && destClayBlock.clayBlockType == ClayBlockType.Sand)
-        {
-            player.SetTargetClayBlock(destClayBlock);
-            SetClayBlock(false, player);
         }
         else
         {
-            player.SetTargetClayBlock(srcClayBlock);
-            SetClayBlock(true, player);
-        }
-
-        if (srcClayBlock.clayBlockType == ClayBlockType.Grass
-            && (destClayBlock.clayBlockType == ClayBlockType.Sand ||
-            destClayBlock.clayBlockType == ClayBlockType.Ice))
-        {
             player.SetTargetClayBlock(destClayBlock);
             SetClayBlock(false, player);
-        }
-        else
-        {
-            player.SetTargetClayBlock(srcClayBlock);
-            SetClayBlock(true, player);
         }
 
         Destroy(gameObject);
