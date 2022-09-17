@@ -1,32 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BouncyBall : ClayBlock
 {
+    private Hun.Player.PlayerMovement player;
+
     [SerializeField] private LayerMask targetLayer;
     [SerializeField, Range(0f, 5f)] private float moveSpeed = 2f;
-    private DirectionVector directionVector = new DirectionVector();
+    private bool canInteract = true;
+    private bool isAttachedPlayer = false;
+    private bool IsPushing
+    {
+        get
+        {
+            if (isAttachedPlayer && (Time.time >= startPushedTime + minTimeBetPushed))
+                return true;
+
+            return false;
+        }
+    }
+    private const float minTimeBetPushed = 2f;
+    private float startPushedTime;
+
+    private Vector3[] colliderVectors;
 
     private Animator anim;
     private Rigidbody rigid;
-    private SphereCollider sphereCol;
+    private BoxCollider boxCol;
 
     private void OnDrawGizmosSelected()
     {
-        if (ClayBlockType != ClayBlockType.Ice)
-            return;
-
         Color[] colors = { Color.red, Color.yellow, Color.green, Color.blue };
-
-        Vector3 defaultVec = sphereCol.center + transform.position;
 
         Vector3[] newVecs =
             {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
+                transform.position + Vector3.forward,
+                transform.position + Vector3.back,
+                transform.position + Vector3.left,
+                transform.position + Vector3.right
             };
 
         for (int i = 0; i < newVecs.Length; i++)
@@ -40,54 +54,66 @@ public class BouncyBall : ClayBlock
     {
         anim = GetComponent<Animator>();
         rigid = GetComponent<Rigidbody>();
-        sphereCol = GetComponent<SphereCollider>();
+        boxCol = GetComponent<BoxCollider>();
 
-        var defaultVec = sphereCol.center + transform.position;
-
-        Vector3[] newVecs =
+        colliderVectors = new Vector3[]
             {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
+                transform.position + Vector3.forward,
+                transform.position  + Vector3.back,
+                transform.position  + Vector3.left,
+                transform.position  + Vector3.right
             };
+    }
 
-        directionVector.SetVectors(newVecs);
-        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
-        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
-        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
-        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
+    private void Start()
+    {
+        canInteract = true;
+        player = FindObjectOfType<Hun.Player.PlayerMovement>();
+    }
+
+    private void Update()
+    {
+/*        if (!canInteract)
+            return;*/
+
+        if(IsPushing && player.MovingInputValue != Vector3.zero)
+        {
+            canInteract = false;
+            Debug.Log("Input");
+        }
     }
 
     public override void OnEnter()
     {
+        isAttachedPlayer = true;
+        startPushedTime = Time.time;
+
         Vector3 dirVec = Vector3.zero;
 
-        for (int i = 0; i < directionVector.dirVectors.Length; i++)
+        for (int i = 0; i < colliderVectors.Length; i++)
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, directionVector.defaultVectors[i], out hit, 1f))
+            if (Physics.Raycast(colliderVectors[i], Vector3.down, out hit, 1f))
             {
                 if (hit.collider.TryGetComponent(out ClayBlockTile clayBlockTile))
                 {
                     if (clayBlockTile.ClayBlockType == ClayBlockType.Ice)
                         continue;
+
+                    Debug.Log("바닥에 " + clayBlockTile.name + "가 있음");
+
+/*                    Collider[] colliders = Physics.OverlapBox(colliderVectors[i],
+                        boxCol.size / 2, Quaternion.identity, targetLayer);
+
+                    if (colliders != null && colliders.Length > 0)
+                        dirVec = colliderVectors[i];*/
                 }
             }
             else
             {
                 continue;
             }
-
-            Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
-                sphereCol.bounds.size / 2, Quaternion.identity, targetLayer);
-
-            if (colliders != null && colliders.Length > 0)
-                dirVec = directionVector.currentVectors[i];
         }
-
-        if (dirVec != Vector3.zero)
-            rigid.AddForce(dirVec, ForceMode.Impulse);
     }
 
     public override void OnStay()
@@ -97,6 +123,6 @@ public class BouncyBall : ClayBlock
 
     public override void OnExit()
     {
-
+        isAttachedPlayer = false;
     }
 }

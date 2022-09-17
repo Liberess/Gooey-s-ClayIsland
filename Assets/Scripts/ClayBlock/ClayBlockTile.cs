@@ -96,14 +96,9 @@ public class ClayBlockTile : ClayBlock
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
             case ClayBlockType.Ice:
                 isPlayerOver = true;
+
                 if (playerCtrl.PlayerMovement.IsOverIce)
                     break;
 
@@ -135,12 +130,6 @@ public class ClayBlockTile : ClayBlock
                 if (dirVec != Vector3.zero)
                     playerCtrl.PlayerMovement.AddMoveForce(dirVec);
                 break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
-                break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.InitializeMovingVector();
                 playerCtrl.PlayerMovement.playerGravityY = 0.001f;
@@ -150,45 +139,15 @@ public class ClayBlockTile : ClayBlock
 
     public override void OnStay()
     {
-        switch (clayBlockType)
-        {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
-            case ClayBlockType.Ice:
-                break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
-                break;
-            case ClayBlockType.Water:
-                break;
-        }
+
     }
 
     public override void OnExit()
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
             case ClayBlockType.Ice:
                 isPlayerOver = false;
-                break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
                 break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.playerGravityY = 1f;

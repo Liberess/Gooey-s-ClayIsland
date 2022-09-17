@@ -141,7 +141,8 @@ namespace Hun.Player
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
-            MovingInputValue = new Vector3(value.x, 0, value.y);
+            if(value != null)
+                MovingInputValue = new Vector3(value.x, 0, value.y);
         }
 
         /// <summary>
