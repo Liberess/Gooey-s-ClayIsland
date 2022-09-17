@@ -9,17 +9,23 @@ namespace Hun.Manager
         public static GameManager Instance { get; private set; }
         private DataManager dataMgr;
 
+        private GameObject player;
+        private Hun.Player.PlayerHealth playerHealth;
+
         public GameSaveFile gameSaveFile;
 
         public int Coin { get; private set; }
         public float PlayTime { get; private set; }
         public int SceneIndex { get; private set; }
+        public bool IsClear { get; private set; }
 
         [Space(10), Header("== Game Menu UI =="), Space(5)]
         [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
+
+        [SerializeField] private World.Stage curStage;
 
         [Space(10), Header("== Clay Block Object Prefabs =="), Space(5)]
         [SerializeField] private List<GameObject> clayBlockTilePrefabList = new List<GameObject>();
@@ -41,9 +47,13 @@ namespace Hun.Manager
         {
             dataMgr = DataManager.Instance;
 
+            player = GameObject.FindWithTag("Player");
+            playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
+
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
             Coin = 0;
+            IsClear = false;
         }
 
         private void Update()
@@ -129,11 +139,23 @@ namespace Hun.Manager
         public void GetCoin(int value)
         {
             Coin += value;
+            if(Coin >= 11)
+            {
+                playerHealth.RestoreLife(1);
+                Coin -= 11;
+            }
+            Debug.Log(Coin);
             UIManager.Instance.SetCoinUI(Coin);
         }
 
         public void StageClear()
         {
+            IsClear = true;
+
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] = curStage.SweetCandy;
+            if (dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] > curStage.CurTime)
+                dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] = curStage.CurTime;
+
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
             dataMgr.GameData.gameState = GameState.Lobby;

@@ -10,7 +10,8 @@ namespace Hun.Player
         private void Start()
         {
             OnSpawned();
-            OnDeathEvent += RespawnCheckPoint;
+            //OnDeathEvent += RespawnCheckPoint;
+            OnDeathEvent += LoadWorldMap;
             OnGameOverEvent += LoadWorldMap;
             //Manager.UIManager.Instance.SetHeartUI(Heart);
         }
@@ -30,6 +31,11 @@ namespace Hun.Player
         {
             base.RestoreHeart(value);
             //Manager.UIManager.Instance.SetHeartUI(Heart);
+        }
+
+        public override void RestoreLife(int value)
+        {
+            base.RestoreLife(value);
         }
 
         private void RespawnCheckPoint()

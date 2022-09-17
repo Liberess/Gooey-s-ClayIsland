@@ -15,6 +15,7 @@ TagManager:
   - Trampiline
   - FarCamera
   - NearCamera
+  - Stage
   layers:
   - Default
   - TransparentFX

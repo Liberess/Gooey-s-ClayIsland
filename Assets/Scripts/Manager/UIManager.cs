@@ -16,6 +16,7 @@ namespace Hun.Manager
         [SerializeField] private TextMeshProUGUI coinTxt;
         [SerializeField] private TextMeshProUGUI heartTxt;
         [SerializeField] private TextMeshProUGUI clearObjCountTxt;
+        [SerializeField] private TextMeshProUGUI stageTimerTxt;
 
         private void Awake()
         {
@@ -64,6 +65,11 @@ namespace Hun.Manager
         public void SetLifeUI(int value)
         {
             lifeTxt.text = "x" + value;
+        }
+
+        public void setStageTimerUI(int value)
+        {
+            stageTimerTxt.text = value.ToString();
         }
 
         public void SetSelectStageUI(bool value)

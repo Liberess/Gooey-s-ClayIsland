@@ -48,34 +48,34 @@ namespace Hun.Player
             TeleportPlayerTransform(curCheckPoint);
         }
 
-        /*        private void OnTriggerEnter(Collider other)
-                {
-                    if (other.TryGetComponent(out Hun.Obstacle.Portal portal))
-                    {
-                        if (portal.EftType == Hun.Obstacle.Portal.EffectType.Enter)
-                            TeleportPlayerTransform(portal.TargetPos);
-                        else
-                            PlayerInteract.OnWalkedThroughPortal(portal);
-                    }
+        private void OnTriggerEnter(Collider other)
+        {
+            //if (other.TryGetComponent(out Hun.Obstacle.Portal portal))
+            //{
+            //    if (portal.EftType == Hun.Obstacle.Portal.EffectType.Enter)
+            //        TeleportPlayerTransform(portal.TargetPos);
+            //    else
+            //        PlayerInteract.OnWalkedThroughPortal(portal);
+            //}
 
-                    if (other.TryGetComponent(out IObstacle obstacle))
-                        obstacle.OnEnter();
+            //if (other.TryGetComponent(out IObstacle obstacle))
+            //    obstacle.OnEnter();
 
-                    if (other.TryGetComponent(out Hun.Item.IItem item))
-                        item.OnEnter();
+            if (other.TryGetComponent(out Hun.Item.IItem item))
+                item.OnEnter();
 
-                    if (other.TryGetComponent(out ClayBlock clayBlock))
-                        clayBlock.OnEnter();
-                }
+            //if (other.TryGetComponent(out ClayBlock clayBlock))
+            //    clayBlock.OnEnter();
+        }
 
-                private void OnTriggerExit(Collider other)
-                {
-                    if (other.TryGetComponent(out IObstacle obstacle))
-                        obstacle.OnExit();
+        //private void OnTriggerExit(Collider other)
+        //{
+        //    if (other.TryGetComponent(out IObstacle obstacle))
+        //        obstacle.OnExit();
 
-                    if (other.TryGetComponent(out ClayBlock clayBlock))
-                        clayBlock.OnExit();
-                }*/
+        //    if (other.TryGetComponent(out ClayBlock clayBlock))
+        //        clayBlock.OnExit();
+        //}
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -94,8 +94,8 @@ namespace Hun.Player
 
         private void OnCollisionStay(Collision collision)
         {
-   /*         if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
-                clayBlock.OnStay();*/
+            /*         if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                         clayBlock.OnStay();*/
         }
 
         private void OnCollisionExit(Collision collision)
