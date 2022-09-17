@@ -17,6 +17,7 @@ namespace Hun.Manager
         public int Coin { get; private set; }
         public float PlayTime { get; private set; }
         public int SceneIndex { get; private set; }
+        public bool IsClear { get; private set; }
 
         [Space(10), Header("== Game Menu UI =="), Space(5)]
         [SerializeField] private GameObject mainPanel;
@@ -52,6 +53,7 @@ namespace Hun.Manager
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
             Coin = 0;
+            IsClear = false;
         }
 
         private void Update()
@@ -148,8 +150,13 @@ namespace Hun.Manager
 
         public void StageClear()
         {
+            IsClear = true;
+
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] = curStage.SweetCandy;
+            if (dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] > curStage.CurTime)
+                dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] = curStage.CurTime;
+
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
-            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] += curStage.SweetCandy;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
             dataMgr.GameData.gameState = GameState.Lobby;
             LoadScene("WorldMapScene");

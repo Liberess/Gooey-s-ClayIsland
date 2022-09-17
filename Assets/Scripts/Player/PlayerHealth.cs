@@ -10,7 +10,8 @@ namespace Hun.Player
         private void Start()
         {
             OnSpawned();
-            OnDeathEvent += RespawnCheckPoint;
+            //OnDeathEvent += RespawnCheckPoint;
+            OnDeathEvent += LoadWorldMap;
             OnGameOverEvent += LoadWorldMap;
             //Manager.UIManager.Instance.SetHeartUI(Heart);
         }
