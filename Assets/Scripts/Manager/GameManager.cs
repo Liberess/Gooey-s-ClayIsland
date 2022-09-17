@@ -9,6 +9,9 @@ namespace Hun.Manager
         public static GameManager Instance { get; private set; }
         private DataManager dataMgr;
 
+        private GameObject player;
+        private Hun.Player.PlayerHealth playerHealth;
+
         public GameSaveFile gameSaveFile;
 
         public int Coin { get; private set; }
@@ -20,6 +23,8 @@ namespace Hun.Manager
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
+
+        [SerializeField] private World.Stage curStage;
 
         [Space(10), Header("== Clay Block Object Prefabs =="), Space(5)]
         [SerializeField] private List<GameObject> clayBlockTilePrefabList = new List<GameObject>();
@@ -40,6 +45,9 @@ namespace Hun.Manager
         private void Start()
         {
             dataMgr = DataManager.Instance;
+
+            player = GameObject.FindWithTag("Player");
+            playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
 
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
@@ -129,12 +137,19 @@ namespace Hun.Manager
         public void GetCoin(int value)
         {
             Coin += value;
+            if(Coin >= 11)
+            {
+                playerHealth.RestoreLife(1);
+                Coin -= 11;
+            }
+            Debug.Log(Coin);
             UIManager.Instance.SetCoinUI(Coin);
         }
 
         public void StageClear()
         {
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
+            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] += curStage.SweetCandy;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
             dataMgr.GameData.gameState = GameState.Lobby;
             LoadScene("WorldMapScene");

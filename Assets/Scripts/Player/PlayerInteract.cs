@@ -234,7 +234,7 @@ namespace Hun.Player
             while (transform.position != destPos)
             {
                 transform.position = Vector3.MoveTowards
-                    (transform.position, destPos, Time.deltaTime * playerCtrl.PlayerMovement.MoveSpeed);
+                    (transform.position, destPos, Time.deltaTime * playerCtrl.PlayerMovement.MoveSpeedInCanon);
 
                 yield return new WaitForSeconds(0.001F);
             }

@@ -115,6 +115,17 @@ namespace Hun.Entity
                 Heart += value;
         }
 
+        public virtual void RestoreLife(int value)
+        {
+            if (IsDead)
+                return;
+
+            if (Life + value >= maxLife)
+                Life = maxLife;
+            else
+                Life += value;
+        }
+
         public virtual void Die()
         {
             OnDeathEvent?.Invoke();

@@ -32,6 +32,11 @@ namespace Hun.Player
             //Manager.UIManager.Instance.SetHeartUI(Heart);
         }
 
+        public override void RestoreLife(int value)
+        {
+            base.RestoreLife(value);
+        }
+
         private void RespawnCheckPoint()
         {
             GameObject.FindGameObjectWithTag("Player").

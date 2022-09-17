@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace Hun.Item
 {
-    public class Coin : MonoBehaviour, IItem
+    public class SweetCandy : MonoBehaviour, IItem
     {
         public void UseItem()
         {
-            Manager.GameManager.Instance.GetCoin(1);
+            World.Stage.Instance.GetCandy(1);
         }
 
         public void OnEnter()

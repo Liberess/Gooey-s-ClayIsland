@@ -8,6 +8,7 @@ namespace Hun.Player
     {
         private PlayerController playerCtrl;
         private PlayerInteract playerInteract;
+        private PlayerMovement playerMovement;
 
         [Header("== Mouthful Property ==")]
         [SerializeField] private Transform mouthfulRoot;
@@ -16,6 +17,7 @@ namespace Hun.Player
         [SerializeField] private float spitRadius = 1f;
 
         [SerializeField] private ClayBlock targetClayBlock;
+        public ClayBlock TargetClayBlock { get => targetClayBlock; }
         private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
 
         private RaycastHit hitBlock;
@@ -42,6 +44,7 @@ namespace Hun.Player
             anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
             playerInteract = GetComponent<PlayerInteract>();
+            playerMovement = GetComponent<PlayerMovement>();
         }
 
         private void Start()
@@ -56,6 +59,9 @@ namespace Hun.Player
         private void OnMouthful()
         {
             if (!IsMouthful)
+                return;
+
+            if (!playerMovement.getIsGrounded)
                 return;
 
             lastMouthfulTime = Time.time;

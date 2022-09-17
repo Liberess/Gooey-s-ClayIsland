@@ -12,10 +12,11 @@ namespace Hun.Player
         [Header("== Movement Property ==")]
         [SerializeField] private GameObject playerBody;
         [SerializeField, Range(0F, 10F)] private float moveSpeed = 2f;
-        public float MoveSpeed { get => moveSpeed; }
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
+        [SerializeField, Range(0F, 10F)] private float moveSpeedInCanon = 2f;
+        public float MoveSpeedInCanon { get => moveSpeedInCanon; }
         [HideInInspector] public float playerGravityY = 1f;
         public bool IsMove { get; private set; }
         public bool IsOverIce { get; private set; }
@@ -48,7 +49,7 @@ namespace Hun.Player
                 return false;
             }
         }
-
+        public bool getIsGrounded { get => IsGrounded; }
 
         private bool isMoveForceCoroutineing = false;
 

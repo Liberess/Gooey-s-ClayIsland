@@ -29,6 +29,7 @@ namespace Hun.Manager
         {
             public int coin;
             public int prismPiece;
+            public int[] sweetCandy; // 스테이지 달성률
             public float playTime;
             public bool isSaved;
         }
