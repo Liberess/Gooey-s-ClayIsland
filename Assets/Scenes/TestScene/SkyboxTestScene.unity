@@ -20,9 +20,9 @@ RenderSettings:
   m_FogDensity: 0
   m_LinearFogStart: 200
   m_LinearFogEnd: 500
-  m_AmbientSkyColor: {r: 0, g: 0.7007749, b: 1, a: 1}
-  m_AmbientEquatorColor: {r: 1, g: 0.54973066, b: 0, a: 1}
-  m_AmbientGroundColor: {r: 0, g: 0.38679248, b: 0.010764114, a: 1}
+  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientEquatorColor: {r: 0.7924528, g: 0.6018156, b: 0.6018156, a: 1}
+  m_AmbientGroundColor: {r: 0, g: 0.1981132, b: 0.0038098837, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.7169812, g: 0.7169812, b: 0.7169812, a: 1}
@@ -8021,6 +8021,11 @@ PrefabInstance:
       propertyPath: near clip plane
       value: 0.3
       objectReference: {fileID: 0}
+    - target: {fileID: 307671263760670546, guid: 87c92647fd2b841468da840260d33d8f,
+        type: 3}
+      propertyPath: field of view
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 307671264242673896, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
       propertyPath: m_RootOrder
@@ -8054,17 +8059,17 @@ PrefabInstance:
     - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
       propertyPath: skyboxCameraDistances.Array.data[0]
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
       propertyPath: skyboxCameraDistances.Array.data[1]
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
       propertyPath: skyboxCameraDistances.Array.data[2]
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6283051493334209939, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
@@ -31796,7 +31801,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2060598556}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -822, y: -198, z: -666}
+  m_LocalPosition: {x: -822, y: -291.5, z: -666}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
