@@ -1,5 +1,10 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Scenes/WorldMapScene_Test.unity.meta
 guid: 9785d5600109a45b0ba1b07227ee6adf
+========
+guid: c6495f1de0b56344ba5ae6561d91e740
+folderAsset: yes
+>>>>>>>> da1fc9c953ca4122cae209866f8550b4ff0edff9:Assets/Materials/Island.meta
 DefaultImporter:
   externalObjects: {}
   userData: 
