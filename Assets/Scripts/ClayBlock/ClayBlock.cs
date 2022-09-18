@@ -10,7 +10,7 @@ public enum ClayBlockType
 
 public enum TemperObjectType
 {
-    Canon = 0, Trampoline
+    Canon = 0, Trampoline, BouncyBall
 }
 
 public abstract class ClayBlock : MonoBehaviour
@@ -54,7 +54,7 @@ public abstract class ClayBlock : MonoBehaviour
 
     public virtual void OnDivision()
     {
-        var player = FindObjectOfType<Hun.Player.PlayerMouthful>();
+        Hun.Player.PlayerMouthful player = FindObjectOfType<Hun.Player.PlayerMouthful>();
 
         var srcClayBlock = currentClayBlocks[0];
         var destClayBlock = currentClayBlocks[1];
