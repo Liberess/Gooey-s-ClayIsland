@@ -141,12 +141,10 @@ namespace Hun.Player
             while (true)
             {
                 //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
-                if (!playerCtrl.PlayerInteract.IsIceInside && !playerCtrl.PlayerInteract.IsSlipIce)
+                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
-                Debug.Log("move");
-
-                rigid.velocity = dir * 10f;
+                rigid.velocity = dir * 5f;
                 //transform.Translate(dir * 4f * Time.deltaTime);
 
                 for (int i = 0; i < playerBodys.Length; i++)

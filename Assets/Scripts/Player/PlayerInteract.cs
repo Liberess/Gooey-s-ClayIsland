@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,40 +21,32 @@ namespace Hun.Player
         {
             get
             {
-                Collider[] colliders = Physics.OverlapSphere(transform.position, 0.2f,
+                Collider[] colliders = Physics.OverlapSphere(transform.position, 0.3f,
                     LayerMask.GetMask("ClayBlock"));
 
-                for (int i = 0; i < colliders.Length; i++)
+                Collider collider = colliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).
+                    Where(c => c.GetComponent<ClayBlock>().ClayBlockType == ClayBlockType.Ice).FirstOrDefault();
+
+                if(collider != null && collider.TryGetComponent(out ClayBlock clay))
+                {
+                    Debug.Log(collider.name);
+                    if (clay.ClayBlockType == ClayBlockType.Ice)
+                        return true;
+                }
+
+
+/*                for (int i = 0; i < colliders.Length; i++)
                 {
                     if (colliders[i].TryGetComponent(out ClayBlock clayBlock))
                     {
+#if UNITY_EDITOR
                         Debug.DrawLine(transform.position, colliders[i].transform.position, Color.red, 2f);
-
+#endif
                         if (clayBlock.ClayBlockType == ClayBlockType.Ice)
-                        {
-                            Debug.Log("1");
-                            Debug.Log(colliders[i].name);
                             return true;
-                        }
                     }
-                }
+                }*/
 
-                /*                RaycastHit hit;
-                                Vector3 rayPos = transform.position + transform.up * 0.5f;
-                                if(Physics.Raycast(rayPos, Vector3.down, out hit,
-                                    0.5f, LayerMask.GetMask("ClayBlock")))
-                                {
-                                    if(hit.collider != null && hit.collider.TryGetComponent(out ClayBlock block))
-                                    {
-                                        if(block.ClayBlockType == ClayBlockType.Ice)
-                                        {
-                                            Debug.Log("1");
-                                            return true;
-                                        }
-                                    }
-                                }*/
-
-                Debug.Log("2");
                 return false;
             }
         }
