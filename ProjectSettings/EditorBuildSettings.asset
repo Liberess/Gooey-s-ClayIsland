@@ -8,18 +8,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: e6e8723d82c149549bb0628fd0fe3a85
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
-  - enabled: 1
-    path: Assets/Scenes/WorldMapScene_Test.unity
-    guid: edd5b89d01d58824d9105795818ce479
-  - enabled: 1
-    path: Assets/Scenes/Stage/Stage0Scene.unity
-    guid: ad91745f47352493a92d5f35c1976899
   - enabled: 1
     path: Assets/Scenes/LoadingScene.unity
     guid: 83f6bfce9523211479f4eaec636accbd
+  - enabled: 1
+    path: Assets/Scenes/WorldMapScene.unity
+    guid: 9785d5600109a45b0ba1b07227ee6adf
+  - enabled: 1
+    path: Assets/Scenes/Stage/World1/1-1.unity
+    guid: a0110e578ff5f46adb97576afba6e424
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b03cf2ab1273444429c58ee485bcbd8b,
       type: 2}
