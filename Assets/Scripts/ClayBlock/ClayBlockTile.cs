@@ -265,8 +265,37 @@ public class ClayBlockTile : ClayBlock
         if (blockA == null || blockB == null)
             throw new System.Exception("blockA 또는 blockB의 값이 null입니다.");
 
+        // 점토 장치 방향 설정
+        Vector3 dir = blockB.transform.position - playerCtrl.gameObject.transform.position;
+        dir = dir.normalized;
+
+        if (0.5 < dir.x && dir.x <= 1)
+        {
+            dir = new Vector3(1, 0, 0);
+        }
+        else if (0 < dir.x && dir.x <= 0.5)
+        {
+            if (0 < dir.z)
+                dir = new Vector3(0, 0, 1);
+            else
+                dir = new Vector3(0, 0, -1);
+        }
+        else if (-0.5 < dir.x && dir.x <= 0)
+        {
+            if (0 < dir.z)
+                dir = new Vector3(0, 0, 1);
+            else
+                dir = new Vector3(0, 0, -1);
+        }
+        else if (-1 <= dir.x && dir.x <= -0.5)
+        {
+            dir = new Vector3(-1, 0, 0);
+        }
+
+        var tempRotation = Quaternion.LookRotation(dir);
+
         var tempObj = Instantiate(currentTemperPrefab,
-            blockB.transform.position, Quaternion.identity).GetComponent<ClayBlock>();
+            blockB.transform.position, tempRotation).GetComponent<ClayBlock>();
         tempObj.currentClayBlocks.Initialize();
 
         tempObj.currentClayBlocks[0] = blockA;
