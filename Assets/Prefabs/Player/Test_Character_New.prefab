@@ -237,7 +237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   outlineMode: 4
-  outlineColor: {r: 1, g: 1, b: 1, a: 1}
+  outlineColor: {r: 0.6132076, g: 0.6132076, b: 0.6132076, a: 1}
   outlineWidth: 2
   precomputeOutline: 0
   bakeKeys: []
@@ -341,6 +341,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ab83d20c01e704ea6232d1ef1526e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isIceInside: 0
 --- !u!136 &6090818321330228021
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -354,7 +355,7 @@ CapsuleCollider:
   m_Radius: 0.42429724
   m_Height: 0.84859455
   m_Direction: 1
-  m_Center: {x: 0, y: 0.40000004, z: 0.124297224}
+  m_Center: {x: 0, y: 0.40000004, z: 0}
 --- !u!1001 &3435241548224529922
 PrefabInstance:
   m_ObjectHideFlags: 0

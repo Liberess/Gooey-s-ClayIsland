@@ -20,18 +20,40 @@ namespace Hun.Player
         {
             get
             {
-                var colliders = Physics.OverlapSphere(transform.position, 0.7f,
+                Collider[] colliders = Physics.OverlapSphere(transform.position, 0.2f,
                     LayerMask.GetMask("ClayBlock"));
 
-                foreach(var collider in colliders)
+                for (int i = 0; i < colliders.Length; i++)
                 {
-                    if (collider.TryGetComponent(out ClayBlock clayBlock))
+                    if (colliders[i].TryGetComponent(out ClayBlock clayBlock))
                     {
-                        if(clayBlock.ClayBlockType == ClayBlockType.Ice)
+                        Debug.DrawLine(transform.position, colliders[i].transform.position, Color.red, 2f);
+
+                        if (clayBlock.ClayBlockType == ClayBlockType.Ice)
+                        {
+                            Debug.Log("1");
+                            Debug.Log(colliders[i].name);
                             return true;
+                        }
                     }
                 }
 
+                /*                RaycastHit hit;
+                                Vector3 rayPos = transform.position + transform.up * 0.5f;
+                                if(Physics.Raycast(rayPos, Vector3.down, out hit,
+                                    0.5f, LayerMask.GetMask("ClayBlock")))
+                                {
+                                    if(hit.collider != null && hit.collider.TryGetComponent(out ClayBlock block))
+                                    {
+                                        if(block.ClayBlockType == ClayBlockType.Ice)
+                                        {
+                                            Debug.Log("1");
+                                            return true;
+                                        }
+                                    }
+                                }*/
+
+                Debug.Log("2");
                 return false;
             }
         }

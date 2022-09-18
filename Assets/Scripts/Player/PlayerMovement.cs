@@ -140,27 +140,19 @@ namespace Hun.Player
 
             while (true)
             {
-                //rigid.velocity = dir * 5f;
-
-                transform.Translate(dir * 5f * Time.deltaTime/*, Space.Self*/);
-
-                foreach(var playerBody in playerBodys)
-                {
-                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
-                }
-
                 //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
-                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
+                if (!playerCtrl.PlayerInteract.IsIceInside && !playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
-                /*                if (playerCtrl.PlayerInteract.IsSlipIce &&
-                                    Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
-                                {
-                                    Debug.Log("걸림");
-                                    break;
-                                }*/
+                Debug.Log("move");
 
-                yield return Time.deltaTime;
+                rigid.velocity = dir * 10f;
+                //transform.Translate(dir * 4f * Time.deltaTime);
+
+                for (int i = 0; i < playerBodys.Length; i++)
+                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
+
+                yield return new WaitForEndOfFrame();
             }
 
             SetMovement(true);
