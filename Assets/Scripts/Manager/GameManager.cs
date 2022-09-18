@@ -48,7 +48,10 @@ namespace Hun.Manager
             dataMgr = DataManager.Instance;
 
             player = GameObject.FindWithTag("Player");
-            playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
+            if(player)
+            {
+                playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
+            }
 
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 

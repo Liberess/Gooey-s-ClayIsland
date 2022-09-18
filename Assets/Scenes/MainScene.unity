@@ -485,6 +485,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 219630560}
+  - component: {fileID: 219630561}
   m_Layer: 5
   m_Name: Space
   m_TagString: Untagged
@@ -514,6 +515,18 @@ RectTransform:
   m_AnchoredPosition: {x: -286, y: -410}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &219630561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 219630559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a9c8d897404bb449a7bdbcd755a73d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &220748862 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: f56ad5788983647baae6edba53c5c848,
@@ -4393,7 +4406,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1957461192}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1957461196
 Camera:
   m_ObjectHideFlags: 0
@@ -4471,6 +4484,7 @@ MonoBehaviour:
   menuPanel: {fileID: 0}
   quitPanel: {fileID: 0}
   pausePanel: {fileID: 0}
+  curStage: {fileID: 0}
   clayBlockTilePrefabList: []
   temperObjPrefabList: []
 --- !u!4 &2007085864
@@ -5008,7 +5022,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &7993260834539782342
 MonoBehaviour:
   m_ObjectHideFlags: 0
