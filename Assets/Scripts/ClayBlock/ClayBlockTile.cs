@@ -48,21 +48,12 @@ public class ClayBlockTile : ClayBlock
         anim = GetComponentInChildren<Animator>();
         boxCol = GetComponentInChildren<BoxCollider>();
 
-        var defaultVec = boxCol.center + transform.position + Vector3.up;
+        SetupDirectionVectors();
+    }
 
-        Vector3[] newVecs =
-            {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
-            };
-
-        directionVector.SetVectors(newVecs);
-        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
-        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
-        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
-        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
+    private void OnEnable()
+    {
+        SetupDirectionVectors();
     }
 
     private void Update()
@@ -90,6 +81,25 @@ public class ClayBlockTile : ClayBlock
             if (dirVec != Vector3.zero && -playerCtrl.PlayerMovement.MovingInputValue == dirVec)
                 playerCtrl.PlayerMovement.AddMoveForce(dirVec);
         }
+    }
+
+    private void SetupDirectionVectors()
+    {
+        var defaultVec = boxCol.center + transform.position + Vector3.up;
+
+        Vector3[] newVecs =
+            {
+                defaultVec + Vector3.forward,
+                defaultVec + Vector3.back,
+                defaultVec + Vector3.left,
+                defaultVec + Vector3.right
+            };
+
+        directionVector.SetVectors(newVecs);
+        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
+        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
+        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
+        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
     }
 
     public override void OnEnter()
@@ -300,9 +310,8 @@ public class ClayBlockTile : ClayBlock
                     return true;
 
                 case ClayBlockType.Ice:
-                    Debug.Log("≈ ≈ ∫º √ﬂ∞°");
                     currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
+                        GetTemperPrefab(TemperObjectType.BouncyBall);
                     isSuccess = true;
                     return true;
             }
@@ -324,9 +333,8 @@ public class ClayBlockTile : ClayBlock
                     return true;
 
                 case ClayBlockType.Ice:
-                    Debug.Log("≈ ≈ ∫º √ﬂ∞°");
                     currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
+                        GetTemperPrefab(TemperObjectType.BouncyBall);
                     isSuccess = true;
                     return true;
             }

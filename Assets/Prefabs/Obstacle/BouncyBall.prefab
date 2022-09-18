@@ -104,9 +104,10 @@ MonoBehaviour:
   - {fileID: 0}
   targetLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   moveSpeed: 2
-  isAttachedPlayer: 0
+  pushTime: 0
+  bRunningMoveCo: 0
 --- !u!65 &800905839759090064
 BoxCollider:
   m_ObjectHideFlags: 0
