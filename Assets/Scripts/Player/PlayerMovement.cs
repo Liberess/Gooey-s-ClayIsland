@@ -21,6 +21,10 @@ namespace Hun.Player
         public bool IsMove { get; private set; }
         public bool IsOverIce { get; private set; }
 
+        [SerializeField] private float fallDamageValue = 3f;
+        [SerializeField] private float maxPositionY;
+        private bool isInAir = false;
+
         public Vector3 MovingInputValue { get; private set; }
         private Vector3 movingVector = Vector3.zero;
 
@@ -46,6 +50,7 @@ namespace Hun.Player
 
                 //Debug.Log("Fall Anim 추가");
                 //anim.SetBool("");
+
                 return false;
             }
         }
@@ -64,6 +69,7 @@ namespace Hun.Player
         {
             IsMove = true;
             currentDashSpeed = 1f;
+            maxPositionY = Mathf.Round(transform.position.y);
 
             if (playerBody == null)
                 playerBody = transform.GetChild(0).gameObject;
@@ -73,6 +79,7 @@ namespace Hun.Player
 
         private void Update()
         {
+            CountFallDamage();
             UpdateGravity();
         }
 
@@ -84,7 +91,7 @@ namespace Hun.Player
         #region Movement (Move, Look)
         public void AddMoveForce(Vector3 dir)
         {
-            if(!isMoveForceCoroutineing)
+            if (!isMoveForceCoroutineing)
                 StartCoroutine(AddMoveForceCo(dir));
         }
 
@@ -108,12 +115,12 @@ namespace Hun.Player
                 if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
-/*                if (playerCtrl.PlayerInteract.IsSlipIce &&
-                    Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
-                {
-                    Debug.Log("걸림");
-                    break;
-                }*/
+                /*                if (playerCtrl.PlayerInteract.IsSlipIce &&
+                                    Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
+                                {
+                                    Debug.Log("걸림");
+                                    break;
+                                }*/
 
                 yield return Time.deltaTime;
             }
@@ -141,7 +148,7 @@ namespace Hun.Player
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
-            if(value != null)
+            if (value != null)
                 MovingInputValue = new Vector3(value.x, 0, value.y);
         }
 
@@ -150,7 +157,7 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
-            if (!IsMove || !IsGrounded)
+            if (!IsMove || isInAir)
                 return;
 
             if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
@@ -203,6 +210,30 @@ namespace Hun.Player
             {
                 //movingVector = Vector3.zero;
                 anim.SetBool("isWalk", false);
+            }
+        }
+
+        private void CountFallDamage()
+        {
+            if (isInAir && IsGrounded)
+            {
+                if (maxPositionY - Mathf.Round(transform.position.y) >= fallDamageValue)
+                {
+                    Entity.DamageMessage dmgMsg = new Entity.DamageMessage();
+                    dmgMsg.damager = gameObject;
+                    dmgMsg.dmgAmount = 1;
+                    dmgMsg.hitNormal = transform.position;
+                    dmgMsg.hitPoint = transform.position;
+                    gameObject.GetComponent<PlayerHealth>().ApplyDamage(dmgMsg);
+                }
+
+                maxPositionY = Mathf.Round(transform.position.y);
+                isInAir = false;
+            }
+            else if(!isInAir && !IsGrounded)
+            {
+                maxPositionY = Mathf.Round(transform.position.y);
+                isInAir = true;
             }
         }
 
