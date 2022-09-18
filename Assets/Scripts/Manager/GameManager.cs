@@ -67,7 +67,7 @@ namespace Hun.Manager
                 if(Input.GetKeyDown(KeyCode.Space))
                 {
                     mainPanel.SetActive(false);
-                    menuPanel.SetActive(true);
+                    //menuPanel.SetActive(true);
                 }
             }
 
