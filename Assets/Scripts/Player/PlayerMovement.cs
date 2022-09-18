@@ -5,12 +5,19 @@ using UnityEngine.InputSystem;
 
 namespace Hun.Player
 {
+    public enum PlayerState
+    {
+        spit = 0,
+        mouthful,
+    }
+
     public class PlayerMovement : MonoBehaviour
     {
         private PlayerController playerCtrl;
 
         [Header("== Movement Property ==")]
         [SerializeField] private GameObject playerBody;
+        [SerializeField] private GameObject[] playerBodys = new GameObject[2];
         [SerializeField, Range(0F, 10F)] private float moveSpeed = 2f;
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
@@ -30,6 +37,8 @@ namespace Hun.Player
 
         private Rigidbody rigid;
         private Animator anim;
+        public Animator Anim { get => anim; }
+        [SerializeField] private Animator[] anims = new Animator[2];
 
         private bool IsGrounded
         {
@@ -49,7 +58,7 @@ namespace Hun.Player
                 }
 
                 //Debug.Log("Fall Anim 추가");
-                //anim.SetBool("");
+                anim.SetBool("isInAir",true);
 
                 return false;
             }
@@ -60,8 +69,8 @@ namespace Hun.Player
 
         private void Awake()
         {
+            anim = anims[(int)PlayerState.spit];
             rigid = GetComponent<Rigidbody>();
-            anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
         }
 
@@ -71,8 +80,14 @@ namespace Hun.Player
             currentDashSpeed = 1f;
             maxPositionY = Mathf.Round(transform.position.y);
 
+            if (playerBodys.Length == 0)
+            {
+                playerBodys[0] = transform.GetChild(0).gameObject;
+                playerBodys[1] = transform.GetChild(1).gameObject;
+            }
+
             if (playerBody == null)
-                playerBody = transform.GetChild(0).gameObject;
+                playerBody = playerBodys[(int)PlayerState.spit];
 
             SetupDashEvent();
         }
@@ -86,6 +101,26 @@ namespace Hun.Player
         private void FixedUpdate()
         {
             UpdateMovement();
+        }
+
+        public void ChangeModel(PlayerState playerState)
+        {
+            if(playerState == PlayerState.spit)
+            {
+                playerBodys[(int)PlayerState.spit].SetActive(true);
+                playerBodys[(int)PlayerState.mouthful].SetActive(false);
+
+                playerBody = playerBodys[(int)PlayerState.spit];
+                anim = anims[(int)PlayerState.spit];
+            }
+            else
+            {
+                playerBodys[(int)PlayerState.mouthful].SetActive(true);
+                playerBodys[(int)PlayerState.spit].SetActive(false);
+
+                playerBody = playerBodys[(int)PlayerState.mouthful];
+                anim = anims[(int)PlayerState.mouthful];
+            }
         }
 
         #region Movement (Move, Look)
@@ -109,7 +144,10 @@ namespace Hun.Player
 
                 transform.Translate(dir * 5f * Time.deltaTime/*, Space.Self*/);
 
-                playerBody.transform.rotation = Quaternion.LookRotation(dir);
+                foreach(var playerBody in playerBodys)
+                {
+                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
+                }
 
                 //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
                 if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
@@ -139,7 +177,13 @@ namespace Hun.Player
         /// <summary>
         /// 해당 방향으로 회전합니다.
         /// </summary>
-        public void Look(Quaternion rotation) => playerBody.transform.rotation = rotation;
+        public void Look(Quaternion rotation)
+        {
+            foreach(var playerBody in playerBodys)
+            {
+                playerBody.transform.rotation = rotation;
+            }
+        }
 
         /// <summary>
         /// 이동 키 입력시 발생하는 메서드
@@ -228,6 +272,7 @@ namespace Hun.Player
                 }
 
                 maxPositionY = Mathf.Round(transform.position.y);
+                anim.SetBool("isInAir", false);
                 isInAir = false;
             }
             else if(!isInAir && !IsGrounded)
