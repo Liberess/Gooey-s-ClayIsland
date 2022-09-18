@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: KCC-Murukmuruk SDF Txt2
   m_EditorClassIdentifier: 
-  hashCode: 85923548
+  hashCode: 85062685
   material: {fileID: 2819004286332956939}
-  materialHashCode: 179844220
+  materialHashCode: -362602595
   m_Version: 1.1.0
   m_SourceFontFileGUID: 95df668fb03cc4016a0d7bbb8c7b9209
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 95df668fb03cc4016a0d7bbb8c7b9209,
@@ -7841,8 +7841,8 @@ Material:
     m_Colors:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
-    - _FaceColor: {r: 1, g: 0, b: 0, a: 1}
-    - _GlowColor: {r: 1, g: 1, b: 1, a: 0.5}
+    - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
+    - _GlowColor: {r: 0.014942927, g: 0.18867922, b: 0, a: 1}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
