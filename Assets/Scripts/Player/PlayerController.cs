@@ -85,9 +85,7 @@ namespace Hun.Player
 
                 if (clayBlock.ClayBlockType != ClayBlockType.Ice)
                 {
-                    var root = PlayerMouthful.MouthfulRoot;
-                    if (Physics.Raycast(root.position, root.forward, 1f, LayerMask.GetMask("ClayBlock")))
-                        PlayerInteract.SetSlipIceState(false);
+                    PlayerInteract.SetSlipIceState(false);
                 }
             }
         }

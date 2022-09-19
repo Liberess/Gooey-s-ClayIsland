@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,17 +21,31 @@ namespace Hun.Player
         {
             get
             {
-                var colliders = Physics.OverlapSphere(transform.position, 0.7f,
+                Collider[] colliders = Physics.OverlapSphere(transform.position, 0.3f,
                     LayerMask.GetMask("ClayBlock"));
 
-                foreach(var collider in colliders)
+                Collider collider = colliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).
+                    Where(c => c.GetComponent<ClayBlock>().ClayBlockType == ClayBlockType.Ice).FirstOrDefault();
+
+                if(collider != null && collider.TryGetComponent(out ClayBlock clay))
                 {
-                    if (collider.TryGetComponent(out ClayBlock clayBlock))
+                    Debug.Log(collider.name);
+                    if (clay.ClayBlockType == ClayBlockType.Ice)
+                        return true;
+                }
+
+
+/*                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (colliders[i].TryGetComponent(out ClayBlock clayBlock))
                     {
-                        if(clayBlock.ClayBlockType == ClayBlockType.Ice)
+#if UNITY_EDITOR
+                        Debug.DrawLine(transform.position, colliders[i].transform.position, Color.red, 2f);
+#endif
+                        if (clayBlock.ClayBlockType == ClayBlockType.Ice)
                             return true;
                     }
-                }
+                }*/
 
                 return false;
             }
