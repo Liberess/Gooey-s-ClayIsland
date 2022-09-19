@@ -1,5 +1,45 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-9188226967927030542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.bank
+  m_EditorClassIdentifier: 
+  Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.bank
+  Name: Master
+  StudioPath: bank:/Master
+  lastModified: 637992335172019184
+  FileSizes:
+  - Name: Desktop
+    Value: 2285568
+  Exists: 1
+--- !u!114 &-8623229094330830717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c18180ecb35941f4682ae60107b85b7c, type: 3}
+  m_Name: bank:/Master.strings.bank
+  m_EditorClassIdentifier: 
+  Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.strings.bank
+  Name: Master.strings
+  StudioPath: bank:/Master.strings
+  lastModified: 637992335172027406
+  FileSizes:
+  - Name: Desktop
+    Value: 874
+  Exists: 1
 --- !u!114 &-6861101217240042027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47,6 +87,33 @@ MonoBehaviour:
   - Name: Desktop
     Value: 4964288
   Exists: 1
+--- !u!114 &-6498871380555011158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Event/Music/MainTheme
+  m_EditorClassIdentifier: 
+  Path: event:/Event/Music/MainTheme
+  Guid:
+    Data1: 468124175
+    Data2: 1205780020
+    Data3: 2028710811
+    Data4: -1713051804
+  Banks:
+  - {fileID: -9188226967927030542}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 0
+  MaxDistance: 2
+  Length: 163052
 --- !u!114 &-4838024494124719857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -107,18 +174,18 @@ MonoBehaviour:
   m_Name: FMODStudioCache
   m_EditorClassIdentifier: 
   EditorBanks:
-  - {fileID: -4838024494124719857}
-  - {fileID: -6635242060061428277}
+  - {fileID: -8623229094330830717}
+  - {fileID: -9188226967927030542}
   EditorEvents:
-  - {fileID: -6861101217240042027}
-  - {fileID: 1111107772017452245}
-  - {fileID: -3935072846710811786}
+  - {fileID: -6498871380555011158}
+  - {fileID: 6945336714828514888}
+  - {fileID: 4631398163720572524}
   EditorParameters: []
   MasterBanks:
-  - {fileID: -6635242060061428277}
+  - {fileID: -9188226967927030542}
   StringsBanks:
-  - {fileID: -4838024494124719857}
-  cacheTime: 637991973169003585
+  - {fileID: -8623229094330830717}
+  cacheTime: 637992335172027406
   cacheVersion: 131592
 --- !u!114 &1111107772017452245
 MonoBehaviour:
@@ -140,6 +207,60 @@ MonoBehaviour:
     Data4: -1823797691
   Banks:
   - {fileID: -6635242060061428277}
+  IsStream: 1
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 24625
+--- !u!114 &4631398163720572524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Event/Ambience/Wave
+  m_EditorClassIdentifier: 
+  Path: event:/Event/Ambience/Wave
+  Guid:
+    Data1: 2021697672
+    Data2: 1328401461
+    Data3: -1680514423
+    Data4: 1646102396
+  Banks:
+  - {fileID: -9188226967927030542}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
+--- !u!114 &6945336714828514888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Event/Ambience/Whoosh
+  m_EditorClassIdentifier: 
+  Path: event:/Event/Ambience/Whoosh
+  Guid:
+    Data1: 386730563
+    Data2: 1079960806
+    Data3: -1454473291
+    Data4: -1823797691
+  Banks:
+  - {fileID: -9188226967927030542}
   IsStream: 1
   Is3D: 0
   IsOneShot: 1
