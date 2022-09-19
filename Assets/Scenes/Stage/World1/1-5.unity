@@ -12597,6 +12597,11 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 1336502949788226646, guid: 0091fb9dc7eb08d49812566dfb4a23af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1336502950146851592, guid: 0091fb9dc7eb08d49812566dfb4a23af,
         type: 3}
       propertyPath: m_Pivot.x
@@ -12706,6 +12711,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GameCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 1336502950202042086, guid: 0091fb9dc7eb08d49812566dfb4a23af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1336502950344855131, guid: 0091fb9dc7eb08d49812566dfb4a23af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7361168210857839737, guid: 0091fb9dc7eb08d49812566dfb4a23af,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0091fb9dc7eb08d49812566dfb4a23af, type: 3}
@@ -17329,7 +17349,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2142087114
 Transform:
   m_ObjectHideFlags: 0

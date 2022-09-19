@@ -17,7 +17,7 @@ public class GameStartButton : MonoBehaviour
             if (Input.GetKeyDown("space"))
             {
                 effectAnim.SetTrigger("GameStart");
-                Invoke("GameStart", 3f);
+                Invoke("GameStart", 2.5f);
             }
         }
     }
@@ -31,12 +31,12 @@ public class GameStartButton : MonoBehaviour
     {
         this.stageNum = stageNum;
         clayEffect.SetActive(true);
-        Invoke("StageStart", 2f);
+        Invoke("StageStart", 1.5f);
     }
 
     private void StageStart()
     {
         if(stageNum == 1)
-            Hun.Manager.GameManager.Instance.LoadScene("1-1");
+            Hun.Manager.GameManager.Instance.LoadScene("1-5");
     }
 }
