@@ -33,7 +33,7 @@ public class GameStartButton : MonoBehaviour
     {
         this.stageNum = stageNum;
         clayEffect.SetActive(true);
-        Invoke("StageStart", 1.5f);
+        Invoke("StageStart", 3f);
     }
 
     private void StageStart()
