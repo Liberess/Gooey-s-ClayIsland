@@ -17,40 +17,55 @@ namespace Hun.Player
         public bool IsCarryingObject { get; private set; }
 
         public bool IsLadderInside { get; set; }
+        [SerializeField] private bool m_IsIceInside;
         public bool IsIceInside
         {
             get
             {
-                Collider[] colliders = Physics.OverlapSphere(transform.position, 0.3f,
-                    LayerMask.GetMask("ClayBlock"));
-
-                Collider collider = colliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).
-                    Where(c => c.GetComponent<ClayBlock>().ClayBlockType == ClayBlockType.Ice).FirstOrDefault();
-
-                if(collider != null && collider.TryGetComponent(out ClayBlock clay))
+                if(IsSlipIce)
                 {
-                    Debug.Log(collider.name);
-                    if (clay.ClayBlockType == ClayBlockType.Ice)
-                        return true;
+                    if(!m_IsIceInside)
+                    {
+                        Collider[] colliders = Physics.OverlapSphere(transform.position,
+                            0.3f, LayerMask.GetMask("ClayBlock"));
+
+                        Collider collider = colliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).
+                            Where(c => c.GetComponent<ClayBlock>().ClayBlockType == ClayBlockType.Ice).FirstOrDefault();
+
+                        if (collider != null && collider.TryGetComponent(out ClayBlock clay))
+                        {
+                            if (clay.ClayBlockType == ClayBlockType.Ice)
+                            {
+                                m_IsIceInside = true;
+                                return m_IsIceInside;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    RaycastHit hit;
+                    if(Physics.Raycast(transform.position, Vector3.down, out hit,
+                        0.3f, LayerMask.GetMask("ClayBlock")))
+                    {
+                        if(hit.collider != null && hit.collider.TryGetComponent(out ClayBlock clay))
+                        {
+                            if (clay.ClayBlockType != ClayBlockType.Ice)
+                            {
+                                m_IsSlipIce = false;
+                                return false;
+                            }
+                        }
+                    }
                 }
 
-
-/*                for (int i = 0; i < colliders.Length; i++)
-                {
-                    if (colliders[i].TryGetComponent(out ClayBlock clayBlock))
-                    {
-#if UNITY_EDITOR
-                        Debug.DrawLine(transform.position, colliders[i].transform.position, Color.red, 2f);
-#endif
-                        if (clayBlock.ClayBlockType == ClayBlockType.Ice)
-                            return true;
-                    }
-                }*/
-
-                return false;
+                m_IsIceInside = false;
+                return m_IsIceInside;
             }
         }
-        public bool IsSlipIce { get; private set; }
+
+        [SerializeField] private bool m_IsSlipIce;
+        public bool IsSlipIce { get => m_IsSlipIce; }
         public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
@@ -89,7 +104,7 @@ namespace Hun.Player
         /// </summary>
         public void SetCanonState(bool value) => IsCanonInside = value;
 
-        public void SetSlipIceState(bool value) => IsSlipIce = value;
+        public void SetSlipIceState(bool value) => m_IsSlipIce = value;
 
         /// <summary>
         /// 인터랙트 키(Enter) 입력시 발생하는 메서드

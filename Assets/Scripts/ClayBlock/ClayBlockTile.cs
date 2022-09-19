@@ -60,8 +60,8 @@ public class ClayBlockTile : ClayBlock
     {
         if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
         {
-            if (!IsBlockedAround())
-                return;
+/*            if (!IsBlockedAround())
+                return;*/
 
             Vector3 dirVec = Vector3.zero;
 
@@ -78,7 +78,7 @@ public class ClayBlockTile : ClayBlock
                     dirVec = directionVector.defaultVectors[i];
             }
 
-            if (dirVec != Vector3.zero && -playerCtrl.PlayerMovement.MovingInputValue == dirVec)
+            if (dirVec != Vector3.zero && playerCtrl.PlayerMovement.MovingInputValue == dirVec)
                 playerCtrl.PlayerMovement.AddMoveForce(dirVec);
         }
     }
@@ -109,7 +109,7 @@ public class ClayBlockTile : ClayBlock
             case ClayBlockType.Ice:
                 isPlayerOver = true;
 
-                if (playerCtrl.PlayerMovement.IsOverIce)
+                if (playerCtrl.PlayerMovement.IsOverIce || playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
                 Vector3 dirVec = Vector3.zero;

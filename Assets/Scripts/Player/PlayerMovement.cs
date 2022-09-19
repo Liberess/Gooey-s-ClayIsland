@@ -35,6 +35,8 @@ namespace Hun.Player
         public Vector3 MovingInputValue { get; private set; }
         private Vector3 movingVector = Vector3.zero;
 
+        public Vector3 PreviousPos { get; private set; }
+
         private Rigidbody rigid;
         private Animator anim;
         public Animator Anim { get => anim; }
@@ -90,6 +92,8 @@ namespace Hun.Player
                 playerBody = playerBodys[(int)PlayerState.spit];
 
             SetupDashEvent();
+
+            StartCoroutine(UpdatePreviousPosition());
         }
 
         private void Update()
@@ -130,6 +134,17 @@ namespace Hun.Player
                 StartCoroutine(AddMoveForceCo(dir));
         }
 
+        private IEnumerator UpdatePreviousPosition()
+        {
+            WaitForSeconds delay = new WaitForSeconds(0.5f);
+            while(true)
+            {
+                yield return delay;
+                PreviousPos = transform.position;
+                yield return null;
+            }
+        }
+
         public IEnumerator AddMoveForceCo(Vector3 dir)
         {
             IsOverIce = true;
@@ -140,17 +155,20 @@ namespace Hun.Player
 
             while (true)
             {
-                //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
-                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
-                    break;
+                yield return null;
 
-                rigid.velocity = dir * 5f;
-                //transform.Translate(dir * 4f * Time.deltaTime);
+                //rigid.AddForce(dir * 0.1f, ForceMode.VelocityChange);
+                //rigid.velocity = dir * 5f;
+                transform.Translate(dir * 4f * Time.deltaTime);
 
                 for (int i = 0; i < playerBodys.Length; i++)
                     playerBody.transform.rotation = Quaternion.LookRotation(dir);
 
                 yield return new WaitForEndOfFrame();
+
+                //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
+                if (!playerCtrl.PlayerInteract.IsIceInside && !playerCtrl.PlayerInteract.IsSlipIce)
+                    break;
             }
 
             SetMovement(true);
