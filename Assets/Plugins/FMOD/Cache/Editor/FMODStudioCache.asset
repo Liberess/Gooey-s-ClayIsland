@@ -42,7 +42,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 637992191301533804
+  lastModified: 637991973168993927
   FileSizes:
   - Name: Desktop
     Value: 4964288
@@ -62,7 +62,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 637992191301553745
+  lastModified: 637991973169003585
   FileSizes:
   - Name: Desktop
     Value: 874
@@ -118,7 +118,7 @@ MonoBehaviour:
   - {fileID: -6635242060061428277}
   StringsBanks:
   - {fileID: -4838024494124719857}
-  cacheTime: 637992191301553745
+  cacheTime: 637991973169003585
   cacheVersion: 131592
 --- !u!114 &1111107772017452245
 MonoBehaviour:

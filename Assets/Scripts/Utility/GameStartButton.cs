@@ -7,6 +7,7 @@ public class GameStartButton : MonoBehaviour
     [SerializeField] Animator effectAnim;
 
     [SerializeField] GameObject clayEffect;
+    [SerializeField] AudioSource intro;
 
     private int stageNum;
 
@@ -16,6 +17,7 @@ public class GameStartButton : MonoBehaviour
         {
             if (Input.GetKeyDown("space"))
             {
+                intro.Play();
                 effectAnim.SetTrigger("GameStart");
                 Invoke("GameStart", 2.5f);
             }
