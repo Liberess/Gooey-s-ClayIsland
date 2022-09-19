@@ -18,8 +18,8 @@ RenderSettings:
   m_FogColor: {r: 0.4575472, g: 0.92767304, b: 1, a: 1}
   m_FogMode: 1
   m_FogDensity: 0
-  m_LinearFogStart: 171.54
-  m_LinearFogEnd: 386.3
+  m_LinearFogStart: 200
+  m_LinearFogEnd: 800
   m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
   m_AmbientEquatorColor: {r: 1, g: 0.8149279, b: 0.5896226, a: 1}
   m_AmbientGroundColor: {r: 0.03388311, g: 0.3584906, b: 0, a: 1}
@@ -4277,6 +4277,11 @@ PrefabInstance:
       propertyPath: orthographic size
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 307671263760670546, guid: 87c92647fd2b841468da840260d33d8f,
+        type: 3}
+      propertyPath: field of view
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 307671264242673896, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
       propertyPath: m_RootOrder
@@ -4321,6 +4326,21 @@ PrefabInstance:
         type: 3}
       propertyPath: cameraDistances.Array.data[2]
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
+        type: 3}
+      propertyPath: skyboxCameraDistances.Array.data[0]
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
+        type: 3}
+      propertyPath: skyboxCameraDistances.Array.data[1]
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 6080317411965542817, guid: 87c92647fd2b841468da840260d33d8f,
+        type: 3}
+      propertyPath: skyboxCameraDistances.Array.data[2]
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 6283051493334209939, guid: 87c92647fd2b841468da840260d33d8f,
         type: 3}
