@@ -83,9 +83,28 @@ namespace Hun.Player
             {
                 clayBlock.OnEnter();
 
-                if (clayBlock.ClayBlockType != ClayBlockType.Ice)
+                if(PlayerInteract.IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                 {
-                    PlayerInteract.SetSlipIceState(false);
+                    float distance = Vector3.Distance(transform.position + (transform.up * 0.5f),
+                            clayBlock.transform.position);
+                    if (distance <= 1f)
+                    {
+                        Debug.Log("¾Õ¿¡ ´êÀ½");
+                        PlayerInteract.SetSlipIceState(false);
+                    }
+                    else
+                    {
+                        RaycastHit hit;
+                        if (Physics.Raycast(transform.position, Vector3.down,
+                            out hit, 0.3f, LayerMask.GetMask("ClayBlock")))
+                        {
+                            if (hit.collider != null && hit.collider.TryGetComponent(out ClayBlock clay))
+                            {
+                                if (clay.ClayBlockType != ClayBlockType.Ice)
+                                    PlayerInteract.SetSlipIceState(false);
+                            }
+                        }
+                    }
                 }
             }
         }
