@@ -17,7 +17,7 @@ public class GameStartButton : MonoBehaviour
             if (Input.GetKeyDown("space"))
             {
                 effectAnim.SetTrigger("GameStart");
-                Invoke("GameStart", 1f);
+                Invoke("GameStart", 3f);
             }
         }
     }
@@ -31,7 +31,7 @@ public class GameStartButton : MonoBehaviour
     {
         this.stageNum = stageNum;
         clayEffect.SetActive(true);
-        Invoke("StageStart", 1f);
+        Invoke("StageStart", 2f);
     }
 
     private void StageStart()
