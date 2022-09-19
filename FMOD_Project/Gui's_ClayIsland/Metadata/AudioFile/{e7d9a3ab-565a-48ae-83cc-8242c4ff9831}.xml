@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{e7d9a3ab-565a-48ae-83cc-8242c4ff9831}">
+		<property name="assetPath">
+			<value>swipes and whooshes broom long stick slow and long swings stereo ORTF 8040.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>96</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>24.625</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ae55c5b4-3504-4491-b1e4-d517b675087c}</destination>
+		</relationship>
+	</object>
+</objects>

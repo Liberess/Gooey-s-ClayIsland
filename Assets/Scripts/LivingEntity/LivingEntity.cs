@@ -91,11 +91,11 @@ namespace Hun.Entity
             lastDamagedTime = Time.time;
             Heart -= dmgMsg.dmgAmount;
 
-/*            if (heart <= 0 && !IsDead)
+            if (heart <= 0 && !IsDead)
             {
                 heart = 0;
                 Die();
-            }*/
+            }
         }
 
         private void ApplyUpdate(int newHealth, bool newIsDead)
@@ -113,6 +113,17 @@ namespace Hun.Entity
                 Heart = originHeart;
             else
                 Heart += value;
+        }
+
+        public virtual void RestoreLife(int value)
+        {
+            if (IsDead)
+                return;
+
+            if (Life + value >= maxLife)
+                Life = maxLife;
+            else
+                Life += value;
         }
 
         public virtual void Die()

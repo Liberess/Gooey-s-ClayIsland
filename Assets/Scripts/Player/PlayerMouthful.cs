@@ -8,6 +8,7 @@ namespace Hun.Player
     {
         private PlayerController playerCtrl;
         private PlayerInteract playerInteract;
+        private PlayerMovement playerMovement;
 
         [Header("== Mouthful Property ==")]
         [SerializeField] private Transform mouthfulRoot;
@@ -16,6 +17,7 @@ namespace Hun.Player
         [SerializeField] private float spitRadius = 1f;
 
         [SerializeField] private ClayBlock targetClayBlock;
+        public ClayBlock TargetClayBlock { get => targetClayBlock; }
         private List<ClayBlock> targetClayBlockList = new List<ClayBlock>();
 
         private RaycastHit hitBlock;
@@ -28,7 +30,7 @@ namespace Hun.Player
             get
             {
                 if (Time.time >= lastMouthfulTime + minTimeBetMouthful &&
-                    !anim.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Mouthful"))
+                    !playerMovement.Anim.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Mouthful"))
                     return true;
 
                 return false;
@@ -42,6 +44,7 @@ namespace Hun.Player
             anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
             playerInteract = GetComponent<PlayerInteract>();
+            playerMovement = GetComponent<PlayerMovement>();
         }
 
         private void Start()
@@ -58,6 +61,9 @@ namespace Hun.Player
             if (!IsMouthful)
                 return;
 
+            if (!playerMovement.getIsGrounded)
+                return;
+
             lastMouthfulTime = Time.time;
 
             if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
@@ -70,7 +76,8 @@ namespace Hun.Player
             }
             else //Fusion or Spit or Division
             {
-                anim.SetTrigger("isMouthful");
+                playerMovement.ChangeModel(PlayerState.spit);
+                playerMovement.Anim.SetTrigger("isMouthful");
                 StartCoroutine(CheckMouthfulAnimState());
 
                 if(targetClayBlock)
@@ -126,7 +133,7 @@ namespace Hun.Player
         /// </summary>
         private void Mouthful()
         {
-            anim.SetTrigger("isMouthful");
+            playerMovement.Anim.SetTrigger("isMouthful");
 
             RaycastHit hit;
             if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
@@ -134,6 +141,9 @@ namespace Hun.Player
             {
                 if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
+                    playerMovement.ChangeModel(PlayerState.mouthful);
+                    playerMovement.Anim.SetTrigger("isMouthful");
+
                     if (clayBlock.IsMouthful)
                     {
                         clayBlock.OnMouthful();
@@ -185,13 +195,13 @@ namespace Hun.Player
 
             playerCtrl.PlayerMovement.SetMovement(false);
 
-            anim.SetBool("isWalk", false);
+            playerMovement.Anim.SetBool("isWalk", false);
 
             while (true)
             {
                 yield return delay;
 
-                if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+                if (playerMovement.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
                     break;
             }
 

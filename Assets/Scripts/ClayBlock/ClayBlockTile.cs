@@ -48,6 +48,43 @@ public class ClayBlockTile : ClayBlock
         anim = GetComponentInChildren<Animator>();
         boxCol = GetComponentInChildren<BoxCollider>();
 
+        SetupDirectionVectors();
+    }
+
+    private void OnEnable()
+    {
+        SetupDirectionVectors();
+    }
+
+    private void Update()
+    {
+        if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
+        {
+/*            if (!IsBlockedAround())
+                return;*/
+
+            Vector3 dirVec = Vector3.zero;
+
+            for (int i = 0; i < directionVector.dirVectors.Length; i++)
+            {
+                if (Physics.Raycast(transform.position + Vector3.up,
+                    directionVector.defaultVectors[i], 1f, ~targetLayer))
+                    continue;
+
+                Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
+                    boxCol.size / 2, Quaternion.identity, targetLayer);
+
+                if (colliders != null && colliders.Length > 0)
+                    dirVec = directionVector.defaultVectors[i];
+            }
+
+            if (dirVec != Vector3.zero && playerCtrl.PlayerMovement.MovingInputValue == dirVec)
+                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
+        }
+    }
+
+    private void SetupDirectionVectors()
+    {
         var defaultVec = boxCol.center + transform.position + Vector3.up;
 
         Vector3[] newVecs =
@@ -65,46 +102,14 @@ public class ClayBlockTile : ClayBlock
         directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
     }
 
-    private void Update()
-    {
-        if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
-        {
-            if (!IsBlockedAround())
-                return;
-
-            Vector3 dirVec = Vector3.zero;
-
-            for (int i = 0; i < directionVector.dirVectors.Length; i++)
-            {
-                if (Physics.Raycast(transform.position + Vector3.up,
-                    directionVector.defaultVectors[i], 1f, ~targetLayer))
-                    continue;
-
-                Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
-                    boxCol.size / 2, Quaternion.identity, targetLayer);
-
-                if (colliders != null && colliders.Length > 0)
-                    dirVec = directionVector.defaultVectors[i];
-            }
-
-            if (dirVec != Vector3.zero && -playerCtrl.PlayerMovement.MovingInputValue == dirVec)
-                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
-        }
-    }
-
     public override void OnEnter()
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
             case ClayBlockType.Ice:
                 isPlayerOver = true;
-                if (playerCtrl.PlayerMovement.IsOverIce)
+
+                if (playerCtrl.PlayerMovement.IsOverIce || playerCtrl.PlayerInteract.IsSlipIce)
                     break;
 
                 Vector3 dirVec = Vector3.zero;
@@ -135,12 +140,6 @@ public class ClayBlockTile : ClayBlock
                 if (dirVec != Vector3.zero)
                     playerCtrl.PlayerMovement.AddMoveForce(dirVec);
                 break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
-                break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.InitializeMovingVector();
                 playerCtrl.PlayerMovement.playerGravityY = 0.001f;
@@ -150,45 +149,15 @@ public class ClayBlockTile : ClayBlock
 
     public override void OnStay()
     {
-        switch (clayBlockType)
-        {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
-            case ClayBlockType.Ice:
-                break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
-                break;
-            case ClayBlockType.Water:
-                break;
-        }
+
     }
 
     public override void OnExit()
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Grass:
-                break;
-            case ClayBlockType.Mud:
-                break;
-            case ClayBlockType.Sand:
-                break;
             case ClayBlockType.Ice:
                 isPlayerOver = false;
-                break;
-            case ClayBlockType.Lime:
-                break;
-            case ClayBlockType.Oil:
-                break;
-            case ClayBlockType.Stone:
                 break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.playerGravityY = 1f;
@@ -296,8 +265,37 @@ public class ClayBlockTile : ClayBlock
         if (blockA == null || blockB == null)
             throw new System.Exception("blockA 또는 blockB의 값이 null입니다.");
 
+        // 점토 장치 방향 설정
+        Vector3 dir = blockB.transform.position - playerCtrl.gameObject.transform.position;
+        dir = dir.normalized;
+
+        if (0.5 < dir.x && dir.x <= 1)
+        {
+            dir = new Vector3(1, 0, 0);
+        }
+        else if (0 < dir.x && dir.x <= 0.5)
+        {
+            if (0 < dir.z)
+                dir = new Vector3(0, 0, 1);
+            else
+                dir = new Vector3(0, 0, -1);
+        }
+        else if (-0.5 < dir.x && dir.x <= 0)
+        {
+            if (0 < dir.z)
+                dir = new Vector3(0, 0, 1);
+            else
+                dir = new Vector3(0, 0, -1);
+        }
+        else if (-1 <= dir.x && dir.x <= -0.5)
+        {
+            dir = new Vector3(-1, 0, 0);
+        }
+
+        var tempRotation = Quaternion.LookRotation(dir);
+
         var tempObj = Instantiate(currentTemperPrefab,
-            blockB.transform.position, Quaternion.identity).GetComponent<ClayBlock>();
+            blockB.transform.position, tempRotation).GetComponent<ClayBlock>();
         tempObj.currentClayBlocks.Initialize();
 
         tempObj.currentClayBlocks[0] = blockA;
@@ -341,9 +339,8 @@ public class ClayBlockTile : ClayBlock
                     return true;
 
                 case ClayBlockType.Ice:
-                    Debug.Log("탱탱볼 추가");
                     currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
+                        GetTemperPrefab(TemperObjectType.BouncyBall);
                     isSuccess = true;
                     return true;
             }
@@ -365,9 +362,8 @@ public class ClayBlockTile : ClayBlock
                     return true;
 
                 case ClayBlockType.Ice:
-                    Debug.Log("탱탱볼 추가");
                     currentTemperPrefab = GameManager.Instance.
-                        GetTemperPrefab(TemperObjectType.Trampoline);
+                        GetTemperPrefab(TemperObjectType.BouncyBall);
                     isSuccess = true;
                     return true;
             }

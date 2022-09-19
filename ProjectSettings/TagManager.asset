@@ -15,11 +15,12 @@ TagManager:
   - Trampiline
   - FarCamera
   - NearCamera
+  - Stage
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - VFX_Front
   - Water
   - UI
   - Player

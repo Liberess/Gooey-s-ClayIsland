@@ -8,7 +8,7 @@ namespace Hun.Item
     {
         public void UseItem()
         {
-            Manager.GameManager.Instance.GetCoin(50);
+            Manager.GameManager.Instance.GetCoin(1);
         }
 
         public void OnEnter()

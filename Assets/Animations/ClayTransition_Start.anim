@@ -66,6 +66,8 @@ AnimationClip:
       value: {fileID: 21300000, guid: 3adeb47c6569f4ed0a8c7283548bae1b, type: 3}
     - time: 1.0833334
       value: {fileID: 21300000, guid: 2c7815416b9db40e8b135a07d9dc8d2f, type: 3}
+    - time: 1.8333334
+      value: {fileID: 21300000, guid: 2c7815416b9db40e8b135a07d9dc8d2f, type: 3}
     attribute: m_Sprite
     path: Canvas/ClayImage
     classID: 114
@@ -106,12 +108,13 @@ AnimationClip:
     - {fileID: 21300000, guid: 190384515c53e471cba9dee6f3907d4f, type: 3}
     - {fileID: 21300000, guid: 3adeb47c6569f4ed0a8c7283548bae1b, type: 3}
     - {fileID: 21300000, guid: 2c7815416b9db40e8b135a07d9dc8d2f, type: 3}
+    - {fileID: 21300000, guid: 2c7815416b9db40e8b135a07d9dc8d2f, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.1
+    m_StopTime: 1.85
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0

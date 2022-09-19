@@ -78,7 +78,7 @@ namespace Hun.Utility
 
             return success;
         }
-
+        
         public static GameObject GetNearestObjectByList(List<GameObject> list, Vector3 pos)
         {
             float minDistance = 1000.0f;

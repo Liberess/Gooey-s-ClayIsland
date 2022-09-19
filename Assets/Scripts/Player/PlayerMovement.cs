@@ -5,26 +5,42 @@ using UnityEngine.InputSystem;
 
 namespace Hun.Player
 {
+    public enum PlayerState
+    {
+        spit = 0,
+        mouthful,
+    }
+
     public class PlayerMovement : MonoBehaviour
     {
         private PlayerController playerCtrl;
 
         [Header("== Movement Property ==")]
         [SerializeField] private GameObject playerBody;
+        [SerializeField] private GameObject[] playerBodys = new GameObject[2];
         [SerializeField, Range(0F, 10F)] private float moveSpeed = 2f;
-        public float MoveSpeed { get => moveSpeed; }
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
         private float currentDashSpeed = 1f;
         [SerializeField, Range(0f, 10f)] private float ladderUpDownSpeed = 3f;
+        [SerializeField, Range(0F, 10F)] private float moveSpeedInCanon = 2f;
+        public float MoveSpeedInCanon { get => moveSpeedInCanon; }
         [HideInInspector] public float playerGravityY = 1f;
         public bool IsMove { get; private set; }
         public bool IsOverIce { get; private set; }
 
+        [SerializeField] private float fallDamageValue = 3f;
+        [SerializeField] private float maxPositionY;
+        private bool isInAir = false;
+
         public Vector3 MovingInputValue { get; private set; }
         private Vector3 movingVector = Vector3.zero;
 
+        public Vector3 PreviousPos { get; private set; }
+
         private Rigidbody rigid;
         private Animator anim;
+        public Animator Anim { get => anim; }
+        [SerializeField] private Animator[] anims = new Animator[2];
 
         private bool IsGrounded
         {
@@ -44,18 +60,19 @@ namespace Hun.Player
                 }
 
                 //Debug.Log("Fall Anim 추가");
-                //anim.SetBool("");
+                anim.SetBool("isInAir",true);
+
                 return false;
             }
         }
-
+        public bool getIsGrounded { get => IsGrounded; }
 
         private bool isMoveForceCoroutineing = false;
 
         private void Awake()
         {
+            anim = anims[(int)PlayerState.spit];
             rigid = GetComponent<Rigidbody>();
-            anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
         }
 
@@ -63,15 +80,25 @@ namespace Hun.Player
         {
             IsMove = true;
             currentDashSpeed = 1f;
+            maxPositionY = Mathf.Round(transform.position.y);
+
+            if (playerBodys.Length == 0)
+            {
+                playerBodys[0] = transform.GetChild(0).gameObject;
+                playerBodys[1] = transform.GetChild(1).gameObject;
+            }
 
             if (playerBody == null)
-                playerBody = transform.GetChild(0).gameObject;
+                playerBody = playerBodys[(int)PlayerState.spit];
 
             SetupDashEvent();
+
+            StartCoroutine(UpdatePreviousPosition());
         }
 
         private void Update()
         {
+            CountFallDamage();
             UpdateGravity();
         }
 
@@ -80,11 +107,42 @@ namespace Hun.Player
             UpdateMovement();
         }
 
+        public void ChangeModel(PlayerState playerState)
+        {
+            if(playerState == PlayerState.spit)
+            {
+                playerBodys[(int)PlayerState.spit].SetActive(true);
+                playerBodys[(int)PlayerState.mouthful].SetActive(false);
+
+                playerBody = playerBodys[(int)PlayerState.spit];
+                anim = anims[(int)PlayerState.spit];
+            }
+            else
+            {
+                playerBodys[(int)PlayerState.mouthful].SetActive(true);
+                playerBodys[(int)PlayerState.spit].SetActive(false);
+
+                playerBody = playerBodys[(int)PlayerState.mouthful];
+                anim = anims[(int)PlayerState.mouthful];
+            }
+        }
+
         #region Movement (Move, Look)
         public void AddMoveForce(Vector3 dir)
         {
-            if(!isMoveForceCoroutineing)
+            if (!isMoveForceCoroutineing)
                 StartCoroutine(AddMoveForceCo(dir));
+        }
+
+        private IEnumerator UpdatePreviousPosition()
+        {
+            WaitForSeconds delay = new WaitForSeconds(0.5f);
+            while(true)
+            {
+                yield return delay;
+                PreviousPos = transform.position;
+                yield return null;
+            }
         }
 
         public IEnumerator AddMoveForceCo(Vector3 dir)
@@ -97,24 +155,20 @@ namespace Hun.Player
 
             while (true)
             {
+                yield return null;
+
+                //rigid.AddForce(dir * 0.1f, ForceMode.VelocityChange);
                 //rigid.velocity = dir * 5f;
+                transform.Translate(dir * 4f * Time.deltaTime);
 
-                transform.Translate(dir * 5f * Time.deltaTime/*, Space.Self*/);
+                for (int i = 0; i < playerBodys.Length; i++)
+                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
 
-                playerBody.transform.rotation = Quaternion.LookRotation(dir);
+                yield return new WaitForEndOfFrame();
 
                 //얼음 위에 있지 않거나, 미끄러지는 상태가 아니라면
-                if (!playerCtrl.PlayerInteract.IsIceInside || !playerCtrl.PlayerInteract.IsSlipIce)
+                if (!playerCtrl.PlayerInteract.IsIceInside && !playerCtrl.PlayerInteract.IsSlipIce)
                     break;
-
-/*                if (playerCtrl.PlayerInteract.IsSlipIce &&
-                    Vector3.Distance(rigid.velocity, Vector3.zero) <= 0.00000001f)
-                {
-                    Debug.Log("걸림");
-                    break;
-                }*/
-
-                yield return Time.deltaTime;
             }
 
             SetMovement(true);
@@ -131,7 +185,13 @@ namespace Hun.Player
         /// <summary>
         /// 해당 방향으로 회전합니다.
         /// </summary>
-        public void Look(Quaternion rotation) => playerBody.transform.rotation = rotation;
+        public void Look(Quaternion rotation)
+        {
+            foreach(var playerBody in playerBodys)
+            {
+                playerBody.transform.rotation = rotation;
+            }
+        }
 
         /// <summary>
         /// 이동 키 입력시 발생하는 메서드
@@ -140,7 +200,8 @@ namespace Hun.Player
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
-            MovingInputValue = new Vector3(value.x, 0, value.y);
+            if (value != null)
+                MovingInputValue = new Vector3(value.x, 0, value.y);
         }
 
         /// <summary>
@@ -148,7 +209,7 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
-            if (!IsMove || !IsGrounded)
+            if (!IsMove || isInAir)
                 return;
 
             if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
@@ -201,6 +262,31 @@ namespace Hun.Player
             {
                 //movingVector = Vector3.zero;
                 anim.SetBool("isWalk", false);
+            }
+        }
+
+        private void CountFallDamage()
+        {
+            if (isInAir && IsGrounded)
+            {
+                if (maxPositionY - Mathf.Round(transform.position.y) >= fallDamageValue)
+                {
+                    Entity.DamageMessage dmgMsg = new Entity.DamageMessage();
+                    dmgMsg.damager = gameObject;
+                    dmgMsg.dmgAmount = 1;
+                    dmgMsg.hitNormal = transform.position;
+                    dmgMsg.hitPoint = transform.position;
+                    gameObject.GetComponent<PlayerHealth>().ApplyDamage(dmgMsg);
+                }
+
+                maxPositionY = Mathf.Round(transform.position.y);
+                anim.SetBool("isInAir", false);
+                isInAir = false;
+            }
+            else if(!isInAir && !IsGrounded)
+            {
+                maxPositionY = Mathf.Round(transform.position.y);
+                isInAir = true;
             }
         }
 

@@ -49,6 +49,7 @@ MonoBehaviour:
   menuPanel: {fileID: 0}
   quitPanel: {fileID: 0}
   pausePanel: {fileID: 0}
+  curStage: {fileID: 0}
   clayBlockTilePrefabList:
   - {fileID: 922733648282355284, guid: a8548cf2541c05341a345e39be14d287, type: 3}
   - {fileID: 0}
@@ -58,5 +59,6 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   temperObjPrefabList:
-  - {fileID: 1241308611840935574, guid: 0bc269828e1764bf6a1a7943f491aee2, type: 3}
-  - {fileID: 1241308611840935574, guid: 39135e427339a42fa89c98194cb658b4, type: 3}
+  - {fileID: 8221340661250592664, guid: 4a5b11f3148584a83b52b0a4bfff7a45, type: 3}
+  - {fileID: 881987110350021180, guid: 2b1af00e72cd747d096e152d24e16d1a, type: 3}
+  - {fileID: 8046190941369589386, guid: 50b3988061ea44dac947d27e9ceceeb2, type: 3}
