@@ -353,10 +353,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.42429724
-  m_Height: 0.84859455
+  m_Radius: 0.4
+  m_Height: 0.8
   m_Direction: 1
-  m_Center: {x: 0, y: 0.40000004, z: 0}
+  m_Center: {x: 0, y: 0.4, z: 0}
 --- !u!1001 &3435241548224529922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -588,20 +588,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!136 &915846516882802404
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2552701156143316248}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.42429724
-  m_Height: 0.84859455
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.40000004, z: 0}
 --- !u!4 &2893233463951288226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,

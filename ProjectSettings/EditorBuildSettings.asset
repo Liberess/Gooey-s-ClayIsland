@@ -15,11 +15,23 @@ EditorBuildSettings:
     path: Assets/Scenes/LobbyScene.unity
     guid: 9785d5600109a45b0ba1b07227ee6adf
   - enabled: 1
+    path: Assets/Scenes/LobbyScene2.unity
+    guid: 654ca8eb0bcf641e8a38f31cfc8eafc1
+  - enabled: 1
+    path: Assets/Scenes/LobbyScene3.unity
+    guid: ca874b77bc0b9411fb4904249153108e
+  - enabled: 0
     path: Assets/Scenes/Stage/World1/1-1.unity
     guid: a0110e578ff5f46adb97576afba6e424
   - enabled: 1
     path: Assets/Scenes/Stage/World1/1-5.unity
     guid: 91df76de066b74638a1d9ee57a6e9f56
+  - enabled: 1
+    path: Assets/Scenes/Stage/World1/1-6.unity
+    guid: ea4504fcc40b347c39c8cc43449fa475
+  - enabled: 1
+    path: Assets/Scenes/Stage/World1/1-7.unity
+    guid: 13eeac286d92243e5973227b0a0dcc6b
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: b03cf2ab1273444429c58ee485bcbd8b,
       type: 2}

@@ -78,13 +78,13 @@ namespace Hun.World
         {
             SweetCandy += value;
             Debug.Log(SweetCandy);
-            //UI¹Ý¿µ
+            //UIï¿½Ý¿ï¿½
         }
 
         /// <summary>
-        /// ÇÃ·¹ÀÌ¾î ½ºÆù½Ã È£ÃâµÇ´Â ¸Þ¼­µå
+        /// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="player">ÇÃ·¹ÀÌ¾î ¿ÀºêÁ§Æ®</param>
+        /// <param name="player">ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®</param>
         private void OnPlayerSpawned(Player.PlayerController player)
         {
             //player.Life = player.maxLife;
@@ -92,7 +92,7 @@ namespace Hun.World
         }
 
         /// <summary>
-        /// ÇÃ·¹ÀÌ¾î »ç¸Á½Ã È£ÃâµÇ´Â ¸Þ¼­µå
+        /// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ È£ï¿½ï¿½Ç´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         /// </summary>
         private void OnPlayerDied()
         {
