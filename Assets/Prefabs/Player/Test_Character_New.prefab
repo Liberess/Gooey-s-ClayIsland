@@ -478,17 +478,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,
         type: 3}
@@ -540,6 +540,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -3282064150797927048, guid: c1524865b0d39274daa4e1ff28c136d3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c1524865b0d39274daa4e1ff28c136d3,
         type: 3}
       propertyPath: m_Name
@@ -563,33 +568,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 3435241548527927369}
   m_PrefabAsset: {fileID: 0}
---- !u!136 &2656732148978257582
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2552701156143316248}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5511183
-  m_Height: 1.1239499
-  m_Direction: 1
-  m_Center: {x: 0, y: 0.49011776, z: 0}
---- !u!65 &6589112038749532559
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2552701156143316248}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.2, y: 1, z: 1}
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!95 &3435241548527927371
 Animator:
   serializedVersion: 4
@@ -610,6 +588,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!136 &915846516882802404
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2552701156143316248}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.42429724
+  m_Height: 0.84859455
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.40000004, z: 0}
 --- !u!4 &2893233463951288226 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c1524865b0d39274daa4e1ff28c136d3,

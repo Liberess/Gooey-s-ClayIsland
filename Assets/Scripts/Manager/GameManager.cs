@@ -87,7 +87,7 @@ namespace Hun.Manager
         }
 
         /// <summary>
-        /// ¿É¼ÇÃ¢À» ÄÁÆ®·ÑÇÏ´Â ÇÔ¼öÀÌ´Ù.
+        /// ï¿½É¼ï¿½Ã¢ï¿½ï¿½ ï¿½ï¿½Æ®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½Ì´ï¿½.
         /// </summary>
         public void OptionControl()
         {
@@ -155,14 +155,14 @@ namespace Hun.Manager
         {
             IsClear = true;
 
-            dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] = curStage.SweetCandy;
+            /*dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].sweetCandy[curStage.StageNum] = curStage.SweetCandy;
             if (dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] > curStage.CurTime)
                 dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].bestRecord[curStage.StageNum] = curStage.CurTime;
 
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].coin += Coin;
             dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].playTime += PlayTime;
-            dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("WorldMapScene");
+            dataMgr.GameData.gameState = GameState.Lobby;*/
+            LoadScene("LobbyScene");
         }
 
         #region Game Load & Quit
@@ -182,25 +182,25 @@ namespace Hun.Manager
         }
 
         /// <summary>
-        /// »õ·Î¿î °ÔÀÓÀ» »ý¼ºÇÏ´Â ÇÔ¼öÀÌ´Ù.
+        /// ï¿½ï¿½ï¿½Î¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½Ì´ï¿½.
         /// </summary>
         public void NewGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("WorldMapScene");
+            LoadScene("LobbyScene");
         }
 
         /// <summary>
-        /// Áö³­ °ÔÀÓÀ» ÀÌ¾îÇÏ´Â ÇÔ¼öÀÌ´Ù.
+        /// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¾ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½ï¿½Ì´ï¿½.
         /// </summary>
         public void ContinueGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("WorldMapScene");
+            LoadScene("LobbyScene");
         }
 
         /// <summary>
-        /// °ÔÀÓÀ» Á¾·á½ÃÅ°´Â ÇÔ¼öÀÌ´Ù.
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½Ì´ï¿½.
         /// </summary>
         public void QuitGame()
         {

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{b52ae029-03f9-4559-82c1-03f16695d1e6}">
+		<property name="assetPath">
+			<value>まちかどパン工房.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>111.75183673469388</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ae55c5b4-3504-4491-b1e4-d517b675087c}</destination>
+		</relationship>
+	</object>
+</objects>

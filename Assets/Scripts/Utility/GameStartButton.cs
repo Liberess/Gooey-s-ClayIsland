@@ -26,7 +26,7 @@ public class GameStartButton : MonoBehaviour
 
     private void GameStart()
     {
-        Hun.Manager.GameManager.Instance.LoadScene("WorldMapScene");
+        Hun.Manager.GameManager.Instance.LoadScene("LobbyScene");
     }
 
     public void StageStart(int stageNum)
