@@ -12,7 +12,7 @@ public class ClayBlockTile : ClayBlock
     private GameObject currentTemperPrefab = null;
     private DirectionVector directionVector = new DirectionVector();
 
-    [SerializeField] private bool isPlayerOver = false; //ÇÃ·¹ÀÌ¾î°¡ ³» À§¿¡ ÀÖÀ½!
+    [SerializeField] private bool isPlayerOver = false; //ï¿½Ã·ï¿½ï¿½Ì¾î°¡ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½!
 
     private Animator anim;
     private BoxCollider boxCol;
@@ -58,28 +58,31 @@ public class ClayBlockTile : ClayBlock
 
     private void Update()
     {
-        if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
+        if (clayBlockType == ClayBlockType.Ice)
         {
+            if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
+            {
 /*            if (!IsBlockedAround())
                 return;*/
 
-            Vector3 dirVec = Vector3.zero;
+                Vector3 dirVec = Vector3.zero;
 
-            for (int i = 0; i < directionVector.dirVectors.Length; i++)
-            {
-                if (Physics.Raycast(transform.position + Vector3.up,
-                    directionVector.defaultVectors[i], 1f, ~targetLayer))
-                    continue;
+                for (int i = 0; i < directionVector.dirVectors.Length; i++)
+                {
+                    if (Physics.Raycast(transform.position + Vector3.up,
+                            directionVector.defaultVectors[i], 1f, ~targetLayer))
+                        continue;
 
-                Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
-                    boxCol.size / 2, Quaternion.identity, targetLayer);
+                    Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
+                        boxCol.size / 2, Quaternion.identity, targetLayer);
 
-                if (colliders != null && colliders.Length > 0)
-                    dirVec = directionVector.defaultVectors[i];
+                    if (colliders != null && colliders.Length > 0)
+                        dirVec = directionVector.defaultVectors[i];
+                }
+
+                if (dirVec != Vector3.zero && playerCtrl.PlayerMovement.MovingInputValue == dirVec)
+                    playerCtrl.PlayerMovement.AddMoveForce(dirVec);
             }
-
-            if (dirVec != Vector3.zero && playerCtrl.PlayerMovement.MovingInputValue == dirVec)
-                playerCtrl.PlayerMovement.AddMoveForce(dirVec);
         }
     }
 
@@ -166,7 +169,7 @@ public class ClayBlockTile : ClayBlock
     }
 
     /// <summary>
-    /// ÇØ´ç ºí·° À§ÀÇ 4¹æÇâÀÌ ¸·Çû´ÂÁö È®ÀÎÇÑ´Ù.
+    /// ï¿½Ø´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ñ´ï¿½.
     /// </summary>
     private bool IsBlockedAround()
     {
@@ -263,9 +266,9 @@ public class ClayBlockTile : ClayBlock
     public override void OnFusion(ClayBlock blockA, ClayBlock blockB)
     {
         if (blockA == null || blockB == null)
-            throw new System.Exception("blockA ¶Ç´Â blockBÀÇ °ªÀÌ nullÀÔ´Ï´Ù.");
+            throw new System.Exception("blockA ï¿½Ç´ï¿½ blockBï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ nullï¿½Ô´Ï´ï¿½.");
 
-        // Á¡Åä ÀåÄ¡ ¹æÇâ ¼³Á¤
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         Vector3 dir = blockB.transform.position - playerCtrl.gameObject.transform.position;
         dir = dir.normalized;
 
@@ -307,21 +310,21 @@ public class ClayBlockTile : ClayBlock
     private bool IsSuccessGetTemperPrefab(ref bool isSuccess,
         ClayBlockType srcType, ClayBlockType destType, ref GameObject temperPrefab)
     {
-        // °°Àº Å¸ÀÔÀÇ ºí·°ÀÌ¶ó¸é ÇÕÄ¥ ¼ö ¾ø´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ ï¿½ï¿½Ä¥ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½.
         if (srcType == destType)
         {
             isSuccess = false;
             return false;
         }
 
-        // ¹«Áö°³ ºí·°¸¸ ÇÕÄ¥ ¼ö ÀÖ´Ù.
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¥ ï¿½ï¿½ ï¿½Ö´ï¿½.
         if (srcType != ClayBlockType.Rainbow && destType != ClayBlockType.Rainbow)
         {
             isSuccess = false;
             return false;
         }
 
-        // BlockBÀÇ Å¸ÀÔ¿¡ ¸ÂÃç¼­ Á¡Åä ÀåÄ¡¸¦ ÇÕ¼ºÇÑ´Ù.
+        // BlockBï¿½ï¿½ Å¸ï¿½Ô¿ï¿½ ï¿½ï¿½ï¿½ç¼­ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Õ¼ï¿½ï¿½Ñ´ï¿½.
         if (srcType == ClayBlockType.Rainbow)
         {
             switch (destType)

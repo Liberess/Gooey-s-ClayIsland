@@ -54,7 +54,7 @@ namespace Hun.Player
 
         #region Mouthful-Spit
         /// <summary>
-        /// ¸Ó±İ±â/¹ñ±â Å°(Space) ÀÔ·Â½Ã ¹ß»ıÇÏ´Â ¸Ş¼­µå
+        /// ï¿½Ó±İ±ï¿½/ï¿½ï¿½ï¿½ Å°(Space) ï¿½Ô·Â½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Ş¼ï¿½ï¿½ï¿½
         /// </summary>
         private void OnMouthful()
         {
@@ -76,13 +76,14 @@ namespace Hun.Player
             }
             else //Fusion or Spit or Division
             {
-                playerMovement.ChangeModel(PlayerState.spit);
+                //Stone Blockì— ë±‰ê¸°
+                /*playerMovement.ChangeModel(PlayerState.spit);
                 playerMovement.Anim.SetTrigger("isMouthful");
-                StartCoroutine(CheckMouthfulAnimState());
+                StartCoroutine(CheckMouthfulAnimState());*/
 
                 if(targetClayBlock)
                 {
-                    //¾Õ¿¡ ClayBlockÀÌ ÀÖ´Ù¸é Fusion
+                    //ï¿½Õ¿ï¿½ ClayBlockï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ Fusion
                     if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                         out hitBlock, mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                     {
@@ -103,7 +104,7 @@ namespace Hun.Player
                     }
                 }
 
-                //¾Õ¿¡ TemperObject°¡ ÀÖ´Ù¸é Division
+                //ï¿½Õ¿ï¿½ TemperObjectï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ Division
                 if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,
                     out hitBlock, mouthfulDistance, LayerMask.GetMask("TemperObject")))
                 {
@@ -118,18 +119,21 @@ namespace Hun.Player
                     }
                 }
 
-                // ´Ù½Ã ¹ñÀ» ¶§ ¾Õ¿¡ °É¸®´Â °Íµµ ¾ø°í, ¾Æ·¡¿¡ ClayBlockÀÌ ÀÖÀ¸¸é ¹ñÀ» ¼ö ÀÖ´Ù.
+                // ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Õ¿ï¿½ ï¿½É¸ï¿½ï¿½ï¿½ ï¿½Íµï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Æ·ï¿½ï¿½ï¿½ ClayBlockï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
                 var targetVec = mouthfulRoot.position + mouthfulRoot.forward * 1f;
                 if (Physics.Raycast(targetVec, Vector3.down * 1.2f, out hitBlock,
                     mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
+                    playerMovement.ChangeModel(PlayerState.spit);
+                    playerMovement.Anim.SetTrigger("isMouthful");
+                    StartCoroutine(CheckMouthfulAnimState());
                     Spit();
                 }
             }
         }
 
         /// <summary>
-        /// ¾Õ¿¡ Ray¸¦ ½÷¼­ ClayBlockÀÌ ÀÖ´Ù¸é ¸Ó±İ±â¸¦ ÇÑ´Ù.
+        /// ï¿½Õ¿ï¿½ Rayï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ClayBlockï¿½ï¿½ ï¿½Ö´Ù¸ï¿½ ï¿½Ó±İ±â¸¦ ï¿½Ñ´ï¿½.
         /// </summary>
         private void Mouthful()
         {
@@ -141,11 +145,11 @@ namespace Hun.Player
             {
                 if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
-                    playerMovement.ChangeModel(PlayerState.mouthful);
-                    playerMovement.Anim.SetTrigger("isMouthful");
-
                     if (clayBlock.IsMouthful)
                     {
+                        playerMovement.ChangeModel(PlayerState.mouthful);
+                        playerMovement.Anim.SetTrigger("isMouthful");
+                        
                         clayBlock.OnMouthful();
                         clayBlock.transform.SetParent(transform);
                         targetClayBlock = clayBlock;
@@ -165,16 +169,12 @@ namespace Hun.Player
                         clayBlock.OnDivision();
                         return;
                     }
-                    else
-                    {
-                        return;
-                    }
                 }
             }
         }
 
         /// <summary>
-        /// ClayBlockÀ» ÇÕÄ¡Áö ¾Ê´Â °æ¿ì¿¡ ³»¹ñ´Â´Ù.
+        /// ClayBlockï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ê´ï¿½ ï¿½ï¿½ì¿¡ ï¿½ï¿½ï¿½ï¿½Â´ï¿½.
         /// </summary>
         private void Spit()
         {
