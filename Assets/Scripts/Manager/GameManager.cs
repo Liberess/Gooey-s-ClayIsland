@@ -18,6 +18,7 @@ namespace Hun.Manager
         public float PlayTime { get; private set; }
         public int SceneIndex { get; private set; }
         public bool IsClear { get; private set; }
+        public bool IsGamePlay { get; private set; }
 
         [Space(10), Header("== Game Menu UI =="), Space(5)]
         [SerializeField] private GameObject mainPanel;
@@ -41,6 +42,8 @@ namespace Hun.Manager
                 Instance = this;
             else if(Instance != this)
                 Destroy(gameObject);
+            
+            IsGamePlay = true;
         }
 
         private void Start()

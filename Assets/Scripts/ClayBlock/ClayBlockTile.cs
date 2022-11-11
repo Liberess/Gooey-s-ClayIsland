@@ -10,36 +10,9 @@ public class ClayBlockTile : ClayBlock
     [SerializeField] private LayerMask targetLayer;
     [SerializeField, Range(0f, 5f)] private float moveSpeed = 2f;
     private GameObject currentTemperPrefab = null;
-    private DirectionVector directionVector = new DirectionVector();
-
-    [SerializeField] private bool isPlayerOver = false; //�÷��̾ �� ���� ����!
 
     private Animator anim;
     private BoxCollider boxCol;
-
-    private void OnDrawGizmosSelected()
-    {
-        if (ClayBlockType != ClayBlockType.Ice)
-            return;
-
-        Color[] colors = { Color.red, Color.yellow, Color.green, Color.blue };
-
-        Vector3 defaultVec = transform.position + Vector3.up;
-
-        Vector3[] newVecs =
-            {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
-            };
-
-        for (int i = 0; i < newVecs.Length; i++)
-        {
-            Gizmos.color = Color.Lerp(Color.white, colors[i], 0.5f);
-            Gizmos.DrawSphere(newVecs[i], 0.5f);
-        }
-    }
 
     private void Awake()
     {
@@ -47,102 +20,12 @@ public class ClayBlockTile : ClayBlock
 
         anim = GetComponentInChildren<Animator>();
         boxCol = GetComponentInChildren<BoxCollider>();
-
-        SetupDirectionVectors();
-    }
-
-    private void OnEnable()
-    {
-        SetupDirectionVectors();
-    }
-
-    private void Update()
-    {
-        if (clayBlockType == ClayBlockType.Ice)
-        {
-            if (isPlayerOver && !playerCtrl.PlayerInteract.IsSlipIce)
-            {
-/*            if (!IsBlockedAround())
-                return;*/
-
-                Vector3 dirVec = Vector3.zero;
-
-                for (int i = 0; i < directionVector.dirVectors.Length; i++)
-                {
-                    if (Physics.Raycast(transform.position + Vector3.up,
-                            directionVector.defaultVectors[i], 1f, ~targetLayer))
-                        continue;
-
-                    Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
-                        boxCol.size / 2, Quaternion.identity, targetLayer);
-
-                    if (colliders != null && colliders.Length > 0)
-                        dirVec = directionVector.defaultVectors[i];
-                }
-
-                if (dirVec != Vector3.zero && playerCtrl.PlayerMovement.MovingInputValue == dirVec)
-                    playerCtrl.PlayerMovement.AddMoveForce(dirVec);
-            }
-        }
-    }
-
-    private void SetupDirectionVectors()
-    {
-        var defaultVec = boxCol.center + transform.position + Vector3.up;
-
-        Vector3[] newVecs =
-            {
-                defaultVec + Vector3.forward,
-                defaultVec + Vector3.back,
-                defaultVec + Vector3.left,
-                defaultVec + Vector3.right
-            };
-
-        directionVector.SetVectors(newVecs);
-        directionVector.currentVectors[(int)DirectionType.Forward] = Vector3.back;
-        directionVector.currentVectors[(int)DirectionType.Back] = Vector3.forward;
-        directionVector.currentVectors[(int)DirectionType.Left] = Vector3.right;
-        directionVector.currentVectors[(int)DirectionType.Right] = Vector3.left;
     }
 
     public override void OnEnter()
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Ice:
-                isPlayerOver = true;
-
-                if (playerCtrl.PlayerMovement.IsOverIce || playerCtrl.PlayerInteract.IsSlipIce)
-                    break;
-
-                Vector3 dirVec = Vector3.zero;
-
-                for (int i = 0; i < directionVector.dirVectors.Length; i++)
-                {
-                    RaycastHit hit;
-                    if (Physics.Raycast(transform.position, directionVector.defaultVectors[i], out hit, 1f))
-                    {
-                        if (hit.collider.TryGetComponent(out ClayBlockTile clayBlockTile))
-                        {
-                            if (clayBlockTile.ClayBlockType == ClayBlockType.Ice)
-                                continue;
-                        }
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    Collider[] colliders = Physics.OverlapBox(directionVector.dirVectors[i],
-                        boxCol.size / 2, Quaternion.identity, targetLayer);
-
-                    if (colliders != null && colliders.Length > 0)
-                        dirVec = directionVector.currentVectors[i];
-                }
-
-                if (dirVec != Vector3.zero)
-                    playerCtrl.PlayerMovement.AddMoveForce(dirVec);
-                break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.InitializeMovingVector();
                 playerCtrl.PlayerMovement.playerGravityY = 0.001f;
@@ -159,30 +42,12 @@ public class ClayBlockTile : ClayBlock
     {
         switch (clayBlockType)
         {
-            case ClayBlockType.Ice:
-                isPlayerOver = false;
-                break;
             case ClayBlockType.Water:
                 playerCtrl.PlayerMovement.playerGravityY = 1f;
                 break;
         }
     }
-
-    /// <summary>
-    /// �ش� �� ���� 4������ �������� Ȯ���Ѵ�.
-    /// </summary>
-    private bool IsBlockedAround()
-    {
-        for (int i = 0; i < directionVector.dirVectors.Length; i++)
-        {
-            if (Physics.Raycast(transform.position + Vector3.up,
-                    directionVector.defaultVectors[i], 1f, ~targetLayer))
-                return true;
-        }
-
-        return false;
-    }
-
+    
     public override void OnMouthful()
     {
         if (!IsMouthful)

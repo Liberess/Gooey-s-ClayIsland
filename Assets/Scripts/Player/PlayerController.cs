@@ -79,7 +79,7 @@ namespace Hun.Player
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+            /*if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
             {
                 clayBlock.OnEnter();
 
@@ -89,7 +89,7 @@ namespace Hun.Player
                             clayBlock.transform.position);
                     if (distance <= 1f)
                     {
-                        Debug.Log("¾Õ¿¡ ´êÀ½");
+                        Debug.Log("ï¿½Õ¿ï¿½ ï¿½ï¿½ï¿½ï¿½");
                         PlayerInteract.SetSlipIceState(false);
                     }
                     else
@@ -106,7 +106,7 @@ namespace Hun.Player
                         }
                     }
                 }
-            }
+            }*/
         }
 
         private void OnCollisionStay(Collision collision)

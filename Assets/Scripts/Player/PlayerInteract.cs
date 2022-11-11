@@ -1,6 +1,8 @@
+using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Hun.Manager;
 using UnityEngine;
 using Hun.Obstacle;
 
@@ -8,6 +10,7 @@ namespace Hun.Player
 {
     public class PlayerInteract : MonoBehaviour
     {
+        private GameManager gameMgr;
         private PlayerController playerCtrl;
 
         private Portal interactivePortal = null;
@@ -16,58 +19,18 @@ namespace Hun.Player
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
 
+        //ì‚¬ë‹¤ë¦¬ë¥¼ íƒ€ê³  ìžˆëŠ”ì§€?
         public bool IsLadderInside { get; set; }
-        [SerializeField] private bool m_IsIceInside;
-        public bool IsIceInside
-        {
-            get
-            {
-                if(IsSlipIce)
-                {
-                    if(!m_IsIceInside)
-                    {
-                        Collider[] colliders = Physics.OverlapSphere(transform.position,
-                            0.3f, LayerMask.GetMask("ClayBlock"));
 
-                        Collider collider = colliders.OrderBy(c => Vector3.Distance(transform.position, c.transform.position)).
-                            Where(c => c.GetComponent<ClayBlock>().ClayBlockType == ClayBlockType.Ice).FirstOrDefault();
-
-                        if (collider != null && collider.TryGetComponent(out ClayBlock clay))
-                        {
-                            if (clay.ClayBlockType == ClayBlockType.Ice)
-                            {
-                                m_IsIceInside = true;
-                                return m_IsIceInside;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    RaycastHit hit;
-                    if(Physics.Raycast(transform.position, Vector3.down, out hit,
-                        0.3f, LayerMask.GetMask("ClayBlock")))
-                    {
-                        if(hit.collider != null && hit.collider.TryGetComponent(out ClayBlock clay))
-                        {
-                            if (clay.ClayBlockType != ClayBlockType.Ice)
-                            {
-                                m_IsSlipIce = false;
-                                return false;
-                            }
-                        }
-                    }
-                }
-
-                m_IsIceInside = false;
-                return m_IsIceInside;
-            }
-        }
-
+        //ì–¼ìŒ ìœ„ì—ì„œ ë¯¸ë„ëŸ¬ì§€ê³  ìžˆëŠ” ìƒíƒœì¸ì§€?
         [SerializeField] private bool m_IsSlipIce;
         public bool IsSlipIce { get => m_IsSlipIce; }
+        
         public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
+
+        //private RaycastHit[] rayHits;
+        private Vector3 originVec;
 
         private Animator anim;
 
@@ -79,35 +42,74 @@ namespace Hun.Player
 
         private void Start()
         {
+            m_IsSlipIce = false;
+            
             IsInteracting = false;
             IsCarryingObject = false;
 
             IsCanonInside = false;
             IsLadderInside = false;
             IsTrampilineInside = false;
+            
+            gameMgr = GameManager.Instance;
 
             StartCoroutine(FindInterativeCarriableStageObject());
         }
 
+        private void FixedUpdate()
+        {
+            originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.6f);
+            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
+            RaycastHit[] rayHits = Physics.RaycastAll(originVec, (-transform.up * 0.5f), 0.5f, LayerMask.GetMask("ClayBlock"));
+
+            if (rayHits != null && rayHits.Length > 0)
+            {
+                for (int i = 0; i < rayHits.Length; i++)
+                {
+                    if (rayHits[i].collider.TryGetComponent(out ClayBlock clayBlock))
+                    {
+                        if (m_IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
+                        {
+                            m_IsSlipIce = false;
+                            Debug.Log(rayHits[i].collider.name);
+                            break;
+                        }
+                        
+                        if (!m_IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
+                        {
+                            Debug.Log("ice");
+                            m_IsSlipIce = true;
+                            playerCtrl.PlayerMovement.AddMoveForce(transform.GetChild(0).forward.normalized);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Empty!");
+                m_IsSlipIce = false;
+            }
+        }
+
         /// <summary>
-        /// »ç´Ù¸®¿¡ Å¸°í ÀÖ´ÂÁö/ÀÖÁö ¾ÊÀºÁö »óÅÂ ¼³Á¤
+        /// ï¿½ï¿½Ù¸ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void SetLadderState(bool value) => IsLadderInside = value;
 
         /// <summary>
-        /// Æ®·¥ÆÞ¸°¿¡ Å¸°í ÀÖ´ÂÁö/ÀÖÁö ¾ÊÀºÁö »óÅÂ ¼³Á¤
+        /// Æ®ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void SetTrampilineState(bool value) => IsTrampilineInside = value;
 
         /// <summary>
-        /// ´ëÆ÷¿¡ Å¸°í ÀÖ´ÂÁö/ÀÖÁö ¾ÊÀºÁö »óÅÂ ¼³Á¤
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½/ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         public void SetCanonState(bool value) => IsCanonInside = value;
 
         public void SetSlipIceState(bool value) => m_IsSlipIce = value;
 
         /// <summary>
-        /// ÀÎÅÍ·¢Æ® Å°(Enter) ÀÔ·Â½Ã ¹ß»ýÇÏ´Â ¸Þ¼­µå
+        /// ï¿½ï¿½ï¿½Í·ï¿½Æ® Å°(Enter) ï¿½Ô·Â½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         /// </summary>
         private void OnInteract()
         {
@@ -129,8 +131,8 @@ namespace Hun.Player
                 }
                 else if (interactivePortal != null)
                 {
-                    // TODO: ½ºÅ×ÀÌÁö ÀÌµ¿ ¼öÁ¤
-                    print("TODO: ½ºÅ×ÀÌÁö ÀÌµ¿ ¼öÁ¤");
+                    // TODO: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
+                    print("TODO: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½");
 
                     if (interactivePortal.PortalType == PortalType.Stage)
                         interactivePortal.ActiveStagePortal();
@@ -141,7 +143,7 @@ namespace Hun.Player
         }
 
         /// <summary>
-        ///  ¸¶¿ì½º ¿ÞÂÊÅ°¸¦ ´­·¶À» ¶§ ¹ß»ýÇÏ´Â Mouse Input ÀÌº¥Æ®ÀÌ´Ù.
+        ///  ï¿½ï¿½ï¿½ì½º ï¿½ï¿½ï¿½ï¿½Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ Mouse Input ï¿½Ìºï¿½Æ®ï¿½Ì´ï¿½.
         /// </summary>
         private void OnMouseInteract()
         {
@@ -159,12 +161,12 @@ namespace Hun.Player
         }
 
         /// <summary>
-        /// Æ÷Å»·Î ÀÌµ¿½Ã ¹ß»ýÇÏ´Â ¸Þ¼­µå
+        /// ï¿½ï¿½Å»ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         /// </summary>
         public void OnWalkedThroughPortal(Portal portal) => interactivePortal = portal;
 
         /// <summary>
-        /// ÁÖº¯ÀÇ ¿î¹Ý °¡´ÉÇÑ ¿ÀºêÁ§Æ®¸¦ Ã£´Â´Ù.
+        /// ï¿½Öºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ Ã£ï¿½Â´ï¿½.
         /// </summary>
         IEnumerator FindInterativeCarriableStageObject()
         {
@@ -189,10 +191,10 @@ namespace Hun.Player
 
         #region Trampiline
         /// <summary>
-        /// Æ®·¥ÆÞ¸°¿¡ ´ê¾ÒÀ» ¶§ ÁöÁ¤ÇÑ À§Ä¡·Î ÀÌµ¿ÇÕ´Ï´Ù.
+        /// Æ®ï¿½ï¿½ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
         /// <returns></returns>
-        /// <param name="poses"> À§Ä¡ °ª </param>
+        /// <param name="poses"> ï¿½ï¿½Ä¡ ï¿½ï¿½ </param>
         public void JumpToPosByTrampiline(float force, Transform[] poses, bool isSuccese)
         {
             //anim.SetBool("isJump", true);
@@ -237,11 +239,11 @@ namespace Hun.Player
 
         #region Canon
         /// <summary>
-        /// ´ëÆ÷¿¡ ´ê¾ÒÀ» ¶§ ÁöÁ¤ÇÑ À§Ä¡·Î ÀÌµ¿ÇÕ´Ï´Ù.
+        /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½Ìµï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
         /// <returns></returns>
-        /// <param name="canonPos"> ´ëÆ÷ À§Ä¡ °ª </param>
-        /// <param name="destPos"> ¸ñÀû À§Ä¡ °ª </param>
+        /// <param name="canonPos"> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ </param>
+        /// <param name="destPos"> ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ </param>
         public void FiredToPosByCanon(Transform canonPos, Vector3 destPos)
         {
             //anim.SetBool("isFired", true);

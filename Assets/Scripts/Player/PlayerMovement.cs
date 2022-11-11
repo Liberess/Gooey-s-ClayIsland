@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Hun.Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,7 @@ namespace Hun.Player
 
     public class PlayerMovement : MonoBehaviour
     {
+        private GameManager gameMgr;
         private PlayerController playerCtrl;
 
         [Header("== Movement Property ==")]
@@ -59,7 +61,7 @@ namespace Hun.Player
                         return true;
                 }
 
-                //Debug.Log("Fall Anim Ãß°¡");
+                //Debug.Log("Fall Anim ï¿½ß°ï¿½");
                 anim.SetBool("isInAir",true);
 
                 return false;
@@ -81,6 +83,8 @@ namespace Hun.Player
             IsMove = true;
             currentDashSpeed = 1f;
             maxPositionY = Mathf.Round(transform.position.y);
+            
+            gameMgr = GameManager.Instance;
 
             if (playerBodys.Length == 0)
             {
@@ -94,6 +98,7 @@ namespace Hun.Player
             SetupDashEvent();
 
             StartCoroutine(UpdatePreviousPosition());
+            StartCoroutine(CheckStopState());
         }
 
         private void Update()
@@ -136,7 +141,7 @@ namespace Hun.Player
 
         private IEnumerator UpdatePreviousPosition()
         {
-            WaitForSeconds delay = new WaitForSeconds(0.5f);
+            WaitForSeconds delay = new WaitForSeconds(0.2f);
             while(true)
             {
                 yield return delay;
@@ -158,17 +163,17 @@ namespace Hun.Player
                 yield return null;
 
                 //rigid.AddForce(dir * 0.1f, ForceMode.VelocityChange);
-                //rigid.velocity = dir * 5f;
-                transform.Translate(dir * 4f * Time.deltaTime);
+                rigid.velocity = dir * 5f;
+                //transform.Translate(dir * 4f * Time.deltaTime);
 
                 for (int i = 0; i < playerBodys.Length; i++)
                     playerBody.transform.rotation = Quaternion.LookRotation(dir);
-
-                yield return new WaitForEndOfFrame();
-
-                //¾óÀ½ À§¿¡ ÀÖÁö ¾Ê°Å³ª, ¹Ì²ô·¯Áö´Â »óÅÂ°¡ ¾Æ´Ï¶ó¸é
-                if (!playerCtrl.PlayerInteract.IsIceInside && !playerCtrl.PlayerInteract.IsSlipIce)
+                
+                //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°Å³ï¿½, ï¿½Ì²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â°ï¿½ ï¿½Æ´Ï¶ï¿½ï¿½
+                if (/*!playerCtrl.PlayerInteract.IsIceInside && */!playerCtrl.PlayerInteract.IsSlipIce)
                     break;
+                
+                yield return new WaitForEndOfFrame();
             }
 
             SetMovement(true);
@@ -179,11 +184,30 @@ namespace Hun.Player
 
             yield return null;
         }
+        
+        private IEnumerator CheckStopState()
+        {
+            WaitForSeconds delay = new WaitForSeconds(0.1f);
+            
+            while (gameMgr.IsGamePlay)
+            {
+                if (Vector3.Distance(PreviousPos, transform.position) <= 0.01f )
+                {
+                    Debug.Log("ë©ˆì¶¤");
+                    SetMovement(true);
+                    playerCtrl.PlayerInteract.SetSlipIceState(false);
+                }
+  
+                yield return delay;
+            }
+            
+            yield return null;
+        }
 
         public void SetMovement(bool value) => IsMove = value;
 
         /// <summary>
-        /// ÇØ´ç ¹æÇâÀ¸·Î È¸ÀüÇÕ´Ï´Ù.
+        /// ï¿½Ø´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
         public void Look(Quaternion rotation)
         {
@@ -194,9 +218,9 @@ namespace Hun.Player
         }
 
         /// <summary>
-        /// ÀÌµ¿ Å° ÀÔ·Â½Ã ¹ß»ýÇÏ´Â ¸Þ¼­µå
+        /// ï¿½Ìµï¿½ Å° ï¿½Ô·Â½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Þ¼ï¿½ï¿½ï¿½
         /// </summary>
-        /// <param name="inputValue">ÀÔ·Â °ª</param>
+        /// <param name="inputValue">ï¿½Ô·ï¿½ ï¿½ï¿½</param>
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();
@@ -205,7 +229,7 @@ namespace Hun.Player
         }
 
         /// <summary>
-        /// ¸Å ÇÁ·¹ÀÓ ÀÌµ¿À» Ã³¸®ÇÕ´Ï´Ù
+        /// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Õ´Ï´ï¿½
         /// </summary>
         private void UpdateMovement()
         {
@@ -215,7 +239,7 @@ namespace Hun.Player
             if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
                 return;
 
-            if (MovingInputValue != Vector3.zero) //¿òÁ÷ÀÓ ÀÔ·Â°ªÀÌ ÀÖ´Ù¸é
+            if (MovingInputValue != Vector3.zero) //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â°ï¿½ï¿½ï¿½ ï¿½Ö´Ù¸ï¿½
             {
                 anim.SetBool("isWalk", true);
 
@@ -258,7 +282,7 @@ namespace Hun.Player
                     transform.Translate(movingVector * Time.deltaTime);
                 }
             }
-            else //¿òÁ÷ÀÓ ÀÔ·Â°ªÀÌ ¾ø´Ù¸é
+            else //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·Â°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ù¸ï¿½
             {
                 //movingVector = Vector3.zero;
                 anim.SetBool("isWalk", false);
@@ -292,7 +316,7 @@ namespace Hun.Player
 
         private void UpdateGravity()
         {
-            // »ç´Ù¸® ¶Ç´Â Æ®·¥ÆÞ¸°, ´ëÆ÷¿¡ Å¸°í ÀÖÀ¸¸é Áß·ÂÀÌ ÀÛ¿ëÇÏÁö ¾Ê´Â´Ù.
+            // ï¿½ï¿½Ù¸ï¿½ ï¿½Ç´ï¿½ Æ®ï¿½ï¿½ï¿½Þ¸ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß·ï¿½ï¿½ï¿½ ï¿½Û¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê´Â´ï¿½.
             if (playerCtrl.PlayerInteract.IsLadderInside || playerCtrl.PlayerInteract.IsTrampilineInside
                 || playerCtrl.PlayerInteract.IsCanonInside)
                 rigid.useGravity = false;
@@ -305,9 +329,9 @@ namespace Hun.Player
 
         #region Dash
         /// <summary>
-        /// ´ë½¬(¿ÞÂÊ ½ÃÇÁÆ®)Å°¸¦ ´­·¶À» ¶§ ¹ß»ýÇÏ´Â Dash ÀÌº¥Æ®ÀÌ´Ù.
+        /// ï¿½ë½¬(ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½Æ®)Å°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ Dash ï¿½Ìºï¿½Æ®ï¿½Ì´ï¿½.
         /// </summary>
-        /// <param name="context"> ÄÝ¹é ÀÌº¥Æ® </param>
+        /// <param name="context"> ï¿½Ý¹ï¿½ ï¿½Ìºï¿½Æ® </param>
         private void Dash(InputAction.CallbackContext context)
         {
             if (!IsGrounded || playerCtrl.PlayerInteract.IsLadderInside)
@@ -327,7 +351,7 @@ namespace Hun.Player
 
         private void SetupDashEvent()
         {
-            // Dash ÀÌº¥Æ® Ãß°¡
+            // Dash ï¿½Ìºï¿½Æ® ï¿½ß°ï¿½
             InputActionMap playerActionMap = GetComponent<PlayerInput>().actions.FindActionMap("Player");
             InputAction dashAction = playerActionMap.FindAction("Dash");
             dashAction.performed += Dash;
