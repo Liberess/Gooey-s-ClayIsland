@@ -137,10 +137,10 @@ namespace Hun.Player
         }
 
         #region Movement (Move, Look)
-        public void AddMoveForce(Vector3 dir)
+        public void AddMoveForce(Vector3 targetPos, Vector3 dir)
         {
             if (!IsMoveForceCoroutineing)
-                StartCoroutine(AddMoveForceCo(dir));
+                StartCoroutine(AddMoveForceCo(targetPos, dir));
         }
 
         private IEnumerator UpdatePreviousPosition()
@@ -154,7 +154,7 @@ namespace Hun.Player
             }
         }
 
-        public IEnumerator AddMoveForceCo(Vector3 dir)
+        public IEnumerator AddMoveForceCo(Vector3 targetPos, Vector3 dir)
         {
             IsOverIce = true;
             IsMoveForceCoroutineing = true;
@@ -162,22 +162,42 @@ namespace Hun.Player
             SetMovement(false);
             anim.SetBool("isWalk", false);
 
+            float distance = 0f;
+            Vector3 velocity = Vector3.zero;
+            
             while (true)
             {
-                yield return null;
+                distance = Vector3.Distance(transform.position, targetPos);
+                if (distance <= 0.0001f)
+                {
+                    transform.position = targetPos;
+                    break;
+                }
 
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * 2f);
+                //transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, 0.1f);
+                
+                for (int i = 0; i < playerBodys.Length; i++)
+                    playerBody.transform.rotation = Quaternion.RotateTowards(playerBody.transform.rotation, Quaternion.LookRotation(dir), 1f);
+                    //playerBody.transform.rotation = Quaternion.LookRotation(targetPos - dir);
+                    
+                yield return null;
+            }
+
+            while (true)
+            {
+                for (int i = 0; i < playerBodys.Length; i++)
+                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
+                
                 //rigid.AddForce(dir * 0.1f, ForceMode.VelocityChange);
                 rigid.velocity = dir * 5f;
                 //transform.Translate(dir * 4f * Time.deltaTime);
-
-                for (int i = 0; i < playerBodys.Length; i++)
-                    playerBody.transform.rotation = Quaternion.LookRotation(dir);
                 
                 //���� ���� ���� �ʰų�, �̲������� ���°� �ƴ϶��
                 if (/*!playerCtrl.PlayerInteract.IsIceInside && */!playerCtrl.PlayerInteract.IsSlipIce)
                     break;
-                
-                yield return new WaitForEndOfFrame();
+
+                yield return null;
             }
 
             SetMovement(true);
@@ -246,7 +266,8 @@ namespace Hun.Player
             if (!IsMove || isInAir)
                 return;
 
-            if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside)
+            if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside
+                || playerCtrl.PlayerInteract.IsSlipIce)
                 return;
 
             if (MovingInputValue != Vector3.zero) //������ �Է°��� �ִٸ�

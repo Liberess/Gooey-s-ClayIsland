@@ -16,7 +16,8 @@ namespace Hun.Player
         private Portal interactivePortal = null;
         private CarriableStageObject interactiveCarriableObject = null;
 
-        public bool IsBlockedForward { get; private set; }
+        public bool IsBlockedForward;
+        //public bool IsBlockedForward { get; private set; }
 
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
@@ -64,6 +65,7 @@ namespace Hun.Player
         {
             CheckBlockedForward();
 
+            //SlidingFlow();
             if (IsBlockedForward)
             {
                 IsSlipIce = false;
@@ -73,18 +75,6 @@ namespace Hun.Player
             {
                 SlidingFlow();
             }
-
-            if (Input.GetKeyDown(KeyCode.Keypad1)) //위
-                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(0, 0, 1));
-
-            if (Input.GetKeyDown(KeyCode.Keypad2)) //아래
-                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(0, 0, -1));
-
-            if (Input.GetKeyDown(KeyCode.Keypad3)) //왼쪽
-                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(-1, 0, 0));
-
-            if (Input.GetKeyDown(KeyCode.Keypad4)) //오른쪽
-                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(1, 0, 0));
         }
 
         private void SlidingFlow()
@@ -112,33 +102,36 @@ namespace Hun.Player
                         if (!IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
                         {
                             IsSlipIce = true;
+                            
+                            var forward = playerCtrl.PlayerMovement.PlayerBody.transform.forward;
+                            
                             playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
-                                Quaternion.LookRotation(transform.GetChild(0).forward.normalized);
+                                Quaternion.LookRotation(forward.normalized);
 
-                            float posX = (Mathf.Abs(transform.GetChild(0).forward.x) >= 0.9f)
-                                ? transform.GetChild(0).forward.x
-                                : 0.0f;
-                            float posZ = (Mathf.Abs(transform.GetChild(0).forward.z) >= 0.9f)
-                                ? transform.GetChild(0).forward.z
-                                : 0.0f;
+                            Vector3 targetPos = clayBlock.transform.position;
+                            targetPos.y = transform.position.y;
+
+                            float currentX = forward.x;
+                            float currentZ = forward.z;
+
+                            float posX = (Mathf.Abs(currentX) >= 0.9f) ? forward.x : 0.0f;
+                            float posZ = (Mathf.Abs(currentZ) >= 0.9f) ? forward.z : 0.0f;
+                            
                             Vector3 dir = new Vector3(posX, 0f, posZ);
 
                             if (dir != Vector3.zero)
                             {
-                                if(!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
-                                    playerCtrl.PlayerMovement.AddMoveForce(dir.normalized);
+                                if (!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
+                                    playerCtrl.PlayerMovement.AddMoveForce(targetPos, dir);
                             }
                             else
                             {
-                                float currentX = transform.GetChild(0).forward.x;
-                                float currentZ = transform.GetChild(0).forward.z;
-                                
                                 if (Mathf.Abs(currentX) > Mathf.Abs(currentZ))
                                 {
                                     if (currentX > 0)
-                                        posX = Mathf.Ceil(transform.GetChild(0).forward.x);
+                                        posX = Mathf.Ceil(forward.x);
                                     else
-                                        posX = Mathf.Floor(transform.GetChild(0).forward.x);
+                                        posX = Mathf.Floor(forward.x);
 
                                     posZ = 0f;
                                 }
@@ -147,22 +140,29 @@ namespace Hun.Player
                                     posX = 0f;
 
                                     if (currentZ > 0)
-                                        posZ = Mathf.Ceil(transform.GetChild(0).forward.z);
+                                        posZ = Mathf.Ceil(forward.z);
                                     else
-                                        posZ = Mathf.Floor(transform.GetChild(0).forward.z);
+                                        posZ = Mathf.Floor(forward.z);
                                 }
 
                                 dir = new Vector3(posX, 0f, posZ);
                                 if (dir != Vector3.zero)
                                 {
-                                    if(!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
-                                        playerCtrl.PlayerMovement.AddMoveForce(dir.normalized);
+                                    if (!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
+                                        playerCtrl.PlayerMovement.AddMoveForce(targetPos, dir);
                                 }
                             }
                         }
                     }
                 }
             }
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f),
+                0.3f);
         }
 
         /// <summary>
@@ -174,17 +174,22 @@ namespace Hun.Player
             Debug.DrawRay(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward, Color.red);
 #endif
 
-            Physics.Raycast(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward,
-                out forwardRayHit, 0.5f, LayerMask.GetMask("ClayBlock"));
+            /*Physics.Raycast(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward,
+                out forwardRayHit, 0.3f, LayerMask.GetMask("ClayBlock"));
 
             if (forwardRayHit.collider != null)
                 IsBlockedForward = true;
             else
-                IsBlockedForward = false;
+                IsBlockedForward = false;*/
 
-            forwardColliders = Physics.OverlapSphere(transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.5f), 0.3f, LayerMask.GetMask("ClayBlock"));
+            forwardColliders =
+                Physics.OverlapSphere(
+                    transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f), 0.3f,
+                    LayerMask.GetMask("ClayBlock"));
             if (forwardColliders.Length > 0)
                 IsBlockedForward = true;
+            else
+                IsBlockedForward = false;
         }
 
         /// <summary>
