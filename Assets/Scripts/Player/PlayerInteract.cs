@@ -16,6 +16,8 @@ namespace Hun.Player
         private Portal interactivePortal = null;
         private CarriableStageObject interactiveCarriableObject = null;
 
+        public bool IsBlockedForward { get; private set; }
+
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
 
@@ -23,14 +25,16 @@ namespace Hun.Player
         public bool IsLadderInside { get; set; }
 
         //얼음 위에서 미끄러지고 있는 상태인지?
-        [SerializeField] private bool m_IsSlipIce;
-        public bool IsSlipIce { get => m_IsSlipIce; }
-        
+        public bool IsSlipIce { get; private set; }
+
         public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
-        //private RaycastHit[] rayHits;
         private Vector3 originVec;
+
+        private RaycastHit forwardRayHit;
+        private RaycastHit[] downRayHits;
+        private Collider[] forwardColliders;
 
         private Animator anim;
 
@@ -42,15 +46,15 @@ namespace Hun.Player
 
         private void Start()
         {
-            m_IsSlipIce = false;
-            
+            IsSlipIce = false;
+
             IsInteracting = false;
             IsCarryingObject = false;
 
             IsCanonInside = false;
             IsLadderInside = false;
             IsTrampilineInside = false;
-            
+
             gameMgr = GameManager.Instance;
 
             StartCoroutine(FindInterativeCarriableStageObject());
@@ -58,37 +62,129 @@ namespace Hun.Player
 
         private void FixedUpdate()
         {
-            originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.6f);
-            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
-            RaycastHit[] rayHits = Physics.RaycastAll(originVec, (-transform.up * 0.5f), 0.5f, LayerMask.GetMask("ClayBlock"));
+            CheckBlockedForward();
 
-            if (rayHits != null && rayHits.Length > 0)
+            if (IsBlockedForward)
             {
-                for (int i = 0; i < rayHits.Length; i++)
+                IsSlipIce = false;
+                return;
+            }
+            else
+            {
+                SlidingFlow();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Keypad1)) //위
+                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(0, 0, 1));
+
+            if (Input.GetKeyDown(KeyCode.Keypad2)) //아래
+                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(0, 0, -1));
+
+            if (Input.GetKeyDown(KeyCode.Keypad3)) //왼쪽
+                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(-1, 0, 0));
+
+            if (Input.GetKeyDown(KeyCode.Keypad4)) //오른쪽
+                playerCtrl.PlayerMovement.AddMoveForce(new Vector3(1, 0, 0));
+        }
+
+        private void SlidingFlow()
+        {
+            originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
+
+#if UNITY_EDITOR
+            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
+#endif
+
+            downRayHits = Physics.RaycastAll(originVec, (-transform.up * 0.5f), 0.5f, LayerMask.GetMask("ClayBlock"));
+
+            if (downRayHits != null && downRayHits.Length > 0)
+            {
+                for (int i = 0; i < downRayHits.Length; i++)
                 {
-                    if (rayHits[i].collider.TryGetComponent(out ClayBlock clayBlock))
+                    if (downRayHits[i].collider.TryGetComponent(out ClayBlock clayBlock))
                     {
-                        if (m_IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
+                        if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                         {
-                            m_IsSlipIce = false;
-                            Debug.Log(rayHits[i].collider.name);
+                            IsSlipIce = false;
                             break;
                         }
-                        
-                        if (!m_IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
+
+                        if (!IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
                         {
-                            Debug.Log("ice");
-                            m_IsSlipIce = true;
-                            playerCtrl.PlayerMovement.AddMoveForce(transform.GetChild(0).forward.normalized);
+                            IsSlipIce = true;
+                            playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
+                                Quaternion.LookRotation(transform.GetChild(0).forward.normalized);
+
+                            float posX = (Mathf.Abs(transform.GetChild(0).forward.x) >= 0.9f)
+                                ? transform.GetChild(0).forward.x
+                                : 0.0f;
+                            float posZ = (Mathf.Abs(transform.GetChild(0).forward.z) >= 0.9f)
+                                ? transform.GetChild(0).forward.z
+                                : 0.0f;
+                            Vector3 dir = new Vector3(posX, 0f, posZ);
+
+                            if (dir != Vector3.zero)
+                            {
+                                if(!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
+                                    playerCtrl.PlayerMovement.AddMoveForce(dir.normalized);
+                            }
+                            else
+                            {
+                                float currentX = transform.GetChild(0).forward.x;
+                                float currentZ = transform.GetChild(0).forward.z;
+                                
+                                if (Mathf.Abs(currentX) > Mathf.Abs(currentZ))
+                                {
+                                    if (currentX > 0)
+                                        posX = Mathf.Ceil(transform.GetChild(0).forward.x);
+                                    else
+                                        posX = Mathf.Floor(transform.GetChild(0).forward.x);
+
+                                    posZ = 0f;
+                                }
+                                else
+                                {
+                                    posX = 0f;
+
+                                    if (currentZ > 0)
+                                        posZ = Mathf.Ceil(transform.GetChild(0).forward.z);
+                                    else
+                                        posZ = Mathf.Floor(transform.GetChild(0).forward.z);
+                                }
+
+                                dir = new Vector3(posX, 0f, posZ);
+                                if (dir != Vector3.zero)
+                                {
+                                    if(!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
+                                        playerCtrl.PlayerMovement.AddMoveForce(dir.normalized);
+                                }
+                            }
                         }
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 플레이어의 전방이 막혀있는지 체크한다.
+        /// </summary>
+        private void CheckBlockedForward()
+        {
+#if UNITY_EDITOR
+            Debug.DrawRay(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward, Color.red);
+#endif
+
+            Physics.Raycast(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward,
+                out forwardRayHit, 0.5f, LayerMask.GetMask("ClayBlock"));
+
+            if (forwardRayHit.collider != null)
+                IsBlockedForward = true;
             else
-            {
-                Debug.Log("Empty!");
-                m_IsSlipIce = false;
-            }
+                IsBlockedForward = false;
+
+            forwardColliders = Physics.OverlapSphere(transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.5f), 0.3f, LayerMask.GetMask("ClayBlock"));
+            if (forwardColliders.Length > 0)
+                IsBlockedForward = true;
         }
 
         /// <summary>
@@ -106,7 +202,7 @@ namespace Hun.Player
         /// </summary>
         public void SetCanonState(bool value) => IsCanonInside = value;
 
-        public void SetSlipIceState(bool value) => m_IsSlipIce = value;
+        public void SetSlipIceState(bool value) => IsSlipIce = value;
 
         /// <summary>
         /// ���ͷ�Ʈ Ű(Enter) �Է½� �߻��ϴ� �޼���
@@ -175,7 +271,8 @@ namespace Hun.Player
                 if (!IsInteracting)
                 {
                     interactiveCarriableObject = null;
-                    var colliders = Physics.OverlapCapsule(transform.position + (Vector3.up * 0.5F), transform.position + (Vector3.up * 1.5F), 1F);
+                    var colliders = Physics.OverlapCapsule(transform.position + (Vector3.up * 0.5F),
+                        transform.position + (Vector3.up * 1.5F), 1F);
 
                     foreach (var c in colliders)
                     {
@@ -185,11 +282,13 @@ namespace Hun.Player
                         }
                     }
                 }
+
                 yield return new WaitForSeconds(0.1F);
             }
         }
 
         #region Trampiline
+
         /// <summary>
         /// Ʈ���޸��� ����� �� ������ ��ġ�� �̵��մϴ�.
         /// </summary>
@@ -215,8 +314,8 @@ namespace Hun.Player
 
                 if (transform.position == poses[index].transform.position)
                     index++;
-                
-                if(index == 2 && !isSuccese)
+
+                if (index == 2 && !isSuccese)
                 {
                     Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
                     rigid.AddForce((transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
@@ -235,9 +334,11 @@ namespace Hun.Player
             gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isJump", false);
         }
+
         #endregion
 
         #region Canon
+
         /// <summary>
         /// ������ ����� �� ������ ��ġ�� �̵��մϴ�.
         /// </summary>
@@ -275,6 +376,7 @@ namespace Hun.Player
             gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
             //anim.SetBool("isFired", false);
         }
+
         #endregion
     }
 }

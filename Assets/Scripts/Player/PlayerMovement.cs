@@ -19,6 +19,10 @@ namespace Hun.Player
 
         [Header("== Movement Property ==")]
         [SerializeField] private GameObject playerBody;
+        public GameObject PlayerBody
+        {
+            get => playerBody;
+        }
         [SerializeField] private GameObject[] playerBodys = new GameObject[2];
         [SerializeField, Range(0F, 10F)] private float moveSpeed = 2f;
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
@@ -69,7 +73,7 @@ namespace Hun.Player
         }
         public bool getIsGrounded { get => IsGrounded; }
 
-        private bool isMoveForceCoroutineing = false;
+        public bool IsMoveForceCoroutineing { get; private set; } = false;
 
         private void Awake()
         {
@@ -98,7 +102,7 @@ namespace Hun.Player
             SetupDashEvent();
 
             StartCoroutine(UpdatePreviousPosition());
-            StartCoroutine(CheckStopState());
+            //StartCoroutine(CheckStopState());
         }
 
         private void Update()
@@ -135,7 +139,7 @@ namespace Hun.Player
         #region Movement (Move, Look)
         public void AddMoveForce(Vector3 dir)
         {
-            if (!isMoveForceCoroutineing)
+            if (!IsMoveForceCoroutineing)
                 StartCoroutine(AddMoveForceCo(dir));
         }
 
@@ -153,7 +157,7 @@ namespace Hun.Player
         public IEnumerator AddMoveForceCo(Vector3 dir)
         {
             IsOverIce = true;
-            isMoveForceCoroutineing = true;
+            IsMoveForceCoroutineing = true;
             playerCtrl.PlayerInteract.SetSlipIceState(true);
             SetMovement(false);
             anim.SetBool("isWalk", false);
@@ -180,12 +184,12 @@ namespace Hun.Player
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
             IsOverIce = false;
-            isMoveForceCoroutineing = false;
+            IsMoveForceCoroutineing = false;
 
             yield return null;
         }
         
-        private IEnumerator CheckStopState()
+        /*private IEnumerator CheckStopState()
         {
             WaitForSeconds delay = new WaitForSeconds(0.1f);
             
@@ -202,7 +206,7 @@ namespace Hun.Player
             }
             
             yield return null;
-        }
+        }*/
 
         public void SetMovement(bool value) => IsMove = value;
 
@@ -223,9 +227,15 @@ namespace Hun.Player
         /// <param name="inputValue">�Է� ��</param>
         private void OnMove(InputValue inputValue)
         {
-            var value = inputValue.Get<Vector2>();
-            if (value != null)
-                MovingInputValue = new Vector3(value.x, 0, value.y);
+            var value = inputValue.Get<Vector2>().normalized;
+            MovingInputValue = new Vector3(value.x, 0, value.y);
+            
+            /*
+            float posX = (Mathf.Abs(MovingInputValue.x) >= 0.9f) ? MovingInputValue.x : 0.0f;
+            float posZ = (Mathf.Abs(MovingInputValue.z) >= 0.9f) ? MovingInputValue.z : 0.0f;
+            Vector3 dir = new Vector3(posX, 0f, posZ);
+
+            MovingInputValue = dir;*/
         }
 
         /// <summary>
