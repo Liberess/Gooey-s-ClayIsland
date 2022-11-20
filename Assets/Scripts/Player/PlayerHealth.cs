@@ -10,10 +10,8 @@ namespace Hun.Player
         private void Start()
         {
             OnSpawned();
-            //OnDeathEvent += RespawnCheckPoint;
-            OnDeathEvent += LoadWorldMap;
-            OnGameOverEvent += LoadWorldMap;
-            //Manager.UIManager.Instance.SetHeartUI(Heart);
+            OnDeathEvent += Manager.GameManager.Instance.PlayerDie;
+            OnGameOverEvent += Manager.GameManager.Instance.GameOver;
         }
 
         private void OnEnable()
@@ -36,17 +34,6 @@ namespace Hun.Player
         public override void RestoreLife(int value)
         {
             base.RestoreLife(value);
-        }
-
-        private void RespawnCheckPoint()
-        {
-            GameObject.FindGameObjectWithTag("Player").
-                GetComponent<PlayerController>().TeleportToCheckPoint();
-        }
-
-        private void LoadWorldMap()
-        {
-            Manager.GameManager.Instance.LoadScene("WorldMapScene");
         }
     }
 }

@@ -107,7 +107,7 @@ namespace Hun.Manager
             lifeTxt.text = value.ToString();
         }
 
-        public void setStageTimerUI(int value)
+        public void SetStageTimerUI(int value)
         {
             stageTimerTxt.text = value.ToString();
         }

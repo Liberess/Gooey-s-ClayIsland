@@ -16,6 +16,8 @@ namespace Hun.World
 
         private bool isGameOver = false;
 
+        private Animator GameEndEffect;
+
         private GameObject player;
         private Hun.Player.PlayerHealth playerHealth;
 
@@ -30,49 +32,18 @@ namespace Hun.World
                 Instance = this;
             else if (Instance != this)
                 Destroy(gameObject);
-
-            Player.PlayerController.PlayerSpawnedEvent += OnPlayerSpawned;
         }
 
         private void Start()
         {
-            gameManager = Manager.GameManager.Instance;
-            uiManager = Manager.UIManager.Instance;
-
-            player = GameObject.FindWithTag("Player");
-            playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
-
-            curTime = stageTimer + waitingTime;
+            
         }
 
         private void Update()
         {
-            CountTimer();
-        }
-
-        private void CountTimer()
-        {
-            if (gameManager.IsClear)
-                return;
-
-            curTime -= Time.deltaTime;
-            uiManager.setStageTimerUI((int)(curTime - 1));
-
-            if (curTime <= 0)
-            {
-                Entity.DamageMessage dmgMsg = new Entity.DamageMessage();
-                dmgMsg.damager = gameObject;
-                dmgMsg.dmgAmount = 3;
-                //dmgMsg.hitNormal = transform.position;
-                //dmgMsg.hitPoint = transform.position;
-                playerHealth.ApplyDamage(dmgMsg);
-            }
-        }
-
-        private void UpdateTimerUI()
-        {
 
         }
+
 
         public void GetCandy(int value)
         {
@@ -82,21 +53,13 @@ namespace Hun.World
         }
 
         /// <summary>
-        /// �÷��̾� ������ ȣ��Ǵ� �޼���
-        /// </summary>
-        /// <param name="player">�÷��̾� ������Ʈ</param>
-        private void OnPlayerSpawned(Player.PlayerController player)
-        {
-            //player.Life = player.maxLife;
-            player.PlayerDiedEvent += OnPlayerDied;
-        }
-
-        /// <summary>
         /// �÷��̾� ����� ȣ��Ǵ� �޼���
         /// </summary>
         private void OnPlayerDied()
         {
             isGameOver = true;
+            GameEndEffect.SetTrigger("GameEnd");
+
         }
     }
 }

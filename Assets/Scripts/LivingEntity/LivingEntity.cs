@@ -48,7 +48,9 @@ namespace Hun.Entity
             {
                 --Life;
                 heart = originHeart;
-                Die();
+
+                if(Life > 0)
+                    Die();
             }
 
             Manager.UIManager.Instance.SetHeartUI(heart);
@@ -90,12 +92,6 @@ namespace Hun.Entity
 
             lastDamagedTime = Time.time;
             Heart -= dmgMsg.dmgAmount;
-
-            if (heart <= 0 && !IsDead)
-            {
-                heart = 0;
-                Die();
-            }
         }
 
         private void ApplyUpdate(int newHealth, bool newIsDead)

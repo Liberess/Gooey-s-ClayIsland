@@ -9,7 +9,7 @@ public class ClayEffectStart : MonoBehaviour
     void Start()
     {
         clayEffect.SetActive(true);
-        Invoke("effectOut", 2f);
+        //Invoke("effectOut", 2f);
     }
 
     // Update is called once per frame
