@@ -36,5 +36,8 @@ namespace Hun.Manager
         }
 
         public GameProperty[] gameSaveFiles = new GameProperty[3];
+
+        public float bgm;
+        public float sfx;
     }
 }
