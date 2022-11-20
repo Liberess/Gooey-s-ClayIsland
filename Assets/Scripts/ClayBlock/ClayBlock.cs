@@ -1,3 +1,4 @@
+using Hun.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using UnityEngine;
 
 public enum ClayBlockType
 {
-    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple, Rainbow
+    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple, Toolbox, Empty
 }
 
 public enum TemperObjectType
@@ -65,7 +66,7 @@ public abstract class ClayBlock : MonoBehaviour
         var upPos2 = (destClayBlock.transform.localScale * 0.5f)
             + destClayBlock.transform.up;
 */
-        if(srcClayBlock.clayBlockType == ClayBlockType.Rainbow)
+        if(srcClayBlock.clayBlockType == ClayBlockType.Toolbox)
         {
             player.SetTargetClayBlock(srcClayBlock);
             SetClayBlock(true, player);

@@ -45,4 +45,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   selectStagePanel: {fileID: 0}
-  coinTxt: {fileID: 0}
+  lifeTxt: {fileID: 0}
+  clearObjCountTxt: {fileID: 0}
+  stageTimerTxt: {fileID: 0}
+  healthImgs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  mouthfulImg: {fileID: 0}
+  mouthfulSprites:
+  - {fileID: 21300000, guid: f5e9cff9fa9323d4ca1bc53f5918eab4, type: 3}
+  - {fileID: 21300000, guid: 136ef549457e69849acd77d73205cc91, type: 3}
+  - {fileID: 21300000, guid: 379001e5570775041bc3a8d8aa9c4cc2, type: 3}
+  - {fileID: 21300000, guid: 3e09559416f3e2d42b515bac1a1f9e22, type: 3}
+  - {fileID: 21300000, guid: 3e09559416f3e2d42b515bac1a1f9e22, type: 3}
+  - {fileID: 21300000, guid: 3e09559416f3e2d42b515bac1a1f9e22, type: 3}
