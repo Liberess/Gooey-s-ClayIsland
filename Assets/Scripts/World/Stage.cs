@@ -56,7 +56,7 @@ namespace Hun.World
                 return;
 
             curTime -= Time.deltaTime;
-            uiManager.setStageTimerUI((int)(curTime - 1));
+            uiManager.SetStageTimerUI((int)(curTime - 1));
 
             if (curTime <= 0)
             {

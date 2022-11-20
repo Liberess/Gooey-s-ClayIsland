@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 namespace Hun.Manager
 {
@@ -17,6 +18,8 @@ namespace Hun.Manager
         [SerializeField] private TextMeshProUGUI clearObjCountTxt;
         [SerializeField] private TextMeshProUGUI stageTimerTxt;
         [SerializeField] private Image[] healthImgs = new Image[3];
+        [SerializeField] private Image mouthfulImg;
+        [SerializeField] private Sprite[] mouthfulSprites;
 
         private void Awake()
         {
@@ -42,6 +45,8 @@ namespace Hun.Manager
             var parent = parentCanvas.Find("HelathGrid");
             for (int i = 0; i < parent.childCount; i++)
                 healthImgs[i] = parent.GetChild(i).GetChild(0).GetComponent<Image>();
+
+            mouthfulImg = parentCanvas.Find("MouthfulImg").GetComponent<Image>();
 
             //coinTxt = parentCanvas.Find("CoinImg").GetChild(0).GetComponent<TextMeshProUGUI>();
         }
@@ -107,7 +112,7 @@ namespace Hun.Manager
             lifeTxt.text = value.ToString();
         }
 
-        public void setStageTimerUI(int value)
+        public void SetStageTimerUI(int value)
         {
             stageTimerTxt.text = value.ToString();
         }
@@ -115,6 +120,24 @@ namespace Hun.Manager
         public void SetSelectStageUI(bool value)
         {
             selectStagePanel.SetActive(value);
+        }
+
+        public void SetMouthfulUI(ClayBlockType type = ClayBlockType.Empty)
+        {
+            if (type != ClayBlockType.Empty)
+                mouthfulImg.GetComponent<Animator>().SetTrigger("doBounce");
+            else
+                mouthfulImg.GetComponent<Animator>().SetTrigger("doNull");
+
+            switch(type)
+            {
+                default: mouthfulImg.sprite = mouthfulSprites[0]; break;
+                case ClayBlockType.Grass: mouthfulImg.sprite = mouthfulSprites[1]; break;
+                case ClayBlockType.Ice: mouthfulImg.sprite = mouthfulSprites[2]; break;
+                case ClayBlockType.Sand: mouthfulImg.sprite = mouthfulSprites[3]; break;
+                case ClayBlockType.ShineLamp: mouthfulImg.sprite = mouthfulSprites[4]; break;
+                case ClayBlockType.Toolbox: mouthfulImg.sprite = mouthfulSprites[5]; break;
+            }
         }
     }
 }

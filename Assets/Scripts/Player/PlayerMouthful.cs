@@ -1,3 +1,4 @@
+using Hun.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -153,6 +154,7 @@ namespace Hun.Player
                         clayBlock.OnMouthful();
                         clayBlock.transform.SetParent(transform);
                         targetClayBlock = clayBlock;
+                        UIManager.Instance.SetMouthfulUI(targetClayBlock.ClayBlockType);
                     }
 
                     if (clayBlock.ClayBlockType == ClayBlockType.Apple)
@@ -185,6 +187,7 @@ namespace Hun.Player
                 var targetPos = hitBlock.transform.position + Vector3.up * 1f;
                 targetClayBlock.OnSpit(targetPos);
                 targetClayBlock = null;
+                UIManager.Instance.SetMouthfulUI();
                 //currentClayBlock = null;
             }
         }

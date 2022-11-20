@@ -183,14 +183,14 @@ public class ClayBlockTile : ClayBlock
         }
 
         // ������ ���� ��ĥ �� �ִ�.
-        if (srcType != ClayBlockType.Rainbow && destType != ClayBlockType.Rainbow)
+        if (srcType != ClayBlockType.Toolbox && destType != ClayBlockType.Toolbox)
         {
             isSuccess = false;
             return false;
         }
 
         // BlockB�� Ÿ�Կ� ���缭 ���� ��ġ�� �ռ��Ѵ�.
-        if (srcType == ClayBlockType.Rainbow)
+        if (srcType == ClayBlockType.Toolbox)
         {
             switch (destType)
             {
@@ -213,7 +213,7 @@ public class ClayBlockTile : ClayBlock
                     return true;
             }
         }
-        else if (destType == ClayBlockType.Rainbow)
+        else if (destType == ClayBlockType.Toolbox)
         {
             switch (srcType)
             {
