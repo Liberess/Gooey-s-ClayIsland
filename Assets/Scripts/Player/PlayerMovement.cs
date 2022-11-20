@@ -34,6 +34,8 @@ namespace Hun.Player
         public bool IsMove { get; private set; }
         public bool IsOverIce { get; private set; }
 
+        public bool IsDie { get; private set; }
+
         [SerializeField] private float fallDamageValue = 3f;
         [SerializeField] private float maxPositionY;
         private bool isInAir = false;
@@ -85,6 +87,7 @@ namespace Hun.Player
         private void Start()
         {
             IsMove = true;
+            IsDie = false;
             currentDashSpeed = 1f;
             maxPositionY = Mathf.Round(transform.position.y);
             
@@ -103,17 +106,31 @@ namespace Hun.Player
 
             StartCoroutine(UpdatePreviousPosition());
             //StartCoroutine(CheckStopState());
+
+            playerCtrl.PlayerHealth.OnDeathEvent += SetPlayerDie;
+            playerCtrl.PlayerHealth.OnGameOverEvent += SetPlayerDie;
         }
 
         private void Update()
         {
+            if (IsDie)
+                return;
+
             CountFallDamage();
             UpdateGravity();
         }
 
         private void FixedUpdate()
         {
+            if (IsDie)
+                return;
+
             UpdateMovement();
+        }
+
+        private void SetPlayerDie()
+        {
+            IsDie = true;
         }
 
         public void ChangeModel(PlayerState playerState)

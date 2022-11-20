@@ -79,7 +79,7 @@ namespace Hun.Player
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+            if (!PlayerMovement.IsDie && collision.collider.TryGetComponent(out ClayBlock clayBlock))
                 clayBlock.OnEnter();
 
             /*if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
@@ -120,7 +120,7 @@ namespace Hun.Player
 
         private void OnCollisionExit(Collision collision)
         {
-            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+            if (!PlayerMovement.IsDie && collision.collider.TryGetComponent(out ClayBlock clayBlock))
                 clayBlock.OnExit();
         }
     }

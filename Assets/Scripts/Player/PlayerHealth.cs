@@ -11,6 +11,7 @@ namespace Hun.Player
         {
             OnSpawned();
             OnDeathEvent += Manager.GameManager.Instance.PlayerDie;
+            OnDeathEvent += Manager.GameManager.Instance.PlayerDie;
             OnGameOverEvent += Manager.GameManager.Instance.GameOver;
         }
 

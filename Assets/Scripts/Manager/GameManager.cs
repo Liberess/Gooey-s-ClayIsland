@@ -19,19 +19,24 @@ namespace Hun.Manager
         public int Coin { get; private set; }
         public float PlayTime { get; private set; }
         public int SceneIndex { get; private set; }
+        public bool IsGamePlay { get; private set; }
+
         public bool IsClear { get; private set; }
         public bool IsGameOver { get; private set; }
         public bool IsFailed { get; private set; }
-        public bool IsGamePlay { get; private set; }
 
         [Space(10), Header("== Game Menu UI =="), Space(5)]
         [SerializeField] private GameObject mainPanel;
         [SerializeField] private GameObject menuPanel;
         [SerializeField] private GameObject quitPanel;
         [SerializeField] private GameObject pausePanel;
-        [SerializeField] private GameObject clearPanel;
-        [SerializeField] private GameObject failedPanel;
-        [SerializeField] private GameObject gameOverPanel;
+
+        [Space(10), Header("== Game Result UI =="), Space(5)]
+        [SerializeField] private GameObject resultPanel;
+        [SerializeField] private GameObject playerObjInPanel;
+        [SerializeField] private Animator playerObjInPanelAnim;
+        [SerializeField] private GameObject[] resultTxt; // 0 : clear, 1 : failed, 2 : game over
+        [SerializeField] private GameObject ButtonTxt;
 
         [Space(10), Header("== Clay Block Object Prefabs =="), Space(5)]
         [SerializeField] private List<GameObject> clayBlockTilePrefabList = new List<GameObject>();
@@ -73,10 +78,30 @@ namespace Hun.Manager
                 playerHealth = player.GetComponent<Hun.Player.PlayerHealth>();
             }
 
+            if (resultPanel)
+            {
+                resultPanel.SetActive(false);
+                playerObjInPanel = resultPanel.transform.GetChild(0).gameObject;
+                resultTxt = new GameObject[3];
+
+                for(int i = 0; i < resultTxt.Length; i++)
+                {
+                    resultTxt[i] = resultPanel.transform.GetChild(1).GetChild(i).gameObject;
+                }
+
+                ButtonTxt = resultPanel.transform.GetChild(2).gameObject;
+            }
+
+            if(playerObjInPanel)
+                playerObjInPanelAnim = playerObjInPanel.GetComponent<Animator>();
+
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
             if (mainPanel != null)
                 mainPanel.SetActive(true);
+
+            if (resultPanel != null)
+                resultPanel.SetActive(false);
 
             Coin = 0;
             IsClear = false;
@@ -121,7 +146,7 @@ namespace Hun.Manager
                     if (IsClear)
                         LoadScene("LobbyScene" + stageNum);
                     else if (IsFailed)
-                        LoadScene("1-" + stageNum);
+                        LoadScene(SceneManager.GetActiveScene().name);
                     else if (IsGameOver)
                         LoadScene("LobbyScene" + stageNum);
                 }
@@ -195,6 +220,7 @@ namespace Hun.Manager
             */
 
             Time.timeScale = 1f;
+            IsGamePlay = true;
             LoadingManager.LoadScene(sceneName);
         }
 
@@ -243,26 +269,54 @@ namespace Hun.Manager
             StartCoroutine(OnGameResultPanel());
         }
 
+        /// <summary>
+        /// 게임이 종료되었을 때 결과에 따른 화면창 출력
+        /// </summary>
+        /// <returns></returns>
         private IEnumerator OnGameResultPanel()
         {
             WaitForSeconds delay = new WaitForSeconds(2f);
+
+            //init
+            playerObjInPanel.SetActive(false);
+            ButtonTxt.SetActive(false);
+            foreach (GameObject txt in resultTxt)
+            {
+                txt.SetActive(false);
+            }
 
             mainPanel.SetActive(false);
             GameEndEffect.SetTrigger("GameEnd");
 
             yield return delay;
 
+            //플레이어 모델 등장
+            resultPanel.SetActive(true);
+            playerObjInPanel.SetActive(true);
+
             if (IsClear)
-                clearPanel.SetActive(true);
+            {
+                playerObjInPanelAnim.SetTrigger("Clear");
+                yield return delay;
+                resultTxt[0].SetActive(true);
+            }
             else if (IsFailed)
-                failedPanel.SetActive(true);
+            {
+                playerObjInPanelAnim.SetTrigger("Failed");
+                yield return delay;
+                resultTxt[1].SetActive(true);
+            }
             else if (IsGameOver)
-                gameOverPanel.SetActive(true);
+            {
+                playerObjInPanelAnim.SetTrigger("GameOver");
+                yield return delay;
+                resultTxt[2].SetActive(true);
+            }
 
             yield return delay;
 
             //Text 출력
-
+            ButtonTxt.SetActive(true);
 
             IsGamePlay = false;
 
