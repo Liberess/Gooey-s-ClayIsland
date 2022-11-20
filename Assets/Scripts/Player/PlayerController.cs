@@ -79,11 +79,14 @@ namespace Hun.Player
 
         private void OnCollisionEnter(Collision collision)
         {
+            if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
+                clayBlock.OnEnter();
+
             /*if (collision.collider.TryGetComponent(out ClayBlock clayBlock))
             {
                 clayBlock.OnEnter();
 
-                if(PlayerInteract.IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
+                if (PlayerInteract.IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                 {
                     float distance = Vector3.Distance(transform.position + (transform.up * 0.5f),
                             clayBlock.transform.position);

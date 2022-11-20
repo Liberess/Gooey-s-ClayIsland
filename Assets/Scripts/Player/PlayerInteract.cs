@@ -158,12 +158,14 @@ namespace Hun.Player
             }
         }
 
-        private void OnDrawGizmos()
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawSphere(transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f),
                 0.3f);
         }
+#endif
 
         /// <summary>
         /// 플레이어의 전방이 막혀있는지 체크한다.
@@ -306,7 +308,7 @@ namespace Hun.Player
             StartCoroutine(TrampilineJump(force, poses, isSuccese));
         }
 
-        IEnumerator TrampilineJump(float force, Transform[] poses, bool isSuccese)
+        private IEnumerator TrampilineJump(float force, Transform[] poses, bool isSuccese)
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(poses[3].forward));
             gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
