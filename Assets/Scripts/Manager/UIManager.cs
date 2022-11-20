@@ -13,10 +13,10 @@ namespace Hun.Manager
         [Header("== UI ==")]
         [SerializeField] private GameObject selectStagePanel;
         [SerializeField] private TextMeshProUGUI lifeTxt;
-        [SerializeField] private TextMeshProUGUI coinTxt;
-        [SerializeField] private TextMeshProUGUI heartTxt;
+        //[SerializeField] private TextMeshProUGUI coinTxt;
         [SerializeField] private TextMeshProUGUI clearObjCountTxt;
         [SerializeField] private TextMeshProUGUI stageTimerTxt;
+        [SerializeField] private Image[] healthImgs = new Image[3];
 
         private void Awake()
         {
@@ -38,8 +38,12 @@ namespace Hun.Manager
             var parentCanvas = GameObject.Find("GameCanvas").transform;
 
             lifeTxt = parentCanvas.Find("LifeImg").GetChild(0).GetComponent<TextMeshProUGUI>();
-            coinTxt = parentCanvas.Find("CoinImg").GetChild(0).GetComponent<TextMeshProUGUI>();
-            heartTxt = parentCanvas.Find("HeartImg").GetChild(0).GetComponent<TextMeshProUGUI>();
+
+            var parent = parentCanvas.Find("HelathGrid");
+            for (int i = 0; i < parent.childCount; i++)
+                healthImgs[i] = parent.GetChild(i).GetChild(0).GetComponent<Image>();
+
+            //coinTxt = parentCanvas.Find("CoinImg").GetChild(0).GetComponent<TextMeshProUGUI>();
         }
 
         public void UpdateStageUI()
@@ -54,17 +58,53 @@ namespace Hun.Manager
 
         public void SetCoinUI(int value)
         {
-            coinTxt.text = "x" + value;
+            //coinTxt.text = "x" + value;
         }
 
         public void SetHeartUI(int value)
         {
-            heartTxt.text = "x" + value;
+            //heartTxt.text = "x" + value;
+
+            if(value < healthImgs.Length)
+                StartCoroutine(DecreaseHeartUICo(value));
+ 
+/*            if(value <= 0)
+            {
+                for (int i = 0; i < healthImgs.Length; i++)
+                    healthImgs[i].enabled = false;
+            }
+            else
+            {
+                for (int i = 0; i < value; i++)
+                    healthImgs[i].enabled = true;
+
+                if (value < healthImgs.Length)
+                    healthImgs[value].enabled = false;
+            }*/
+        }
+
+        private IEnumerator DecreaseHeartUICo(int index)
+        {
+            var targetImg = healthImgs[index];
+
+            float time = 0f;
+
+            while(true)
+            {
+                if (targetImg.fillAmount <= 0) break;
+
+                time += Time.deltaTime;
+                targetImg.fillAmount = Mathf.Lerp(1, 0, time);
+                //targetImg.fillAmount -= Time.deltaTime;
+                yield return new WaitForEndOfFrame();
+            }
+
+            yield return null;
         }
 
         public void SetLifeUI(int value)
         {
-            lifeTxt.text = "x" + value;
+            lifeTxt.text = value.ToString();
         }
 
         public void setStageTimerUI(int value)

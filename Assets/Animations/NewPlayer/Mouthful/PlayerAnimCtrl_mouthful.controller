@@ -179,8 +179,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: f8f588232b5f2df489645e7e1c242058,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 146e93ecf7e303342aa33892c5014770, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -318,7 +317,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerAnimCtrl_mouthful
+  m_Name: PlayerAnimCtrl_Mouthful
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: isWalk
@@ -471,8 +470,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: 6e30ea494af96c845809004e506b07bd,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: d47e42862fc34ec43990a8f35fd506eb, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -563,8 +561,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1827226128182048838, guid: 42c118ea598baea40ba77c08f80964ea,
-    type: 3}
+  m_Motion: {fileID: 7400000, guid: 0579bd7e12a0283498e1c49fadbdbaea, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
