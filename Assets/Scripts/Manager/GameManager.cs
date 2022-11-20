@@ -75,6 +75,9 @@ namespace Hun.Manager
 
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
+            if (mainPanel != null)
+                mainPanel.SetActive(true);
+
             Coin = 0;
             IsClear = false;
             IsFailed = false;
@@ -244,6 +247,7 @@ namespace Hun.Manager
         {
             WaitForSeconds delay = new WaitForSeconds(2f);
 
+            mainPanel.SetActive(false);
             GameEndEffect.SetTrigger("GameEnd");
 
             yield return delay;

@@ -46,10 +46,11 @@ namespace Hun.Entity
         {
             if(heart <= 0)
             {
+                Debug.Log("Heart" + heart);
                 --Life;
                 heart = originHeart;
-
-                if(Life > 0)
+                Debug.Log("Heart" + heart);
+                if (Life > 0)
                     Die();
             }
 
