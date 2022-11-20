@@ -195,7 +195,10 @@ namespace Hun.Player
                 
                 //���� ���� ���� �ʰų�, �̲������� ���°� �ƴ϶��
                 if (/*!playerCtrl.PlayerInteract.IsIceInside && */!playerCtrl.PlayerInteract.IsSlipIce)
+                {
+                    yield return new WaitForSeconds(0.18f);
                     break;
+                }
 
                 yield return null;
             }
