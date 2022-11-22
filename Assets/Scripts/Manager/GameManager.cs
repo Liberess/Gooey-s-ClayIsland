@@ -154,6 +154,8 @@ namespace Hun.Manager
             }
         }
 
+        public void GetCountTime(float time) => curTime += time;
+
         private void CountTimer()
         {
             if (IsClear)

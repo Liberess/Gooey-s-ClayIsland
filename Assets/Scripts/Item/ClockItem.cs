@@ -19,7 +19,7 @@ public class ClockItem : MonoBehaviour, IItem
     public void UseItem()
     {
         //게임매니저 시간 20초 추가
-        Debug.Log("게임매니저 시간 20초 추가");
+        GameManager.Instance.GetCountTime(20);
         Debug.Log("사운드 s019 1회 재생");
         Destroy(gameObject);
     }
