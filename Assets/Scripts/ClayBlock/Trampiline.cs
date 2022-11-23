@@ -6,6 +6,8 @@ namespace Hun.Obstacle
     {
         private Hun.Player.PlayerController player;
 
+        [SerializeField] private Animator anim;
+
         [SerializeField, Range(0f, 10f)] private float force = 5f;
 
         [SerializeField] private Transform[] poses;
@@ -13,6 +15,7 @@ namespace Hun.Obstacle
 
         private void Start()
         {
+            anim = GetComponentInChildren<Animator>();
             player = FindObjectOfType<Hun.Player.PlayerController>();
 
             if(boardCheckPos == null)
@@ -24,6 +27,7 @@ namespace Hun.Obstacle
             int layerMask = (-1) - (1 << LayerMask.NameToLayer("Player"));
             bool isSuccese = Physics.Raycast(transform.position, boardCheckPos.position - transform.position, 1, layerMask);
 
+            anim.SetTrigger("isUsed");
             player.PlayerInteract.SetTrampilineState(true);
             player.PlayerInteract.JumpToPosByTrampiline(force, poses, !isSuccese);
 

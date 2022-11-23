@@ -7,12 +7,15 @@ namespace Hun.Obstacle
     {
         private PlayerController player;
 
+        [SerializeField] private Animator anim;
+
         private Vector3 destPos;
 
         private GameObject curUser; 
 
         private void Start()
         {
+            anim = GetComponentInChildren<Animator>();
             player = FindObjectOfType<PlayerController>();
         }
 
@@ -26,6 +29,7 @@ namespace Hun.Obstacle
                     return;
                 }
 
+                anim.SetTrigger("isUsed");
                 player.PlayerInteract.SetCanonState(true);
 
                 destPos = hit.transform.position;

@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1894084557730454159}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,7 +42,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5546434715126099663}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Bone002
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4142521071589498017}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Bone003
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -106,7 +106,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4394804686556120890}
-  m_Layer: 0
+  - component: {fileID: 536439094860848712}
+  m_Layer: 14
   m_Name: CanonClay.FBX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -122,7 +123,7 @@ Transform:
   m_GameObject: {fileID: 4014584407029849472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.4, y: 1.4, z: 1.4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8198968767472560949}
@@ -130,6 +131,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &536439094860848712
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4014584407029849472}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8d3b2b1ed0374ed44ae69c2158377c79, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &5062127242683388849
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1266249947591986875}
   - component: {fileID: 787544353559737370}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: fixture
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -226,7 +247,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2125569261540927699}
   - component: {fileID: 293427803605696842}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: arrowA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -312,7 +333,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1688365825140799415}
   - component: {fileID: 7163442698776797160}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: arrowB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -397,7 +418,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8198968767472560949}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Bone001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +450,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6542392118602606947}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -462,7 +483,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5950632686280231413}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Group001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -497,7 +518,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4353966996712821594}
   - component: {fileID: 3175212267212692990}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -583,7 +604,7 @@ GameObject:
   m_Component:
   - component: {fileID: 433367460817739535}
   - component: {fileID: 8468122554447285891}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: body
   m_TagString: Untagged
   m_Icon: {fileID: 0}

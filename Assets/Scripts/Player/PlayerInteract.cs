@@ -68,6 +68,7 @@ namespace Hun.Player
             //SlidingFlow();
             if (IsBlockedForward)
             {
+                playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
                 IsSlipIce = false;
                 return;
             }
@@ -95,12 +96,14 @@ namespace Hun.Player
                     {
                         if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                         {
+                            playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
                             IsSlipIce = false;
                             break;
                         }
 
                         if (!IsCanonInside && !IsTrampilineInside && !IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
                         {
+                            playerCtrl.PlayerMovement.Anim.SetBool("isSlide", true);
                             IsSlipIce = true;
                             
                             var forward = playerCtrl.PlayerMovement.PlayerBody.transform.forward;

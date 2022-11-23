@@ -93,6 +93,9 @@ namespace Hun.Player
                             if (clayBlock.IsSuccessFusion(targetClayBlock.
                                     GetComponent<ClayBlockTile>(), clayBlock))
                             {
+                                playerMovement.ChangeModel(PlayerState.spit);
+                                playerMovement.Anim.SetTrigger("isMouthful");
+
                                 targetClayBlock = null;
                             }
 
@@ -111,6 +114,9 @@ namespace Hun.Player
                 {
                     if (hitBlock.collider.TryGetComponent(out ClayBlock clayBlock))
                     {
+                        playerMovement.ChangeModel(PlayerState.mouthful);
+                        playerMovement.Anim.SetTrigger("isMouthful");
+
                         clayBlock.OnDivision();
                         return;
                     }
@@ -168,6 +174,9 @@ namespace Hun.Player
                 {
                     if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                     {
+                        playerMovement.ChangeModel(PlayerState.mouthful);
+                        playerMovement.Anim.SetTrigger("isMouthful");
+
                         clayBlock.OnDivision();
                         return;
                     }
