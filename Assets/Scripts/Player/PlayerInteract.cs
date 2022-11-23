@@ -99,7 +99,7 @@ namespace Hun.Player
                             break;
                         }
 
-                        if (!IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
+                        if (!IsCanonInside && !IsTrampilineInside && !IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
                         {
                             IsSlipIce = true;
                             
