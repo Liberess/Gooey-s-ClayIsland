@@ -184,10 +184,11 @@ namespace Hun.Player
             else
                 IsBlockedForward = false;*/
 
+            LayerMask mask = LayerMask.GetMask("ClayBlock") | LayerMask.GetMask("TemperObject");
+
             forwardColliders =
                 Physics.OverlapSphere(
-                    transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f), 0.3f,
-                    LayerMask.GetMask("ClayBlock"));
+                    transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f), 0.3f, mask);
             if (forwardColliders.Length > 0)
                 IsBlockedForward = true;
             else
@@ -325,7 +326,7 @@ namespace Hun.Player
                 if (index == 2 && !isSuccese)
                 {
                     Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
-                    rigid.AddForce((transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
+                    rigid.AddForce((playerCtrl.PlayerMovement.PlayerBody.transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
                     gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
 
                     yield return new WaitForSeconds(1F);

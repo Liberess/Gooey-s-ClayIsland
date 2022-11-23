@@ -22,16 +22,10 @@ namespace Hun.Obstacle
         public override void OnEnter()
         {
             int layerMask = (-1) - (1 << LayerMask.NameToLayer("Player"));
-            if (!Physics.Raycast(transform.position, boardCheckPos.position - transform.position, 1, layerMask))
-            {
-                player.PlayerInteract.SetTrampilineState(true);
-                player.PlayerInteract.JumpToPosByTrampiline(force, poses, true);
-            }
-            else
-            {
-                player.PlayerInteract.SetTrampilineState(true);
-                player.PlayerInteract.JumpToPosByTrampiline(force, poses, false);
-            }
+            bool isSuccese = Physics.Raycast(transform.position, boardCheckPos.position - transform.position, 1, layerMask);
+
+            player.PlayerInteract.SetTrampilineState(true);
+            player.PlayerInteract.JumpToPosByTrampiline(force, poses, !isSuccese);
 
             Debug.DrawRay(transform.position, boardCheckPos.position - transform.position, Color.red, 3);
         }
