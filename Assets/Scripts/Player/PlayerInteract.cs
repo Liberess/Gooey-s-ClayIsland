@@ -391,7 +391,7 @@ namespace Hun.Player
             transform.position = newPos;
             playerCtrl.PlayerMovement.Anim.SetBool("isCanon", true);
 
-            yield return new WaitForSeconds(1F);
+            yield return new WaitForSeconds(1.5F);
 
             while (transform.position != destPos)
             {
