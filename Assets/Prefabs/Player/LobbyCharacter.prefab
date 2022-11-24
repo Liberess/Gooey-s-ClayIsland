@@ -120,6 +120,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PlayerModel_Mouthful
       objectReference: {fileID: 0}
+    - target: {fileID: 4758849744000744526, guid: bf56ae45a1ed7594bbd8be048cb7edb5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5278504689588971252, guid: bf56ae45a1ed7594bbd8be048cb7edb5,
         type: 3}
       propertyPath: m_RootOrder

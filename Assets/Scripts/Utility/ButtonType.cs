@@ -9,8 +9,10 @@ namespace Hun.Utility
     {
         Continue = 0,
         NewGame,
-        Quit,
-        Option
+        Exit,
+        Option,
+        Restart,
+        Lobby
     }
 
     public class ButtonType : MonoBehaviour
@@ -24,8 +26,6 @@ namespace Hun.Utility
 
         public void OnClickButton()
         {
-            Debug.Log("OnClickButton");
-
             switch (currentType)
             {
                 case BtnType.Continue:
@@ -34,11 +34,17 @@ namespace Hun.Utility
                 case BtnType.NewGame:
                     GameManager.Instance.NewGame();
                     break;
-                case BtnType.Quit:
-                    GameManager.Instance.QuitGame();
+                case BtnType.Exit:
+                    GameManager.Instance.ExitGame();
                     break;
                 case BtnType.Option:
                     GameManager.Instance.OptionControl();
+                    break;
+                case BtnType.Restart:
+                    GameManager.Instance.RestartGame();
+                    break;
+                case BtnType.Lobby:
+                    GameManager.Instance.GoToLobby();
                     break;
                 default:
                     break;

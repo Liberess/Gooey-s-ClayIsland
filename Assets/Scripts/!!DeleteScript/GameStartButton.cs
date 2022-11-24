@@ -1,3 +1,4 @@
+using Hun.Manager;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,17 +11,28 @@ public class GameStartButton : MonoBehaviour
     [SerializeField] GameObject clayEffect;
     [SerializeField] AudioSource intro;
 
-    private int stageNum;
+    private bool isStart;
+    private int sceneIndex;
+
+    private void Start()
+    {
+        isStart = false;
+
+        sceneIndex = SceneManager.GetActiveScene().buildIndex;
+    }
 
     private void Update()
     {
-        if(SceneManager.GetActiveScene().buildIndex == 0)
+        if(!isStart && sceneIndex == 0)
         {
             if (Input.GetKeyDown("space"))
             {
+                isStart = true;
                 intro.Play();
-                effectAnim.SetTrigger("GameStart");
+                //effectAnim.SetTrigger("GameStart");
+                VFXManager.Instance.CloudFadeOut();
                 Invoke("GameStart", 2.5f);
+                DataManager.Instance.GameData.gameState = GameState.Lobby;
             }
         }
     }
@@ -30,16 +42,26 @@ public class GameStartButton : MonoBehaviour
         SceneManager.LoadScene("LobbyScene1");
     }
 
-    public void StageStart(int stageNum)
+    public void StageStart()
     {
-        this.stageNum = stageNum;
         clayEffect.SetActive(true);
-        Invoke("StageStart", 3f);
+        //clayEffect.GetComponent<Animator>().SetTrigger("GameEnd");
+        VFXManager.Instance.CloudFadeOut();
+        Invoke(nameof(LoadStage), 3f);
     }
 
-    private void StageStart()
+    private void LoadStage()
     {
-        if(stageNum == 1)
-            SceneManager.LoadScene("1-5");
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        switch(sceneIndex)
+        {
+            case 2: sceneName = "1-1"; break;
+            case 3: sceneName = "1-2"; break;
+            case 4: sceneName = "1-3"; break;
+        }
+
+        DataManager.Instance.GameData.gameState = GameState.Stage;
+        SceneManager.LoadScene(sceneName);
     }
 }

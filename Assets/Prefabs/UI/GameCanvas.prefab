@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 371778032}
   - component: {fileID: 371778031}
   - component: {fileID: 8124168079283521058}
+  - component: {fileID: 7787659329190418136}
   m_Layer: 5
-  m_Name: ExitBtn
+  m_Name: LobbyBtn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90,7 +91,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -120,19 +121,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 371778031}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Hun.Manager.GameManager, Assembly-CSharp
-        m_MethodName: QuitGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &7787659329190418136
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 371778029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364d341cfd740f54c91fcc9762a5be26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentType: 5
 --- !u!1 &879416385
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,6 +147,7 @@ GameObject:
   - component: {fileID: 879416388}
   - component: {fileID: 879416387}
   - component: {fileID: 1974670202932013964}
+  - component: {fileID: 1451651945497797889}
   m_Layer: 5
   m_Name: ConBtn
   m_TagString: Untagged
@@ -223,7 +226,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -253,19 +256,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 879416387}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Hun.Manager.GameManager, Assembly-CSharp
-        m_MethodName: OptionControl
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &1451651945497797889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 879416385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364d341cfd740f54c91fcc9762a5be26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentType: 0
 --- !u!1 &1878001260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1512,6 +1516,7 @@ GameObject:
   - component: {fileID: 7024313642071239254}
   - component: {fileID: 2321072740440586861}
   - component: {fileID: 5156701536779022645}
+  - component: {fileID: 4723743258149374997}
   m_Layer: 5
   m_Name: RestartBtn
   m_TagString: Untagged
@@ -1590,7 +1595,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -1620,19 +1625,20 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2321072740440586861}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Hun.Manager.GameManager, Assembly-CSharp
-        m_MethodName: NewGame
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!114 &4723743258149374997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3545218909631123515}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 364d341cfd740f54c91fcc9762a5be26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentType: 4
 --- !u!1 &3661800422654115123
 GameObject:
   m_ObjectHideFlags: 0
@@ -1719,7 +1725,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5530997776064394971}
   m_Layer: 5
-  m_Name: Exit
+  m_Name: Lobby
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2374,7 +2380,7 @@ GameObject:
   - component: {fileID: 1352663993835646721}
   - component: {fileID: 197146247592789500}
   m_Layer: 5
-  m_Name: HelathGrid
+  m_Name: HealthGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

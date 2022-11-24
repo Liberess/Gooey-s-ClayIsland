@@ -97,6 +97,7 @@ namespace Hun.Player
                                 playerMovement.Anim.SetTrigger("isMouthful");
 
                                 targetClayBlock = null;
+                                UIManager.Instance.SetMouthfulUI();
                             }
 
                             return;
@@ -118,6 +119,7 @@ namespace Hun.Player
                         playerMovement.Anim.SetTrigger("isMouthful");
 
                         clayBlock.OnDivision();
+                        UIManager.Instance.SetMouthfulUI(ClayBlockType.Toolbox);
                         return;
                     }
                     else
@@ -213,7 +215,7 @@ namespace Hun.Player
             {
                 yield return delay;
 
-                if (playerMovement.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.8f)
+                if (playerMovement.Anim.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
                     break;
             }
 

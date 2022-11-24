@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Hun.Utility;
 
 namespace Hun.Manager
 {
@@ -72,6 +73,11 @@ namespace Hun.Manager
             dataMgr = DataManager.Instance;
             uiManager = UIManager.Instance;
 
+            SceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+            if (dataMgr.GameData.gameState != GameState.Stage)
+                return;
+
             player = GameObject.FindWithTag("Player");
             if(player)
             {
@@ -95,8 +101,6 @@ namespace Hun.Manager
             if(playerObjInPanel)
                 playerObjInPanelAnim = playerObjInPanel.GetComponent<Animator>();
 
-            SceneIndex = SceneManager.GetActiveScene().buildIndex;
-
             if (mainPanel != null)
                 mainPanel.SetActive(true);
 
@@ -104,6 +108,7 @@ namespace Hun.Manager
                 resultPanel.SetActive(false);
 
             Coin = 0;
+
             IsClear = false;
             IsFailed = false;
             IsGameOver = false;
@@ -113,27 +118,22 @@ namespace Hun.Manager
 
         private void Update()
         {
-            CountTimer();
+            if (dataMgr.GameData.gameState == GameState.Main)
+                return;
 
-            // Press Spacebar
-            if (SceneIndex == 0)
+            if(dataMgr.GameData.gameState == GameState.Lobby)
             {
-                if(Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    mainPanel.SetActive(false);
-                    //menuPanel.SetActive(true);
+                    LobbyControl();
                 }
             }
-
-            // Option Panel Control
-            if(IsGamePlay && Input.GetKeyDown(KeyCode.Escape))
+            else
             {
-                if (dataMgr.GameData.gameState == GameState.Lobby)
-                {
-                    QuitControl();
-                    uiManager.SetSelectStageUI(false);
-                }
-                else
+                CountTimer();
+
+                // Option Panel Control
+                if (IsGamePlay && Input.GetKeyDown(KeyCode.Escape))
                 {
                     OptionControl();
                 }
@@ -150,7 +150,6 @@ namespace Hun.Manager
                     else if (IsGameOver)
                         LoadScene("LobbyScene" + stageNum);
                 }
-
             }
         }
 
@@ -198,18 +197,24 @@ namespace Hun.Manager
             }
         }
 
-        public void QuitControl()
+        public void LobbyControl()
         {
-            if (quitPanel == null)
+            if (pausePanel == null)
             {
-                var parent = GameObject.Find("== UI ==").transform.Find("GameCanvas");
-                quitPanel = parent.Find("QuitPanel").gameObject;
+                var parent = GameObject.Find("== UI ==").transform.Find("PauseCanvas");
+                pausePanel = parent.Find("PausePanel").gameObject;
             }
 
-            if (quitPanel.activeSelf)
-                quitPanel.SetActive(false);
+            if (pausePanel.activeSelf)
+            {
+                Time.timeScale = 1f;
+                pausePanel.SetActive(false);
+            }
             else
-                quitPanel.SetActive(true);
+            {
+                pausePanel.SetActive(true);
+                Time.timeScale = 0f;
+            }
         }
 
         public void LoadScene(string sceneName)
@@ -347,7 +352,7 @@ namespace Hun.Manager
         public void NewGame()
         {
             dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("LobbyScene");
+            LoadScene("LobbyScene1");
         }
 
         /// <summary>
@@ -355,14 +360,38 @@ namespace Hun.Manager
         /// </summary>
         public void ContinueGame()
         {
-            dataMgr.GameData.gameState = GameState.Lobby;
-            LoadScene("LobbyScene");
+            //dataMgr.GameData.gameState = GameState.Lobby;
+
+            OptionControl();
+            //LoadScene("LobbyScene");
         }
 
+        public void RestartGame()
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(SceneIndex);
+        }
+
+        public void GoToLobby()
+        {
+            string sceneName = "LobbyScene";
+
+            switch(SceneIndex)
+            {
+                case 5: sceneName = string.Concat(sceneName, "1"); break;
+                case 6: sceneName = string.Concat(sceneName, "2"); break;
+                case 7: sceneName = string.Concat(sceneName, "3"); break;
+            }
+
+            Time.timeScale = 1f;
+            dataMgr.GameData.gameState = GameState.Lobby;
+            SceneManager.LoadScene(sceneName);
+        }
+       
         /// <summary>
         /// ������ �����Ű�� �Լ��̴�.
         /// </summary>
-        public void QuitGame()
+        public void ExitGame()
         {
             Application.Quit();
         }
