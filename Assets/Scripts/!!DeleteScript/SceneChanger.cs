@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class SceneChanger : MonoBehaviour
@@ -12,11 +13,19 @@ public class SceneChanger : MonoBehaviour
 
     public void ChangePreviousLobbyScene()
     {
-        SceneManager.LoadScene(sceneIndex - 1);
+        VFXManager.Instance.CloudFadeOut();
+        StartCoroutine(LoadScene(sceneIndex - 1));
+    }
+
+    private IEnumerator LoadScene(int index)
+    {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(index);
     }
 
     public void ChangeNextLobbyScene()
     {
-        SceneManager.LoadScene(sceneIndex + 1);
+        VFXManager.Instance.CloudFadeOut();
+        StartCoroutine(LoadScene(sceneIndex + 1));
     }
 }

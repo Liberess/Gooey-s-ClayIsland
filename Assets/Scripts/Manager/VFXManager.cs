@@ -30,4 +30,8 @@ public class VFXManager : MonoBehaviour
     public void CloudFadeIn() => vfxCloud.FadeInAnimation();
 
     public void CloudFadeOut() => vfxCloud.FadeOutAnimation();
+
+    public void ClayFadeIn() => vfxClay.FadeInAnimation();
+
+    public void ClayFadeOut() => vfxClay.FadeOutAnimation();
 }

@@ -69,8 +69,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Press to Space
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4e191bddc3ae449a94a6ac610cf746a, type: 2}
+  m_sharedMaterial: {fileID: 2819004286332956939, guid: f4e191bddc3ae449a94a6ac610cf746a,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -217,8 +218,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: STAGE CLEAR !!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4e191bddc3ae449a94a6ac610cf746a, type: 2}
+  m_sharedMaterial: {fileID: 2819004286332956939, guid: f4e191bddc3ae449a94a6ac610cf746a,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -352,8 +354,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: GAME OVER !!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4e191bddc3ae449a94a6ac610cf746a, type: 2}
+  m_sharedMaterial: {fileID: 2819004286332956939, guid: f4e191bddc3ae449a94a6ac610cf746a,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -526,8 +529,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: FAILED !!
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f4e191bddc3ae449a94a6ac610cf746a, type: 2}
+  m_sharedMaterial: {fileID: 2819004286332956939, guid: f4e191bddc3ae449a94a6ac610cf746a,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -710,7 +714,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -863,7 +867,7 @@ PrefabInstance:
     - target: {fileID: 4527831568222368469, guid: 71a805dedf25a0345a1fe0f2537fd366,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -360
+      value: -444.5597
       objectReference: {fileID: 0}
     - target: {fileID: 4527831568222368469, guid: 71a805dedf25a0345a1fe0f2537fd366,
         type: 3}

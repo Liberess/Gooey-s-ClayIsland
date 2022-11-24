@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Hun.Utility;
+using MoreMountains.Tools;
 
 namespace Hun.Manager
 {
@@ -20,6 +21,7 @@ namespace Hun.Manager
         public int Coin { get; private set; }
         public float PlayTime { get; private set; }
         public int SceneIndex { get; private set; }
+        public string SceneName { get; private set; }
         public bool IsGamePlay { get; private set; }
 
         public bool IsClear { get; private set; }
@@ -47,9 +49,6 @@ namespace Hun.Manager
         public GameObject GetTemperPrefab(TemperObjectType type)
             => temperObjPrefabList[(int)type];
 
-        [Space(15)]
-        [SerializeField] private Animator GameEndEffect;
-
         //월드 관련 변수
         [Space(10), Header("== Game Stage =="), Space(5)]
         [SerializeField] private int stageNum;
@@ -73,6 +72,7 @@ namespace Hun.Manager
             dataMgr = DataManager.Instance;
             uiManager = UIManager.Instance;
 
+            SceneName = SceneManager.GetActiveScene().name;
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
             if (dataMgr.GameData.gameState != GameState.Stage)
@@ -144,11 +144,19 @@ namespace Hun.Manager
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
                     if (IsClear)
+                    {
+                        dataMgr.GameData.gameState = GameState.Lobby;
                         LoadScene("LobbyScene" + stageNum);
+                    }
                     else if (IsFailed)
+                    {
                         LoadScene(SceneManager.GetActiveScene().name);
+                    }
                     else if (IsGameOver)
+                    {
+                        dataMgr.GameData.gameState = GameState.Lobby;
                         LoadScene("LobbyScene" + stageNum);
+                    }
                 }
             }
         }
@@ -181,7 +189,7 @@ namespace Hun.Manager
         {
             if(pausePanel == null)
             {
-                var parent = GameObject.Find("== UI ==").transform.Find("GameCanvas");
+                var parent = GameObject.Find("==== UI ====").transform.Find("GameCanvas");
                 pausePanel = parent.Find("PausePanel").gameObject;
             }
 
@@ -199,9 +207,10 @@ namespace Hun.Manager
 
         public void LobbyControl()
         {
+            Debug.Log("LobbyControl");
             if (pausePanel == null)
             {
-                var parent = GameObject.Find("== UI ==").transform.Find("PauseCanvas");
+                var parent = GameObject.Find("==== UI ====").transform.Find("PauseCanvas");
                 pausePanel = parent.Find("PausePanel").gameObject;
             }
 
@@ -293,7 +302,8 @@ namespace Hun.Manager
             }
 
             mainPanel.SetActive(false);
-            GameEndEffect.SetTrigger("GameEnd");
+            VFXManager.Instance.ClayFadeOut();
+            //GameEndEffect.SetTrigger("GameEnd");
 
             yield return delay;
 
@@ -369,7 +379,8 @@ namespace Hun.Manager
         public void RestartGame()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneIndex);
+            IsGamePlay = true;
+            LoadingManager.LoadScene(SceneName);
         }
 
         public void GoToLobby()
@@ -384,8 +395,9 @@ namespace Hun.Manager
             }
 
             Time.timeScale = 1f;
+            IsGamePlay = false;
             dataMgr.GameData.gameState = GameState.Lobby;
-            SceneManager.LoadScene(sceneName);
+            LoadingManager.LoadScene(sceneName);
         }
        
         /// <summary>
