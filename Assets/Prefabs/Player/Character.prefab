@@ -237,7 +237,7 @@ MonoBehaviour:
   - {fileID: 3435241547178632556}
   - {fileID: 3435241548527927371}
   - {fileID: 953012833}
-  - {fileID: 3435241548527927371}
+  - {fileID: 54739484}
 --- !u!114 &1733233854286912546
 MonoBehaviour:
   m_ObjectHideFlags: 0
