@@ -33,28 +33,28 @@ namespace Hun.Obstacle
                 player.PlayerInteract.SetCanonState(true);
 
                 destPos = hit.transform.position;
-                destPos.y -= 0.5f;
+                destPos.y = transform.position .y - 0.5f;
 
                 if (!hit.transform.gameObject.CompareTag("Trampiline"))
                 {
                     float tempY = transform.rotation.eulerAngles.y;
-
-                    if (tempY == 0)
+                    Debug.Log(tempY);
+                    if (-10 <= tempY && tempY <= 10)
                     {
                         destPos.x = transform.position.x;
                         destPos.z -= 1f;
                     }  
-                    else if (tempY == 90)
+                    else if (80 <= tempY && tempY <= 100)
                     {
                         destPos.z = transform.position.z;
                         destPos.x -= 1f;
                     }   
-                    else if (tempY == 180)
+                    else if (170 <= tempY && tempY <= 190)
                     {
                         destPos.x = transform.position.x;
                         destPos.z += 1f;
                     }  
-                    else if (tempY == 270)
+                    else if (260 <= tempY && tempY <= 280)
                     {
                         destPos.z = transform.position.z;
                         destPos.x += 1f;
