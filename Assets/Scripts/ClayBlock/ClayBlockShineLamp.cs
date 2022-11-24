@@ -44,6 +44,7 @@ public class ClayBlockShineLamp : ClayBlock
 
         foreach(var tower in colliders)
         {
+            gameObject.transform.position += new Vector3(0, 0.5f, 0);
             Destroy(tower);
             Destroy(this, 0.5f);
             Hun.Manager.GameManager.Instance.StageClear();

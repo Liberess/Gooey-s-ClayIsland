@@ -87,11 +87,11 @@ namespace Hun.Manager
 
             if (resultPanel)
             {
-                resultPanel.SetActive(false);
                 playerObjInPanel = resultPanel.transform.GetChild(0).gameObject;
                 resultTxt = new GameObject[3];
+                resultPanel.SetActive(false);
 
-                for(int i = 0; i < resultTxt.Length; i++)
+                for (int i = 0; i < resultTxt.Length; i++)
                 {
                     resultTxt[i] = resultPanel.transform.GetChild(1).GetChild(i).gameObject;
                 }
