@@ -385,6 +385,8 @@ namespace Hun.Player
         {
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(canonPos.transform.forward));
             gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
+            gameObject.GetComponent<Rigidbody>().useGravity = false;
+            gameObject.GetComponent<Rigidbody>().isKinematic = true;
 
             Vector3 newPos = canonPos.position;
             newPos.y = newPos.y - 0.5f;
@@ -403,6 +405,8 @@ namespace Hun.Player
 
             IsCanonInside = false;
             gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
+            gameObject.GetComponent<Rigidbody>().useGravity = true;
+            gameObject.GetComponent<Rigidbody>().isKinematic = false;
 
             playerCtrl.PlayerMovement.Anim.SetBool("isCanon", false);
             if (playerCtrl.PlayerMouthful.TargetClayBlock == null)
