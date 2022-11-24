@@ -68,7 +68,9 @@ namespace Hun.Player
             //SlidingFlow();
             if (IsBlockedForward)
             {
-                playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
+                if(playerCtrl.PlayerMovement.PlayerState != PlayerState.mouthfulInClay &&
+                    playerCtrl.PlayerMovement.PlayerState != PlayerState.spitInClay)
+                    playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
                 IsSlipIce = false;
                 return;
             }
@@ -307,8 +309,11 @@ namespace Hun.Player
         /// <param name="poses"> ��ġ �� </param>
         public void JumpToPosByTrampiline(float force, Transform[] poses, bool isSuccese)
         {
-            //anim.SetBool("isJump", true);
-            anim.SetBool("isWalk", false);
+            if (playerCtrl.PlayerMouthful.TargetClayBlock == null)
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.spitInClay);
+            else
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.mouthfulInClay);
+            
             StartCoroutine(TrampilineJump(force, poses, isSuccese));
         }
 
@@ -317,7 +322,12 @@ namespace Hun.Player
             playerCtrl.PlayerMovement.Look(Quaternion.LookRotation(poses[3].forward));
             gameObject.GetComponent<CapsuleCollider>().isTrigger = true;
 
-            int index = 0;
+            transform.position = poses[0].transform.position;
+            playerCtrl.PlayerMovement.Anim.SetBool("isTrampiline", true);
+
+            yield return new WaitForSeconds(0.5F);
+
+            int index = 1;
             while (index < poses.Length)
             {
                 transform.position = Vector3.MoveTowards(transform.position,
@@ -326,7 +336,7 @@ namespace Hun.Player
                 if (transform.position == poses[index].transform.position)
                     index++;
 
-                if (index == 2 && !isSuccese)
+                if (index == 3 && !isSuccese)
                 {
                     Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
                     rigid.AddForce((playerCtrl.PlayerMovement.PlayerBody.transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
@@ -343,7 +353,12 @@ namespace Hun.Player
 
             IsTrampilineInside = false;
             gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
-            //anim.SetBool("isJump", false);
+
+            playerCtrl.PlayerMovement.Anim.SetBool("isTrampiline", false);
+            if (playerCtrl.PlayerMouthful.TargetClayBlock == null)
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.spit);
+            else
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.mouthful);
         }
 
         #endregion
@@ -358,8 +373,10 @@ namespace Hun.Player
         /// <param name="destPos"> ���� ��ġ �� </param>
         public void FiredToPosByCanon(Transform canonPos, Vector3 destPos)
         {
-            //anim.SetBool("isFired", true);
-            anim.SetBool("isWalk", false); //Test
+            if (playerCtrl.PlayerMouthful.TargetClayBlock == null)
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.spitInClay);
+            else
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.mouthfulInClay);
 
             StartCoroutine(CanonFired(canonPos, destPos));
         }
@@ -372,6 +389,7 @@ namespace Hun.Player
             Vector3 newPos = canonPos.position;
             newPos.y = newPos.y - 0.5f;
             transform.position = newPos;
+            playerCtrl.PlayerMovement.Anim.SetBool("isCanon", true);
 
             yield return new WaitForSeconds(1F);
 
@@ -385,7 +403,12 @@ namespace Hun.Player
 
             IsCanonInside = false;
             gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
-            //anim.SetBool("isFired", false);
+
+            playerCtrl.PlayerMovement.Anim.SetBool("isCanon", false);
+            if (playerCtrl.PlayerMouthful.TargetClayBlock == null)
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.spit);
+            else
+                playerCtrl.PlayerMovement.ChangeModel(PlayerState.mouthful);
         }
 
         #endregion

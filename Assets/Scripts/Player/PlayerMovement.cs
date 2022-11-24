@@ -10,6 +10,8 @@ namespace Hun.Player
     {
         spit = 0,
         mouthful,
+        spitInClay,
+        mouthfulInClay,
     }
 
     public class PlayerMovement : MonoBehaviour
@@ -23,6 +25,8 @@ namespace Hun.Player
         {
             get => playerBody;
         }
+        public PlayerState PlayerState { get; private set; }
+
         [SerializeField] private GameObject[] playerBodys = new GameObject[2];
         [SerializeField, Range(0F, 10F)] private float moveSpeed = 2f;
         [SerializeField, Range(0f, 5f)] private float dashSpeed = 1.5f;
@@ -67,8 +71,8 @@ namespace Hun.Player
                         return true;
                 }
 
-                //Debug.Log("Fall Anim �߰�");
-                anim.SetBool("isInAir",true);
+                if(!playerCtrl.PlayerInteract.IsCanonInside && !playerCtrl.PlayerInteract.IsTrampilineInside)
+                    anim.SetBool("isInAir", true);
 
                 return false;
             }
@@ -135,21 +139,20 @@ namespace Hun.Player
 
         public void ChangeModel(PlayerState playerState)
         {
-            if(playerState == PlayerState.spit)
-            {
-                playerBodys[(int)PlayerState.spit].SetActive(true);
-                playerBodys[(int)PlayerState.mouthful].SetActive(false);
+            PlayerState = playerState;
 
-                playerBody = playerBodys[(int)PlayerState.spit];
-                anim = anims[(int)PlayerState.spit];
-            }
-            else
+            for (int i = 0; i < playerBodys.Length; i++)
             {
-                playerBodys[(int)PlayerState.mouthful].SetActive(true);
-                playerBodys[(int)PlayerState.spit].SetActive(false);
-
-                playerBody = playerBodys[(int)PlayerState.mouthful];
-                anim = anims[(int)PlayerState.mouthful];
+                if(i == (int)playerState)
+                {
+                    playerBodys[i].SetActive(true);
+                    playerBody = playerBodys[i];
+                    anim = anims[i];
+                }
+                else
+                {
+                    playerBodys[i].SetActive(false);
+                }
             }
         }
 
