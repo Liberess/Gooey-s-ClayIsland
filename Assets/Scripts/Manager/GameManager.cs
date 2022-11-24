@@ -149,7 +149,10 @@ namespace Hun.Manager
                     if (IsClear)
                     {
                         dataMgr.GameData.gameState = GameState.Lobby;
-                        LoadScene("LobbyScene" + stageNum);
+                        if(stageNum != 3)
+                            LoadScene("LobbyScene" + (stageNum + 1));
+                        else
+                            LoadScene("LobbyScene" + stageNum);
                     }
                     else if (IsFailed)
                     {
