@@ -24,6 +24,8 @@ namespace Hun.Manager
         [Header("== Game Property ==")]
         public GameState gameState;
 
+        public int life = 3; //임시 코드
+
         [System.Serializable]
         public struct GameProperty
         {

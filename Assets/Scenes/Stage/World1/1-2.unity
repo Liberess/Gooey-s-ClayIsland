@@ -21964,6 +21964,11 @@ PrefabInstance:
       objectReference: {fileID: 1591175782}
     - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
         type: 3}
+      propertyPath: stageTimer
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
+        type: 3}
       propertyPath: resultPanel
       value: 
       objectReference: {fileID: 7827178697186106398}

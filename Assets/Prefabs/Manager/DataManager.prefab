@@ -46,4 +46,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mGameData:
     gameState: 0
-    coin: 0
+    life: 3
+    gameSaveFiles:
+    - coin: 0
+      prismPiece: 0
+      sweetCandy: 
+      bestRecord: []
+      playTime: 0
+      isSaved: 0
+    - coin: 0
+      prismPiece: 0
+      sweetCandy: 
+      bestRecord: []
+      playTime: 0
+      isSaved: 0
+    - coin: 0
+      prismPiece: 0
+      sweetCandy: 
+      bestRecord: []
+      playTime: 0
+      isSaved: 0
+    bgm: 0
+    sfx: 0

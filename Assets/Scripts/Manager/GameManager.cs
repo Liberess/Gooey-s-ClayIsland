@@ -55,6 +55,7 @@ namespace Hun.Manager
         [SerializeField] private float stageTimer;
         private float waitingTime = 1f;
         private float curTime;
+        private bool isEndTimer = false;
         public float CurTime { get => curTime; }
 
         private void Awake()
@@ -114,6 +115,8 @@ namespace Hun.Manager
             IsGameOver = false;
 
             curTime = stageTimer + waitingTime;
+
+            isEndTimer = false;
         }
 
         private void Update()
@@ -165,7 +168,7 @@ namespace Hun.Manager
 
         private void CountTimer()
         {
-            if (IsClear)
+            if (IsClear || isEndTimer)
                 return;
 
             curTime -= Time.deltaTime;
@@ -173,6 +176,7 @@ namespace Hun.Manager
 
             if (curTime <= 0)
             {
+                isEndTimer = true;
                 Entity.DamageMessage dmgMsg = new Entity.DamageMessage();
                 dmgMsg.damager = gameObject;
                 dmgMsg.dmgAmount = 3;
