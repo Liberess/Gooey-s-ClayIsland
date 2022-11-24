@@ -180,6 +180,7 @@ namespace Hun.Player
                         playerMovement.Anim.SetTrigger("isMouthful");
 
                         clayBlock.OnDivision();
+                        UIManager.Instance.SetMouthfulUI(ClayBlockType.Toolbox);
                         return;
                     }
                 }
