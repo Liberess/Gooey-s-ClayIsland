@@ -20,9 +20,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LobbyScene3.unity
     guid: ca874b77bc0b9411fb4904249153108e
-  - enabled: 0
-    path: Assets/Scenes/Stage/World1/1-1.unity
-    guid: a0110e578ff5f46adb97576afba6e424
   - enabled: 1
     path: Assets/Scenes/Stage/World1/1-1.unity
     guid: 91df76de066b74638a1d9ee57a6e9f56

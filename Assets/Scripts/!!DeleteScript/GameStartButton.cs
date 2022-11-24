@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameStartButton : MonoBehaviour
 {
@@ -11,9 +12,9 @@ public class GameStartButton : MonoBehaviour
 
     private int stageNum;
 
-    void Update()
+    private void Update()
     {
-        if(Hun.Manager.GameManager.Instance.SceneIndex == 0)
+        if(SceneManager.GetActiveScene().buildIndex == 0)
         {
             if (Input.GetKeyDown("space"))
             {
@@ -26,7 +27,7 @@ public class GameStartButton : MonoBehaviour
 
     private void GameStart()
     {
-        Hun.Manager.GameManager.Instance.LoadScene("LobbyScene");
+        SceneManager.LoadScene("LobbyScene1");
     }
 
     public void StageStart(int stageNum)
@@ -39,6 +40,6 @@ public class GameStartButton : MonoBehaviour
     private void StageStart()
     {
         if(stageNum == 1)
-            Hun.Manager.GameManager.Instance.LoadScene("1-5");
+            SceneManager.LoadScene("1-5");
     }
 }

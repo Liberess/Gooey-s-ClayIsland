@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7601586136575234098}
   - component: {fileID: 6832411184274530199}
   - component: {fileID: 8734008601339112285}
+  - component: {fileID: 958275088}
   m_Layer: 8
   m_Name: Cloud01
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 7076724002167294600}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -5, y: -1.01, z: 4.02}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: -3, y: 3, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -83,3 +84,18 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &958275088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7076724002167294600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ee011ab6e99b8e47ae562b478acbc4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 3
+  maxLeftPosX: -15
+  maxRightPosX: 15
