@@ -107,7 +107,7 @@ namespace Hun.Camera
             }
         }
         /// <summary>
-        /// QÅ°¸¦ ´©¸£¸é Ä«¸Ş¶ó¸¦ È¸Àü½ÃÅ³ ¼ö ÀÖ´Ù.
+        /// QÅ°ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ä«ï¿½Ş¶ï¿½ È¸ï¿½ï¿½ï¿½ï¿½Å³ ï¿½ï¿½ ï¿½Ö´ï¿½.
         /// </summary>
         private void RotationControl()
         {
@@ -128,7 +128,7 @@ namespace Hun.Camera
             }
         }
         /// <summary>
-        /// ¸¶¿ì½º ÈÙ·Î Ä«¸Ş¶ó¸¦ È®´ë, Ãà¼ÒÇÒ ¼ö ÀÖ´Ù.
+        /// ï¿½ï¿½ï¿½ì½º ï¿½Ù·ï¿½ Ä«ï¿½Ş¶ï¿½ È®ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½.
         /// </summary> 
         private void ZoomControl()
         {
@@ -136,7 +136,7 @@ namespace Hun.Camera
             var wheelInput = Input.mouseScrollDelta;
             if (wheelInput.y == 0)
             {
-                // wheel ÀÔ·ÂÀÌ ÀÏÁ¤ ½Ã°£µ¿¾È ¾øÀ¸¸é wheelCount ÃÊ±âÈ­
+                // wheel ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ wheelCount ï¿½Ê±ï¿½È­
                 if (isRunningInitWheelCor == false)
                     StartCoroutine(InitializeWheelCor());
             }
@@ -184,7 +184,7 @@ namespace Hun.Camera
         }
 
         /// <summary>
-        /// ÈÙ »óÅÂ¸¦ ÃÊ±âÈ­ ÇÑ´Ù.
+        /// ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½Ê±ï¿½È­ ï¿½Ñ´ï¿½.
         /// </summary>
         private IEnumerator InitializeWheelCor()
         {
@@ -195,7 +195,7 @@ namespace Hun.Camera
         }
 
         /// <summary>
-        /// ´Ù½Ã ÈÙÀ» µ¹¸®´Âµ¥ µô·¹ÀÌ¸¦ ÁØ´Ù.
+        /// ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ ï¿½Ø´ï¿½.
         /// </summary>
         private IEnumerator RunningWheelCor()
         {
@@ -206,44 +206,43 @@ namespace Hun.Camera
                 yield return new WaitForSeconds(1f);
             isRunningWheelCor = false;
         }
+        
         private IEnumerator CameraZoomCor()
         {
-            // ¸¸¾à ÀÌÀü¿¡ ½ÃÁ¡À» ¹Ù²ÙÁö ¾Ê¾Ò´Ù¸é, ÈÙÀ» µ¹¸®Áö ¸øÇÏµµ·Ï µô·¹ÀÌ.
+            // ë§Œì•½ ì´ì „ì— ì‹œì ì„ ë°”ê¾¸ì§€ ì•Šì•˜ë‹¤ë©´, íœ ì„ ëŒë¦¬ì§€ ëª»í•˜ë„ë¡ ë”œë ˆì´.
             if (isRunningWheelCor == false)
                 StartCoroutine(RunningWheelCor());
+
+            var framingTransposer = componentBase as CinemachineFramingTransposer;
+            
             while (true)
             {
-                if (componentBase is CinemachineFramingTransposer)
+                float targetCameraDistance = cameraDistances[(int)wheelState];
+                if (framingTransposer != null)
                 {
-                    //var originDistance = (componentBase as CinemachineFramingTransposer).m_CameraDistance;
-                    //(componentBase as CinemachineFramingTransposer).m_CameraDistance =
-                    //Mathf.Lerp(originDistance, cameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
-                    //Mathf.SmoothStep(originDistance, cameraDistances[(int)wheelState], 0.5f);
-                    var originSize = virtualCamera.m_Lens.OrthographicSize;
+                    float originSize = virtualCamera.m_Lens.OrthographicSize;
                     virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(
-                        originSize, cameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
+                        originSize, targetCameraDistance, zoomSpeed * Time.deltaTime);
                     var fieldOfViewSize = skyboxCamera.fieldOfView;
                     skyboxCamera.fieldOfView = Mathf.Lerp(
                         fieldOfViewSize, skyboxCameraDistances[(int)wheelState], zoomSpeed * Time.deltaTime);
-                    var gap = (componentBase as CinemachineFramingTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
+                    var gap = framingTransposer.m_CameraDistance - targetCameraDistance;
                     if (Mathf.Abs(gap) <= 0.05f)
                     {
-                        (componentBase as CinemachineFramingTransposer).m_CameraDistance = cameraDistances[(int)wheelState];
+                        framingTransposer.m_CameraDistance = targetCameraDistance;
                         break;
                     }
-                    /*                    var gap = (componentBase as CinemachineFramingTransposer).m_CameraDistance - cameraDistances[(int)wheelState];
-                                        if (Mathf.Abs(gap) <= 0.05f)
-                                            break;*/
                 }
-                else // CinemachineVirtualCameraÀÇ Body ¼³Á¤ÀÌ Transposer¶ó¸é
+                else // CinemachineVirtualCameraì˜ Body ì„¤ì •ì´ Transposerë¼ë©´
                 {
-                    virtualCamera.m_Lens.FieldOfView = cameraDistances[(int)wheelState] * 10f;
+                    virtualCamera.m_Lens.FieldOfView = targetCameraDistance * 10f;
                 }
                 yield return null;
             }
         }
+
         /// <summary>
-        /// È­¸é È¸Àü½Ã ¹ß»ıÇÏ´Â ¸Ş¼­µå
+        /// È­ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ß»ï¿½ï¿½Ï´ï¿½ ï¿½Ş¼ï¿½ï¿½ï¿½
         /// </summary>
         /// <param name="inputValue">Delta</param>
         private void OnRotate(InputValue inputValue)
@@ -251,14 +250,14 @@ namespace Hun.Camera
             rotationDelta = inputValue.Get<Vector2>();
         }
         /// <summary>
-        /// Ä«¸Ş¶ó ¸®¼Â
+        /// Ä«ï¿½Ş¶ï¿½ ï¿½ï¿½ï¿½ï¿½
         /// </summary>
         private void OnReset()
         {
             ResetRotation();
         }
         /// <summary>
-        /// È¸Àü »óÅÂ¸¦ ÇÃ·¹ÀÌ¾î Á¤¸é ±âÁØÀ¸·Î ¸®¼ÂÇÕ´Ï´Ù.
+        /// È¸ï¿½ï¿½ ï¿½ï¿½ï¿½Â¸ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½.
         /// </summary>
         private void ResetRotation()
         {

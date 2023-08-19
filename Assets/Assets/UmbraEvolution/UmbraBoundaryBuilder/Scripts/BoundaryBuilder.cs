@@ -1,15 +1,18 @@
-﻿//Name: Robert MacGillivray
-//File: BoundaryBuilder.cs
-//Date: Jul.21.2016
-//Purpose: To build world boundaries in a simple, intuitive way
+﻿// Name: Robert MacGillivray
+// File: BoundaryBuilder.cs
+// Date: Jul.21.2016
+// Purpose: To build world boundaries in a simple, intuitive way
 
-//Last Updated: Apr.05.2021 by Robert MacGillivray
+// Last Updated: Apr.05.2021 by Robert MacGillivray
 
 using System;
 using UnityEngine;
 
-namespace UmbraEvolution
+namespace UmbraEvolution.UmbraBoundaryBuilder
 {
+    /// <summary>
+    /// Builds and manages world boundaries
+    /// </summary>
     public class BoundaryBuilder : MonoBehaviour
     {
         #region Constants

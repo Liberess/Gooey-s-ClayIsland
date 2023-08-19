@@ -1,4 +1,4 @@
-Umbra Boundary Builder v2.4.0
+Umbra Boundary Builder v2.5.0
 -----------------
 As always, if you find any bugs or you have questions/comments, head over to www.umbraevolution.com and use my contact form, or send an email to umbraevolution@gmail.com and I'll respond as soon as possible.
 -----------------
@@ -11,7 +11,9 @@ Hello! This package is meant to help you make level boundaries as quickly and ef
 
 -SPECIAL NOTES-
 
-Newer versions of unity (2019 and later) have changed out gizmos work. Make sure that you have not disabled them when placing nodes, or the asset will not have a chance to rebuild the boundary for any new nodes placed.
+Newer versions of unity (2019 and later) have changed out gizmos work. Make sure that you have not disabled them when placing nodes, or you won't be able to see the boundary being created.
+
+As of v2.5.0 Umbra Boundary Builder uses assembly definitions. These are set up so that you can manipulate this asset with your own scripts, but it will be impossible to modify this asset to reference your scripts. See https://docs.unity3d.com/Manual/ScriptCompilationAssemblyDefinitionFiles.html for more details.
 
 -----------------
 
@@ -80,6 +82,7 @@ Newer versions of unity (2019 and later) have changed out gizmos work. Make sure
 *Boundary Mesh Material: Applied to the boundary mesh when generated. Typically something invisible.
 *Placeable Layers: The layers that nodes will be set on via raycast interactions when placing nodes.
 *Query Trigger Interaction: Determines how raycasts deal with triggers when placing nodes. See Unity documentation for more information.
+*Update At Runtime: If true, an inexpensive operation runs every frame to update the boundary if any nodes are moved or rotated at runtime.
 *Placing Nodes (Not Interactible): Indicates whether or not node placement is occuring.
 *Start Placing Nodes Button: Starts node placement and takes over editor functionality.
 **Stop Placing Nodes Button: Stops the node placing process and returns editor control back to normal.

@@ -3,11 +3,9 @@
 //File: SerializeUnityThings.cs
 //Purpose: To convert some Unity datatypes into float arrays for use during saving and then to turn them back during loading
 
-//Last Updated: Nov.24.2015 by Robert MacGillivray
+//Last Updated: Sept.07.2021 by Robert MacGillivray
 
 using UnityEngine;
-using System;
-using System.Collections;
 
 namespace UmbraEvolution
 {

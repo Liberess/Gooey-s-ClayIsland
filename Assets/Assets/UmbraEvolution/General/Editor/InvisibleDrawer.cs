@@ -1,15 +1,12 @@
-﻿/* Note that this script must be in a folder in your project called "Editor" */
-
-//Name: Robert MacGillivray
+﻿//Name: Robert MacGillivray
 //File: InvisibleDrawer.cs
 //Date: Jun.11.2015
 //Purpose: To create a property drawer for my InvisisbleInInspector attribute
 
-//Last Updated: Nov.24.2015 by Robert MacGillivray
+//Last Updated: Sept.07.2021 by Robert MacGillivray
 
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 namespace UmbraEvolution
 {

@@ -16,8 +16,10 @@ namespace Hun.Player
         private Portal interactivePortal = null;
         private CarriableStageObject interactiveCarriableObject = null;
 
-        public bool IsBlockedForward;
-        //public bool IsBlockedForward { get; private set; }
+        [SerializeField] private Transform rayPos;
+
+        public bool isBlockedForward;
+        public bool isBlockedForwardBorder;
 
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
@@ -32,16 +34,16 @@ namespace Hun.Player
         public bool IsTrampilineInside { get; private set; }
 
         private Vector3 originVec;
+        private Vector3 startSlipVec;
 
         private RaycastHit forwardRayHit;
-        private RaycastHit[] downRayHits;
-        private Collider[] forwardColliders;
+        private Collider[] forwardCols;
+        private RaycastHit[] forwardBorderRayHits;
 
-        private Animator anim;
+        private static readonly int IsSlide = Animator.StringToHash("isSlide");
 
         private void Awake()
         {
-            anim = GetComponentInChildren<Animator>();
             playerCtrl = GetComponent<PlayerController>();
         }
 
@@ -64,140 +66,141 @@ namespace Hun.Player
         private void FixedUpdate()
         {
             CheckBlockedForward();
+            CheckGround();
+        }
 
-            //SlidingFlow();
-            if (IsBlockedForward)
+        private void CheckGround()
+        {
+            if (isBlockedForward)
             {
-                if(playerCtrl.PlayerMovement.PlayerState != PlayerState.mouthfulInClay &&
+                if (playerCtrl.PlayerMovement.PlayerState != PlayerState.mouthfulInClay &&
                     playerCtrl.PlayerMovement.PlayerState != PlayerState.spitInClay)
-                    playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
+                    playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
                 IsSlipIce = false;
                 return;
             }
-            else
-            {
-                SlidingFlow();
-            }
-        }
 
-        private void SlidingFlow()
-        {
             originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
 
 #if UNITY_EDITOR
             Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
 #endif
 
-            downRayHits = Physics.RaycastAll(originVec, (-transform.up * 0.5f), 0.5f, LayerMask.GetMask("ClayBlock"));
-
-            if (downRayHits != null && downRayHits.Length > 0)
+            //발 밑에 오브젝트가 있는지 판단한다.
+            RaycastHit hit;
+            if (Physics.Raycast(originVec, (-transform.up * 0.5f), out hit, 0.5f, LayerMask.GetMask("ClayBlock")))
             {
-                for (int i = 0; i < downRayHits.Length; i++)
+                if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
-                    if (downRayHits[i].collider.TryGetComponent(out ClayBlock clayBlock))
+                    //현재 슬라이딩 중인데, 다음 발 밑이 얼음이 아니라면 멈춰야 한다.
+                    if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                     {
-                        if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
-                        {
-                            playerCtrl.PlayerMovement.Anim.SetBool("isSlide", false);
-                            IsSlipIce = false;
-                            break;
-                        }
-
-                        if (!IsCanonInside && !IsTrampilineInside && !IsSlipIce && clayBlock.ClayBlockType == ClayBlockType.Ice)
-                        {
-                            playerCtrl.PlayerMovement.Anim.SetBool("isSlide", true);
-                            IsSlipIce = true;
-                            
-                            var forward = playerCtrl.PlayerMovement.PlayerBody.transform.forward;
-                            
-                            playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
-                                Quaternion.LookRotation(forward.normalized);
-
-                            Vector3 targetPos = clayBlock.transform.position;
-                            targetPos.y = transform.position.y;
-
-                            float currentX = forward.x;
-                            float currentZ = forward.z;
-
-                            float posX = (Mathf.Abs(currentX) >= 0.9f) ? forward.x : 0.0f;
-                            float posZ = (Mathf.Abs(currentZ) >= 0.9f) ? forward.z : 0.0f;
-                            
-                            Vector3 dir = new Vector3(posX, 0f, posZ);
-
-                            if (dir != Vector3.zero)
-                            {
-                                if (!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
-                                    playerCtrl.PlayerMovement.AddMoveForce(targetPos, dir);
-                            }
-                            else
-                            {
-                                if (Mathf.Abs(currentX) > Mathf.Abs(currentZ))
-                                {
-                                    if (currentX > 0)
-                                        posX = Mathf.Ceil(forward.x);
-                                    else
-                                        posX = Mathf.Floor(forward.x);
-
-                                    posZ = 0f;
-                                }
-                                else
-                                {
-                                    posX = 0f;
-
-                                    if (currentZ > 0)
-                                        posZ = Mathf.Ceil(forward.z);
-                                    else
-                                        posZ = Mathf.Floor(forward.z);
-                                }
-
-                                dir = new Vector3(posX, 0f, posZ);
-                                if (dir != Vector3.zero)
-                                {
-                                    if (!playerCtrl.PlayerMovement.IsMoveForceCoroutineing)
-                                        playerCtrl.PlayerMovement.AddMoveForce(targetPos, dir);
-                                }
-                            }
-                        }
+                        playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                        IsSlipIce = false;
+                    }
+                    else
+                    {
+                        SlidingFlow(clayBlock);
                     }
                 }
             }
+            /*else
+            {
+                if (IsSlipIce)
+                {
+                    playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                    IsSlipIce = false;
+                }
+            }*/
         }
 
-#if UNITY_EDITOR
-        private void OnDrawGizmosSelected()
+        private void SlidingFlow(ClayBlock clayBlock)
         {
-            Gizmos.color = Color.green;
-            Gizmos.DrawSphere(transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f),
-                0.3f);
+            if (clayBlock == null)
+                return;
+
+            //대포나 트램펄린을 타고 있지 않으며 슬라이딩 중이 아닌데,
+            //다음 발 밑이 얼음이라면 슬라이딩을 진행한다.
+            if (!IsCanonInside && !IsTrampilineInside && !IsSlipIce &&
+                clayBlock.ClayBlockType == ClayBlockType.Ice)
+            {
+                if (!playerCtrl.PlayerMovement.IsMoveProgressing)
+                {
+                    playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, true);
+                    IsSlipIce = true;
+                    
+                    startSlipVec = transform.position;
+                    startSlipVec.x = Mathf.FloorToInt(startSlipVec.x);
+                    startSlipVec.z = Mathf.FloorToInt(startSlipVec.z);
+                }
+                
+                Vector3 targetPos = clayBlock.transform.position;
+                targetPos.y = transform.position.y;
+
+                Vector3 dir = GetForwardDirection();
+                if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
+                    playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
+            }
         }
-#endif
+
+        /// <summary>
+        /// 캐릭터가 바라보는 방향을 기준으로 방향 벡터를 정규화한다.
+        /// </summary>
+        private Vector3 GetForwardDirection()
+        {
+            Vector3 forward = playerCtrl.PlayerMovement.PlayerBody.transform.forward;
+
+            playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
+                Quaternion.LookRotation(forward.normalized);
+            
+            float currentX = forward.x;
+            float currentZ = forward.z;
+            
+            float posX = (Mathf.Abs(currentX) >= 0.9f) ? forward.x : 0.0f;
+            float posZ = (Mathf.Abs(currentZ) >= 0.9f) ? forward.z : 0.0f;
+
+            Vector3 dir = new Vector3(posX, 0f, posZ);
+            if (dir == Vector3.zero)
+            {
+                posX = Mathf.Abs(currentX) > Mathf.Abs(currentZ) ? (int)Math.Round(forward.x, MidpointRounding.AwayFromZero) : 0f;
+                posZ = Mathf.Abs(currentX) <= Mathf.Abs(currentZ) ? (int)Math.Round(forward.z, MidpointRounding.AwayFromZero) : 0f;
+                dir = new Vector3(posX, 0f, posZ);
+            }
+
+            return dir;
+        }
 
         /// <summary>
         /// 플레이어의 전방이 막혀있는지 체크한다.
         /// </summary>
         private void CheckBlockedForward()
         {
-#if UNITY_EDITOR
-            Debug.DrawRay(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward, Color.red);
-#endif
+            LayerMask mask = LayerMask.GetMask("ClayBlock") | LayerMask.GetMask("TemperObject") |
+                             LayerMask.GetMask("BorderLine");
 
-            /*Physics.Raycast(transform.position + (transform.up * 0.5f), transform.GetChild(0).forward,
-                out forwardRayHit, 0.3f, LayerMask.GetMask("ClayBlock"));
+            forwardCols = Physics.OverlapSphere(
+                rayPos.position + (transform.GetChild(0).forward * 0.3f), 0.3f, mask);
 
-            if (forwardRayHit.collider != null)
-                IsBlockedForward = true;
-            else
-                IsBlockedForward = false;*/
+            isBlockedForward = forwardCols.Length > 0;
 
-            LayerMask mask = LayerMask.GetMask("ClayBlock") | LayerMask.GetMask("TemperObject");
+            if (IsSlipIce)
+            {
+                forwardBorderRayHits = Physics.RaycastAll(rayPos.position, transform.GetChild(0).forward, 1.0f, LayerMask.GetMask("BorderLine"));
+                isBlockedForwardBorder = forwardBorderRayHits.Length > 0;
+                if (isBlockedForwardBorder)
+                {
+                    playerCtrl.PlayerMovement.CancelMoveProgress();
 
-            forwardColliders =
-                Physics.OverlapSphere(
-                    transform.position + (transform.up * 0.5f) + (transform.GetChild(0).forward * 0.3f), 0.3f, mask);
-            if (forwardColliders.Length > 0)
-                IsBlockedForward = true;
-            else
-                IsBlockedForward = false;
+                    Vector3 dir = startSlipVec - transform.position;
+                    float roundX = (int)Math.Round(dir.x, MidpointRounding.AwayFromZero);
+                    float roundZ = (int)Math.Round(dir.z, MidpointRounding.AwayFromZero);
+                    dir.x = Mathf.Clamp(roundX, -1.0f, 1.0f);
+                    dir.z = Mathf.Clamp(roundZ, -1.0f, 1.0f);
+                    dir.y = 0.0f;
+                    
+                    playerCtrl.PlayerMovement.SetMoveProgress(startSlipVec, dir, false);
+                }
+            }
         }
 
         /// <summary>
@@ -240,9 +243,6 @@ namespace Hun.Player
                 }
                 else if (interactivePortal != null)
                 {
-                    // TODO: �������� �̵� ����
-                    print("TODO: �������� �̵� ����");
-
                     if (interactivePortal.PortalType == PortalType.Stage)
                         interactivePortal.ActiveStagePortal();
                     else
@@ -277,7 +277,7 @@ namespace Hun.Player
         /// <summary>
         /// �ֺ��� ��� ������ ������Ʈ�� ã�´�.
         /// </summary>
-        IEnumerator FindInterativeCarriableStageObject()
+        private IEnumerator FindInterativeCarriableStageObject()
         {
             while (true)
             {
@@ -313,7 +313,7 @@ namespace Hun.Player
                 playerCtrl.PlayerMovement.ChangeModel(PlayerState.spitInClay);
             else
                 playerCtrl.PlayerMovement.ChangeModel(PlayerState.mouthfulInClay);
-            
+
             StartCoroutine(TrampilineJump(force, poses, isSuccese));
         }
 
@@ -339,7 +339,9 @@ namespace Hun.Player
                 if (index == 3 && !isSuccese)
                 {
                     Rigidbody rigid = gameObject.GetComponent<Rigidbody>();
-                    rigid.AddForce((playerCtrl.PlayerMovement.PlayerBody.transform.forward + (-transform.up * 0.5f)) * -1f, ForceMode.Impulse);
+                    rigid.AddForce(
+                        (playerCtrl.PlayerMovement.PlayerBody.transform.forward + (-transform.up * 0.5f)) * -1f,
+                        ForceMode.Impulse);
                     gameObject.GetComponent<CapsuleCollider>().isTrigger = false;
 
                     yield return new WaitForSeconds(1F);

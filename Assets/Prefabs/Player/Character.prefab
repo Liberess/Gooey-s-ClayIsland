@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 5389369745510210415}
   - component: {fileID: 3435241547250769470}
   - component: {fileID: 1733233854286912559}
-  - component: {fileID: 3435241547250769471}
   - component: {fileID: 1733233854286912556}
   - component: {fileID: 1733233854286912557}
   - component: {fileID: 1733233854286912546}
@@ -41,6 +40,7 @@ Transform:
   - {fileID: 2893233463951288226}
   - {fileID: 543450653512458301}
   - {fileID: 543450652783603834}
+  - {fileID: 7212611203139271057}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -175,23 +175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9471db437d87cc342a06d98431e4ce27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &3435241547250769471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 827334671500997750}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8289594469186c942a23261d96054fc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pullVelocity: 0.2
-  stopDistance: 1.5
-  hookPrefab: {fileID: 7593962119035964001, guid: f8ac3cb0c4978864ebbe0cac5b731d2e,
-    type: 3}
-  shootTransform: {fileID: 0}
 --- !u!114 &1733233854286912556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02ab83d20c01e704ea6232d1ef1526e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rayPos: {fileID: 7212611203139271057}
   IsBlockedForward: 0
 --- !u!136 &6090818321330228021
 CapsuleCollider:
@@ -281,6 +265,37 @@ CapsuleCollider:
   m_Height: 0.8
   m_Direction: 1
   m_Center: {x: 0, y: 0.4, z: 0}
+--- !u!1 &1756333594125931437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7212611203139271057}
+  m_Layer: 6
+  m_Name: RayPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7212611203139271057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756333594125931437}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 13678116037603020}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &221054934
 PrefabInstance:
   m_ObjectHideFlags: 0

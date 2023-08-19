@@ -1,5 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using Hun.Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -21,10 +24,7 @@ namespace Hun.Player
 
         [Header("== Movement Property ==")]
         [SerializeField] private GameObject playerBody;
-        public GameObject PlayerBody
-        {
-            get => playerBody;
-        }
+        public GameObject PlayerBody => playerBody;
         public PlayerState PlayerState { get; private set; }
 
         [SerializeField] private GameObject[] playerBodys = new GameObject[2];
@@ -53,6 +53,7 @@ namespace Hun.Player
         private Animator anim;
         public Animator Anim { get => anim; }
         [SerializeField] private Animator[] anims = new Animator[2];
+        private static readonly int IsWalk = Animator.StringToHash("isWalk");
 
         private bool IsGrounded
         {
@@ -79,7 +80,8 @@ namespace Hun.Player
         }
         public bool getIsGrounded { get => IsGrounded; }
 
-        public bool IsMoveForceCoroutineing { get; private set; } = false;
+        public bool IsMoveProgressing { get; private set; } = false;
+        private Coroutine moveProgressCo;
 
         private void Awake()
         {
@@ -108,7 +110,7 @@ namespace Hun.Player
 
             SetupDashEvent();
 
-            StartCoroutine(UpdatePreviousPosition());
+            UpdatePreviousPositionTask().Forget();
             //StartCoroutine(CheckStopState());
 
             playerCtrl.PlayerHealth.OnDeathEvent += SetPlayerDie;
@@ -155,68 +157,79 @@ namespace Hun.Player
                 }
             }
         }
-
-        #region Movement (Move, Look)
-        public void AddMoveForce(Vector3 targetPos, Vector3 dir)
+        
+        private async UniTaskVoid UpdatePreviousPositionTask()
         {
-            if (!IsMoveForceCoroutineing)
-                StartCoroutine(AddMoveForceCo(targetPos, dir));
-        }
-
-        private IEnumerator UpdatePreviousPosition()
-        {
-            WaitForSeconds delay = new WaitForSeconds(0.2f);
             while(true)
             {
-                yield return delay;
+                await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
                 PreviousPos = transform.position;
-                yield return null;
             }
         }
 
-        public IEnumerator AddMoveForceCo(Vector3 targetPos, Vector3 dir)
+        #region Movement (Move, Look)
+        public void SetMoveProgress(Vector3 targetPos, Vector3 dir, bool isSyncPos = true)
+        {
+            if (!IsMoveProgressing)
+                moveProgressCo = StartCoroutine(SetMoveProgressCo(targetPos, dir, isSyncPos));
+        }
+
+        public void CancelMoveProgress()
+        {
+            if (IsMoveProgressing && moveProgressCo != null)
+            {
+                IsMoveProgressing = false;
+                StopCoroutine(moveProgressCo);
+            }
+        }
+
+        private IEnumerator SetMoveProgressCo(Vector3 targetPos, Vector3 dir, bool isSyncPos)
         {
             IsOverIce = true;
-            IsMoveForceCoroutineing = true;
+            IsMoveProgressing = true;
             playerCtrl.PlayerInteract.SetSlipIceState(true);
             SetMovement(false);
-            anim.SetBool("isWalk", false);
+            anim.SetBool(IsWalk, false);
+            
+            rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
             float distance = 0f;
-            Vector3 velocity = Vector3.zero;
-            
-            while (true)
+            WaitForFixedUpdate fixedUpdate = new WaitForFixedUpdate();
+
+            //슬라이딩이 시작되는 얼음의 중앙으로 이동
+            if (isSyncPos)
             {
-                distance = Vector3.Distance(transform.position, targetPos);
-                if (distance <= 0.0001f)
+                while (true)
                 {
-                    transform.position = targetPos;
-                    break;
+                    distance = Vector3.Distance(transform.position, targetPos);
+                    if (distance <= 0.001f)
+                    {
+                        transform.position = targetPos;
+                        break;
+                    }
+
+                    transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * 2f);
+
+                    for (int i = 0; i < playerBodys.Length; i++)
+                        playerBody.transform.rotation = Quaternion.RotateTowards(playerBody.transform.rotation, Quaternion.LookRotation(dir), 1f);
+
+                    yield return fixedUpdate;
                 }
-
-                transform.position = Vector3.MoveTowards(transform.position, targetPos, Time.deltaTime * 2f);
-                //transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref velocity, 0.1f);
-                
-                for (int i = 0; i < playerBodys.Length; i++)
-                    playerBody.transform.rotation = Quaternion.RotateTowards(playerBody.transform.rotation, Quaternion.LookRotation(dir), 1f);
-                    //playerBody.transform.rotation = Quaternion.LookRotation(targetPos - dir);
-                    
-                yield return null;
             }
+            
+            WaitForSeconds waitForSeconds = new WaitForSeconds(0.145f);
 
+            //실제로 앞으로 슬라이딩하는 물리 처리
             while (true)
             {
                 for (int i = 0; i < playerBodys.Length; i++)
                     playerBody.transform.rotation = Quaternion.LookRotation(dir);
                 
-                //rigid.AddForce(dir * 0.1f, ForceMode.VelocityChange);
                 rigid.velocity = dir * 5f;
-                //transform.Translate(dir * 4f * Time.deltaTime);
-                
-                //���� ���� ���� �ʰų�, �̲������� ���°� �ƴ϶��
-                if (/*!playerCtrl.PlayerInteract.IsIceInside && */!playerCtrl.PlayerInteract.IsSlipIce)
+
+                if (!playerCtrl.PlayerInteract.IsSlipIce)
                 {
-                    yield return new WaitForSeconds(0.18f);
+                    yield return waitForSeconds;
                     break;
                 }
 
@@ -227,11 +240,11 @@ namespace Hun.Player
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
             IsOverIce = false;
-            IsMoveForceCoroutineing = false;
+            IsMoveProgressing = false;
 
             yield return null;
         }
-        
+
         /*private IEnumerator CheckStopState()
         {
             WaitForSeconds delay = new WaitForSeconds(0.1f);
@@ -295,7 +308,7 @@ namespace Hun.Player
 
             if (MovingInputValue != Vector3.zero) //������ �Է°��� �ִٸ�
             {
-                anim.SetBool("isWalk", true);
+                anim.SetBool(IsWalk, true);
 
                 if (playerCtrl.PlayerInteract.IsLadderInside)
                 {
@@ -339,7 +352,7 @@ namespace Hun.Player
             else //������ �Է°��� ���ٸ�
             {
                 //movingVector = Vector3.zero;
-                anim.SetBool("isWalk", false);
+                anim.SetBool(IsWalk, false);
             }
         }
 

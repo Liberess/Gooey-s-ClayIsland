@@ -1,15 +1,18 @@
-﻿//Name: Robert MacGillivray
-//File: Boundary.cs
-//Date: Jul.21.2016
-//Purpose: To handle all logic relating to an individual boundary (things like node management, gizmo drawing, etc.)
+﻿// Name: Robert MacGillivray
+// File: Boundary.cs
+// Date: Jul.21.2016
+// Purpose: To handle all logic relating to an individual boundary (things like node management, gizmo drawing, etc.)
 
-//Last Updated: May.24.2021 by Robert MacGillivray
+// Last Updated: Jul.01.2022 by Robert MacGillivray
 
 using UnityEngine;
 using System.Collections.Generic;
 
-namespace UmbraEvolution
+namespace UmbraEvolution.UmbraBoundaryBuilder
 {
+    /// <summary>
+    /// Handles all logic relating to an individual boundary, including managing associated BoundaryNodes.
+    /// </summary>
     public class Boundary : MonoBehaviour
     {
         [Tooltip("The colour of the gizmo that will preview the dimensions of the boundary")]
@@ -37,15 +40,17 @@ namespace UmbraEvolution
         [Tooltip("The layers that boundaries can be placed on. Prevents raycasts from hitting objects you want to ignore.")]
         public LayerMask placeableLayers = ~0;
         [Tooltip("The setting to use when raycasting against the terrain. Set to match project settings, hit triggers, or ignore triggers.")]
-        public QueryTriggerInteraction queryTriggerInteraction;
+        public QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal;
+        [Tooltip("If true, a fairly cheap operation will run every frame to see if the boundary nodes have moved and update the boundary accordingly.")]
+        public bool updateAtRuntime = false;
 
-        private bool rebuildNodeList = true;
+        public bool RebuildNodeList { get; set; }
         private List<BoundaryNode> _boundaryNodes;
         public List<BoundaryNode> BoundaryNodes
         {
             get
             {
-                if (rebuildNodeList || _boundaryNodes == null || _boundaryNodes.Count != transform.childCount)
+                if (RebuildNodeList || _boundaryNodes == null || _boundaryNodes.Count != transform.childCount)
                 {
                     _boundaryNodes = new List<BoundaryNode>();
                     // Nodes have been changed. No guarentee that layers are correct, so reset them.
@@ -62,7 +67,9 @@ namespace UmbraEvolution
                             Debug.LogWarning("There is a child of a boundary that isn't a node. This causes efficiency issues.");
                         }
                     }
-                    rebuildNodeList = false;
+                    RebuildNodeList = false;
+
+                    RefreshNodeProperties();
                 }
                 return _boundaryNodes;
             }
@@ -76,39 +83,56 @@ namespace UmbraEvolution
         {
             get
             {
-                if (!_parent)
+                if (_parent == null)
                 {
                     _parent = transform.parent.GetComponent<BoundaryBuilder>();
-                    if (!_parent)
+                    if (_parent == null)
                     {
-                        Debug.LogError("This Boundary does not appear to have a BoundaryBuilder parent. That shouldn't be the case.");
+                        Debug.LogErrorFormat("The Boundary [{0}] does not have a BoundaryBuilder parent. This Boundary will not work correctly.", gameObject.name);
                     }
                 }
                 return _parent;
             }
         }
 
-        public MeshRenderer BoundaryMeshRenderer { get; private set; }
-        public MeshFilter BoundaryMeshFilter { get; private set; }
-
-        private void Awake()
+        private MeshRenderer _boundaryMeshRenderer;
+        public MeshRenderer BoundaryMeshRenderer
         {
-            BoundaryMeshRenderer = GetComponent<MeshRenderer>();
-            BoundaryMeshFilter = GetComponent<MeshFilter>();
+            get
+            {
+                if (_boundaryMeshRenderer == null)
+                {
+                    _boundaryMeshRenderer = GetComponent<MeshRenderer>();
+                }
+                return _boundaryMeshRenderer;
+            }
+
+            private set { _boundaryMeshRenderer = value; }
+        }
+
+        private MeshFilter _boundaryMeshFilter;
+        public MeshFilter BoundaryMeshFilter
+        {
+            get
+            {
+                if (_boundaryMeshFilter == null)
+                {
+                    _boundaryMeshFilter = GetComponent<MeshFilter>();
+                }
+                return _boundaryMeshFilter;
+            }
+
+            private set { _boundaryMeshFilter = value; }
         }
 
         public void OnTransformChildrenChanged()
         {
-            rebuildNodeList = true;
+            RebuildNodeList = true;
         }
 
         public void OnDrawGizmos()
         {
-            if (ParentBoundaryBuilder.usePhysicalGizmos)
-            {
-                DrawPhysicalGizmos();
-            }
-            else if (ParentBoundaryBuilder.gizmosAlwaysOn)
+            if (ParentBoundaryBuilder.gizmosAlwaysOn)
             {
                 DrawGizmos();
             }
@@ -128,9 +152,64 @@ namespace UmbraEvolution
 
         public void OnDrawGizmosSelected()
         {
-            if (!ParentBoundaryBuilder.gizmosAlwaysOn && !ParentBoundaryBuilder.usePhysicalGizmos)
+            if (!ParentBoundaryBuilder.gizmosAlwaysOn)
             {
                 DrawGizmos();
+            }
+        }
+
+        private void Update()
+        {
+            // Will update the boundary at runtime if any nodes have moved or rotated
+            if (updateAtRuntime && HasAnyNodeMovedOrRotated())
+            {
+                RefreshNodeProperties();
+            }
+        }
+
+        /// <summary>
+        /// Will update node rotation and collider sizing. Useful when nodes are moved/modified/added.
+        /// </summary>
+        public void RefreshNodeProperties()
+        {
+            UpdateNodeRotations();
+            UpdateNodeColliders();
+        }
+
+        /// <summary>
+        /// Updates the rotation of all nodes so that they point in the correct direction
+        /// </summary>
+        public void UpdateNodeRotations()
+        {
+            if (BoundaryNodes.Count > 1)
+            {
+                int indexLimit = closedLoop ? BoundaryNodes.Count : BoundaryNodes.Count - 1;
+                for (int index = 0; index < indexLimit; index++)
+                {
+                    int nextIndex = (index + 1) % BoundaryNodes.Count;
+                    BoundaryNodes[index].CalculateAndSetRotation(BoundaryNodes[nextIndex]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the box colliders on all nodes so that they are sized and positioned correctly
+        /// </summary>
+        public void UpdateNodeColliders()
+        {
+            if (BoundaryNodes.Count > 1)
+            {
+                int indexLimit = closedLoop ? BoundaryNodes.Count : BoundaryNodes.Count - 1;
+                for (int index = 0; index < indexLimit; index++)
+                {
+                    int nextIndex = (index + 1) % BoundaryNodes.Count;
+                    BoundaryNodes[index].UpdateBoxCollider(boundaryThickness, boundaryHeight, verticalOffset, BoundaryNodes[nextIndex], useBoxColliders);
+                }
+
+                if (!closedLoop)
+                {
+                    BoundaryNodes[BoundaryNodes.Count - 1].DisableBoxCollider();
+                }
             }
         }
 
@@ -139,6 +218,26 @@ namespace UmbraEvolution
         /// </summary>
         /// <param name="triggeringNode">The node that called this method. Default is null, but when a node triggers gizmos to be drawn, we need to know which node did so.</param>
         public void DrawGizmos(BoundaryNode triggeringNode = null)
+        {
+            if (ParentBoundaryBuilder.usePhysicalGizmos)
+            {
+                DrawPhysicalGizmos(triggeringNode);
+            }
+            else
+            {
+                DrawNormalGizmos(triggeringNode);
+            }
+
+            // When we've 
+            if (HasAnyNodeMovedOrRotated())
+                RefreshNodeProperties();
+        }
+
+        /// <summary>
+        /// Draws gizmos for boundaries and their nodes
+        /// </summary>
+        /// <param name="triggeringNode">The node that called this method. Default is null, but when a node triggers gizmos to be drawn, we need to know which node did so.</param>
+        private void DrawNormalGizmos(BoundaryNode triggeringNode = null)
         {
             // We don't want to follow through if gizmos have already been drawn
             if (triggeringNode != null && ParentBoundaryBuilder.gizmosAlwaysOn)
@@ -171,17 +270,7 @@ namespace UmbraEvolution
                     //Adjusts the gizmo matrix so that we have correct orientation
                     Gizmos.matrix = Matrix4x4.TRS(gizmoCenter, Quaternion.LookRotation(nodeTwoAdjusted - nodeOneAdjusted), new Vector3(1f, 1f, 1f));
                     //Draws a cube using everything calculated above. The position is at 0,0,0 because we've already adjusted the matrix to account for that
-                    Gizmos.DrawCube(Vector3.zero, new Vector3(boundaryThickness, boundaryHeight, gizmoWidth));
-
-                    //Normally you wouldn't set colliders or rotation in OnDrawGizmosSelected() code, but we've already done all the math and it's more efficient that sticking it in an update
-                    BoundaryNodes[index].SetRotation(nodeOneAdjusted, nodeTwoAdjusted);
-                    BoundaryNodes[index].BoxColliderCheck(new Vector3(boundaryThickness, boundaryHeight, gizmoWidth), new Vector3(0f, gizmoCenter.y - BoundaryNodes[index].transform.position.y, Vector3.Distance(nodeOneAdjusted, nodeTwoAdjusted) / 2f), useBoxColliders);
-                }
-
-                if (!closedLoop)
-                {
-                    //If we can't/aren't generating anything between the last and first nodes, we need to make sure that a box collider that may have been there in the past is no longer there
-                    BoundaryNodes[BoundaryNodes.Count - 1].GetComponent<BoundaryNode>().BoxColliderCheck(Vector3.zero, Vector3.zero, false);
+                    Gizmos.DrawCube(Vector3.zero, new Vector3(boundaryThickness, boundaryHeight, gizmoWidth));                    
                 }
             }
 
@@ -198,7 +287,7 @@ namespace UmbraEvolution
         /// Draws physically-based gizmos for boundaries and their nodes
         /// </summary>
         /// <param name="triggeringNode">The node that called this method. Default is null, but when a node triggers gizmos to be drawn, we need to know which node did so.</param>
-        public void DrawPhysicalGizmos(BoundaryNode triggeringNode = null)
+        private void DrawPhysicalGizmos(BoundaryNode triggeringNode = null)
         {
             // We don't want to follow through if gizmos have already been drawn
             if (triggeringNode != null && ParentBoundaryBuilder.gizmosAlwaysOn)
@@ -229,20 +318,11 @@ namespace UmbraEvolution
                     //The distance between the two nodes plus an offset based on the thickness of the gizmo (this will be the width of the gizmo)
                     float gizmoWidth = Vector3.Distance(nodeOneAdjusted, nodeTwoAdjusted) + boundaryThickness;
 
-                    //Normally you wouldn't set colliders or rotation in OnDrawGizmosSelected() code, but we've already done all the math and it's more efficient than sticking it in an update
-                    BoundaryNodes[index].SetRotation(nodeOneAdjusted, nodeTwoAdjusted);
                     Vector3 gizmoSize = new Vector3(boundaryThickness, boundaryHeight, gizmoWidth);
                     Vector3 gizmoLocalCenter = new Vector3(0f, gizmoCenter.y - BoundaryNodes[index].transform.position.y, Vector3.Distance(nodeOneAdjusted, nodeTwoAdjusted) / 2f);
-                    BoundaryNodes[index].BoxColliderCheck(gizmoSize, gizmoLocalCenter, useBoxColliders);
 
                     //Creates a gizmo cube using everything calculated above
-                    BoundaryNodes[index].DrawPhysicalBoundaryNodeGizmosManually(boundaryThickness, boundaryHeight, gizmoWidth, gizmoLocalCenter);
-                }
-
-                if (!closedLoop)
-                {
-                    //If we can't/aren't generating anything between the last and first nodes, we need to make sure that a box collider that may have been there in the past is no longer there
-                    BoundaryNodes[BoundaryNodes.Count - 1].GetComponent<BoundaryNode>().BoxColliderCheck(Vector3.zero, Vector3.zero, false);
+                    BoundaryNodes[index].DrawPhysicalBoundaryNodeGizmosManually(gizmoSize, gizmoLocalCenter);
                 }
             }
 
@@ -272,6 +352,23 @@ namespace UmbraEvolution
         }
 
         /// <summary>
+        /// Returns true if any boundary node has moved since the last time this was called
+        /// </summary>
+        /// <returns></returns>
+        public bool HasAnyNodeMovedOrRotated()
+        {
+            bool result = false;
+            foreach (BoundaryNode node in BoundaryNodes)
+            {
+                if (node.HasNodeMovedOrRotated())
+                {
+                    result = true;
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
         /// Adds a new node as a child of this boundary
         /// </summary>
         /// <param name="position">The position in which to instantiate the node</param>
@@ -282,7 +379,7 @@ namespace UmbraEvolution
             newNode.transform.position = position;
             newNode.transform.parent = transform;
             newNode.layer = physicsLayer;
-            rebuildNodeList = true;
+            RebuildNodeList = true;
             return newNode;
         }
 
@@ -293,6 +390,7 @@ namespace UmbraEvolution
         {
             //Clear any renderer and filter to start fresh (supports upgrade from legacy systems)
             DestroyBoundaryMeshImmediate();
+
             BoundaryMeshRenderer = gameObject.AddComponent<MeshRenderer>();
             BoundaryMeshFilter = gameObject.AddComponent<MeshFilter>();
 
@@ -377,16 +475,11 @@ namespace UmbraEvolution
                 return;
             }
 
-            MeshRenderer tempRenderer = GetComponent<MeshRenderer>();
-            if (tempRenderer)
-                Destroy(tempRenderer);
+            if (BoundaryMeshRenderer)
+                Destroy(BoundaryMeshRenderer);
 
-            MeshFilter tempFilter = GetComponent<MeshFilter>();
-            if (tempFilter)
-                Destroy(tempFilter);
-
-            BoundaryMeshFilter = null;
-            BoundaryMeshRenderer = null;
+            if (BoundaryMeshFilter)
+                Destroy(BoundaryMeshFilter);
         }
 
         /// <summary>
@@ -394,16 +487,11 @@ namespace UmbraEvolution
         /// </summary>
         public void DestroyBoundaryMeshImmediate()
         {
-            MeshRenderer tempRenderer = GetComponent<MeshRenderer>();
-            if (tempRenderer)
-                DestroyImmediate(tempRenderer);
+            if (BoundaryMeshRenderer)
+                DestroyImmediate(BoundaryMeshRenderer);
 
-            MeshFilter tempFilter = GetComponent<MeshFilter>();
-            if (tempFilter)
-                DestroyImmediate(tempFilter);
-
-            BoundaryMeshFilter = null;
-            BoundaryMeshRenderer = null;
+            if (BoundaryMeshFilter)
+                DestroyImmediate(BoundaryMeshFilter);
         }
 
         /// <summary>

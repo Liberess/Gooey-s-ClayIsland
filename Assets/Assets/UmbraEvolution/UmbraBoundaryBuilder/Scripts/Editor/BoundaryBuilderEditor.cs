@@ -1,15 +1,18 @@
-﻿//Name: Robert MacGillivray
-//File: BoundaryBuilderEditor.cs
-//Date: Jul.21.2016
-//Purpose: To handle editor logic/formatting for the BoundaryBuilder script
+﻿// Name: Robert MacGillivray
+// File: BoundaryBuilderEditor.cs
+// Date: Jul.21.2016
+// Purpose: To handle editor logic/formatting for the BoundaryBuilder script
 
-//Last Updated: Apr.05.2021 by Robert MacGillivray
+// Last Updated: Apr.05.2021 by Robert MacGillivray
 
 using UnityEngine;
 using UnityEditor;
 
-namespace UmbraEvolution
+namespace UmbraEvolution.UmbraBoundaryBuilder
 {
+    /// <summary>
+    /// Custom inspector and editor functionality for BoundaryBuilder components
+    /// </summary>
     [CustomEditor(typeof(BoundaryBuilder))]
     [DisallowMultipleComponent]
     public class BoundaryBuilderEditor : Editor
@@ -43,7 +46,7 @@ namespace UmbraEvolution
         /// Adds a menu item in the toolbar that adds a BoundaryBuilder to the open scene
         /// </summary>
         /// <param name="menuCommand"></param>
-        [MenuItem("Tools/UmbraEvolution/UmbraBoundaryBuilder/Add Boundary Builder")]
+        [MenuItem("Tools/UmbraEvolution/UmbraBoundaryBuilder/Create Boundary Builder")]
         static void CreateBoundaryBuilder()
         {
             if (!BoundaryBuilder.Reference)

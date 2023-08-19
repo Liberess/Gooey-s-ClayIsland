@@ -1,15 +1,18 @@
-﻿//Name: Robert MacGillivray
-//File: BoundaryEditor.cs
-//Date: Jul.22.2016
-//Purpose: To handle editor logic and formatting for boundaries
+﻿// Name: Robert MacGillivray
+// File: BoundaryEditor.cs
+// Date: Jul.22.2016
+// Purpose: To handle editor logic and formatting for boundaries
 
-//Last Updated: May.24.2021 by Robert MacGillivray
+// Last Updated: Jul.01.2022 by Robert MacGillivray
 
 using UnityEngine;
 using UnityEditor;
 
-namespace UmbraEvolution
+namespace UmbraEvolution.UmbraBoundaryBuilder
 {
+    /// <summary>
+    /// Custom inspector and editor functionality for Boundary components
+    /// </summary>
     [CustomEditor(typeof(Boundary))]
     [DisallowMultipleComponent]
     [CanEditMultipleObjects]
@@ -23,7 +26,9 @@ namespace UmbraEvolution
         private GUIContent destroyMeshButtonContent;
         private GUIContent goToBoundaryButtonContent;
 
-        StaticEditorFlags boundaryFlags;
+        // Automatically sets the navigation static flag that should be set to calculate navmesh
+        // Other flags can be set at the discretion of the user
+        private StaticEditorFlags BoundaryFlags { get { return GameObjectUtility.GetStaticEditorFlags(boundary.gameObject) | StaticEditorFlags.NavigationStatic; } }
 
         private void OnEnable()
         {
@@ -35,13 +40,11 @@ namespace UmbraEvolution
             destroyMeshButtonContent = new GUIContent("Destroy Mesh", "Pressing this button will destroy any mesh created by the Generate Mesh button.");
             goToBoundaryButtonContent = new GUIContent("Go To Boundary", "Pressing this button will take you to the boundary that is trying to place nodes.");
 
-            //Automatically sets the static flags that should be set for an invisible boundary mesh used to calculate navmesh
-            boundaryFlags = StaticEditorFlags.BatchingStatic | StaticEditorFlags.NavigationStatic | StaticEditorFlags.OccludeeStatic;
-            GameObjectUtility.SetStaticEditorFlags(boundary.gameObject, boundaryFlags);
+            GameObjectUtility.SetStaticEditorFlags(boundary.gameObject, BoundaryFlags);
             boundary.MatchPhysicsLayerRecursive();
             foreach (Transform child in boundary.transform)
             {
-                GameObjectUtility.SetStaticEditorFlags(child.gameObject, boundaryFlags);
+                GameObjectUtility.SetStaticEditorFlags(child.gameObject, BoundaryFlags);
             }
 
 #if UNITY_2019_1_OR_NEWER
@@ -157,7 +160,7 @@ namespace UmbraEvolution
                         if (Physics.Raycast(detectionRay, out hitInfo, float.MaxValue, boundary.placeableLayers, boundary.queryTriggerInteraction))
                         {
                             GameObject newNode = boundary.AddNode(hitInfo.point);
-                            GameObjectUtility.SetStaticEditorFlags(newNode, boundaryFlags);
+                            GameObjectUtility.SetStaticEditorFlags(newNode, BoundaryFlags);
                             Undo.RegisterCreatedObjectUndo(newNode, "Created New Node");
                         }
                     }
@@ -183,7 +186,7 @@ namespace UmbraEvolution
                         if (Physics.Raycast(detectionRay, out hitInfo, float.MaxValue, boundary.placeableLayers, boundary.queryTriggerInteraction))
                         {
                             GameObject newNode = boundary.AddNode(hitInfo.point);
-                            GameObjectUtility.SetStaticEditorFlags(newNode, boundaryFlags);
+                            GameObjectUtility.SetStaticEditorFlags(newNode, BoundaryFlags);
                             Undo.RegisterCreatedObjectUndo(newNode, "Created New Node");
                         }
                     }

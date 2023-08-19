@@ -3,10 +3,9 @@
 //Date: Nov.23.2015
 //Purpose: To make a class for my LessThanIntInclusive property drawer to be accessed and to store the appropriate less than X integer value
 
-//Last Updated: Dec.01.2015 by Robert MacGillivray
+//Last Updated: Sept.07.2021 by Robert MacGillivray
 
 using UnityEngine;
-using System.Collections;
 
 namespace UmbraEvolution
 {

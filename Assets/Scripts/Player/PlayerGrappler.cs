@@ -42,7 +42,7 @@ namespace Hun.Player
 
         #region Grappling Action
         /// <summary>
-        /// ¸¶¿ì½º¸¦ ÀÌ¿ëÇÏ¿© °¥°í¸® ¾×¼Ç
+        /// ë§ˆìš°ìŠ¤ë¥¼ ì´ìš©í•˜ì—¬ ê°ˆê³ ë¦¬ ì•¡ì…˜
         /// </summary>
         public void GrapplingUpdate()
         {
@@ -142,7 +142,7 @@ namespace Hun.Player
                             }
                             else
                             {
-                                // ¹Ù¶óº¸´Â ¹æÇâ º¤ÅÍ
+                                // ë°”ë¼ë³´ëŠ” ë°©í–¥ ë²¡í„°
                                 var direction = (hit.collider.transform.GetChild(0).position -
                                     transform.position).normalized;
 
@@ -169,9 +169,9 @@ namespace Hun.Player
         }
 
         /// <summary>
-        /// ÀÌµ¿ Å° ÀÔ·Â½Ã ¹ß»ıÇÏ´Â ¸Ş¼­µå
+        /// ì´ë™ í‚¤ ì…ë ¥ì‹œ ë°œìƒí•˜ëŠ” ë©”ì„œë“œ
         /// </summary>
-        /// <param name="inputValue">ÀÔ·Â °ª</param>
+        /// <param name="inputValue">ì…ë ¥ ê°’</param>
         private void OnMove(InputValue inputValue)
         {
             var value = inputValue.Get<Vector2>();

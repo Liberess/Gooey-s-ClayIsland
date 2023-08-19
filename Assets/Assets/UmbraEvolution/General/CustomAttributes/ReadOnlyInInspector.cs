@@ -3,10 +3,9 @@
 //Date: Apr.21.2015
 //Purpose: To make a class for my ReadOnlyInInspector attribute to be called
 
-//Last Updated: Nov.24.2015 by Robert MacGillivray
+//Last Updated: Sept.07.2021 by Robert MacGillivray
 
 using UnityEngine;
-using System.Collections;
 
 namespace UmbraEvolution
 {

@@ -28,7 +28,7 @@ public abstract class ClayBlock : MonoBehaviour
     public abstract void OnExit();
 
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î°¡ ¸Ó±İ±â¸¦ ÇÏ¸é È£ÃâµÇ´Â ¸Ş¼­µå
+    /// í”Œë ˆì´ì–´ê°€ ë¨¸ê¸ˆê¸°ë¥¼ í•˜ë©´ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     /// </summary>
     public virtual void OnMouthful()
     {
@@ -36,7 +36,7 @@ public abstract class ClayBlock : MonoBehaviour
     }
     
     /// <summary>
-    /// ÇÃ·¹ÀÌ¾î°¡ ¹ñ±â¸¦ ÇÏ¸é È£ÃâµÇ´Â ¸Ş¼­µå
+    /// í”Œë ˆì´ì–´ê°€ ë±‰ê¸°ë¥¼ í•˜ë©´ í˜¸ì¶œë˜ëŠ” ë©”ì„œë“œ
     /// </summary>
     public virtual void OnSpit(Vector3 targetPos)
     {

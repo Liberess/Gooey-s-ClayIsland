@@ -1,15 +1,12 @@
-﻿/* Note that this script must be in a folder in the root of your project called "Editor" */
-
-//Name: Robert MacGillivray
+﻿//Name: Robert MacGillivray
 //File: ReadOnlyDrawer.cs
 //Date: Apr.21.2015
 //Purpose: To create a property drawer for my read only attribute
 
-//Last Updated: Nov.24.2015 by Robert MacGillivray
+//Last Updated: Sept.07.2021 by Robert MacGillivray
 
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 namespace UmbraEvolution
 {
@@ -19,11 +16,20 @@ namespace UmbraEvolution
     [CustomPropertyDrawer(typeof(ReadOnlyInInspectorAttribute))]
     public class ReadOnlyDrawer : PropertyDrawer
     {
+        public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+        {
+            // accounts for foldouts on serialized classes
+            return EditorGUI.GetPropertyHeight(property, label, true);
+        }
+
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            GUI.enabled = false; //disables elements in the gui
-            EditorGUI.PropertyField(position, property, label, true); //creates the property, which will be disabled because of the above line
-            GUI.enabled = true; //re-enables the gui so that not all properties are greyed out
+            // disables elements in the gui
+            GUI.enabled = false;
+            // creates the property, which will be disabled because of the above line
+            EditorGUI.PropertyField(position, property, label, true);
+            // re-enables the gui so that not all properties are greyed out
+            GUI.enabled = true;
         }
     }
 }

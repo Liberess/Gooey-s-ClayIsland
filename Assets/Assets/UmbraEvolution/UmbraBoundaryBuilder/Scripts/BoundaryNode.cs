@@ -1,14 +1,17 @@
-﻿//Name: Robert MacGillivray
-//File: BoundaryNode.cs
-//Date: Jul.21.2016
-//Purpose: To do anything specific to just nodes in boundaries (like calling OnDrawGizmoSelected on the boundary when you're fiddling with the node)
+﻿// Name: Robert MacGillivray
+// File: BoundaryNode.cs
+// Date: Jul.21.2016
+// Purpose: To do anything specific to just nodes in boundaries (like calling OnDrawGizmoSelected on the boundary when you're fiddling with the node)
 
-//Last Updated: Apr.05.2021 by Robert MacGillivray
+// Last Updated: Jul.01.2022 by Robert MacGillivray
 
 using UnityEngine;
 
-namespace UmbraEvolution
+namespace UmbraEvolution.UmbraBoundaryBuilder
 {
+    /// <summary>
+    /// Handles functionality local to nodes. Takes ownership of a specific section of a boundary.
+    /// </summary>
     public class BoundaryNode : MonoBehaviour
     {
         private Boundary _parent;
@@ -16,20 +19,66 @@ namespace UmbraEvolution
         {
             get
             {
-                if (!_parent)
+                if (_parent == null)
                 {
                     _parent = transform.parent.GetComponent<Boundary>();
-                    if (!_parent)
+                    if (_parent == null)
                     {
-                        Debug.LogError("This BoundaryNode does not appear to have a Boundary parent. That shouldn't be the case.");
+                        Debug.LogErrorFormat("The BoundaryNode [{0}] does not have a Boundary parent. This BoundaryNode will not work correctly.", gameObject.name);
                     }
                 }
                 return _parent;
             }
         }
 
-        private GameObject PhysicalNodeGizmo;
-        private GameObject PhysicalBoundaryGizmo;
+        private BoxCollider _myBoxCollider;
+        private BoxCollider MyBoxCollider
+        {
+            get
+            {
+                if (_myBoxCollider == null)
+                {
+                    _myBoxCollider = GetComponent<BoxCollider>();
+                    if (_myBoxCollider == null)
+                    {
+                        _myBoxCollider = gameObject.AddComponent<BoxCollider>();
+                    }
+                }
+                return _myBoxCollider;
+            }
+
+            set { _myBoxCollider = value; }
+        }
+
+        private GameObject PhysicalNodeGizmo { get; set; }
+        private GameObject PhysicalBoundaryGizmo { get; set; }
+        private Vector3 LastKnownPosition { get; set; }
+        private Quaternion LastKnownRotation { get; set; }
+
+#if UNITY_EDITOR
+        void OnDrawGizmosSelected()
+        {
+            //Useful when moving nodes so that you can still see the full boundary gizmo and your effects on it
+            if (UnityEditor.Selection.activeObject == gameObject)
+                ParentBoundary.OnDrawGizmosSelected();
+        }
+#endif
+
+        /// <summary>
+        /// Returns true if this node has moved or rotated since the last time this function was called
+        /// </summary>
+        /// <returns></returns>
+        public bool HasNodeMovedOrRotated()
+        {
+            if (LastKnownPosition != transform.position || LastKnownRotation != transform.rotation)
+            {
+                LastKnownPosition = transform.position;
+                LastKnownRotation = transform.rotation;
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// To assist in drawing gizmos in a reverse-recursive fashion without infinite overhead
@@ -91,7 +140,7 @@ namespace UmbraEvolution
         /// <summary>
         /// Used to update or create a physical gizmo for the chunk of boundary associated with this node
         /// </summary>
-        public void DrawPhysicalBoundaryNodeGizmosManually(float boundaryWidth, float boundaryHeight, float boundaryLength, Vector3 localCenter)
+        public void DrawPhysicalBoundaryNodeGizmosManually(Vector3 gizmoSize, Vector3 localCenter)
         {
             // First, make sure we don't have a rogue gizmo that we should know about
             if (!PhysicalBoundaryGizmo)
@@ -126,7 +175,7 @@ namespace UmbraEvolution
 
             transform.localScale = Vector3.one;
             PhysicalBoundaryGizmo.transform.localPosition = localCenter;
-            PhysicalBoundaryGizmo.transform.localScale = new Vector3(boundaryWidth, boundaryHeight, boundaryLength);
+            PhysicalBoundaryGizmo.transform.localScale = gizmoSize;
         }
 
         /// <summary>
@@ -153,49 +202,55 @@ namespace UmbraEvolution
                 DestroyImmediate(PhysicalBoundaryGizmo);
         }
 
-#if UNITY_EDITOR
-        void OnDrawGizmosSelected()
+        public void UpdateBoxCollider(float boundaryThickness, float boundaryHeight, float verticalOffset, BoundaryNode nextNode, bool useBoxColliders)
         {
-            //Useful when moving nodes so that you can still see the full boundary gizmo and your effects on it
-            if (UnityEditor.Selection.activeObject == gameObject)
-                ParentBoundary.OnDrawGizmosSelected();
+            if (nextNode == null)
+            {
+                Debug.LogError("A null node was passed to BoundaryNode.UpdateBoxCollider(...). Returning.");
+                return;
+            }
+
+            float distanceBetweenNodes = Vector3.Distance(transform.position, new Vector3(nextNode.transform.position.x, transform.position.y, nextNode.transform.position.z)) + boundaryThickness;
+            
+            // Calculates a local center for this node's box collider
+            // This should line the collider up with the lower of this node and the next node
+            float colliderYPos = Mathf.Min(transform.position.y, nextNode.transform.position.y) + (boundaryHeight / 2f) + verticalOffset - transform.position.y;
+
+            Vector3 size = new Vector3(boundaryThickness, boundaryHeight, distanceBetweenNodes);
+            Vector3 center = new Vector3(0f, colliderYPos, distanceBetweenNodes / 2f);
+
+            MyBoxCollider.size = size;
+            MyBoxCollider.center = center;
+            MyBoxCollider.enabled = useBoxColliders;
         }
-#endif
 
-        /// <summary>
-        /// If there is no box collider, adds one. Resizes and repositions the box collider based on arguments passed in
-        /// </summary>
-        /// <param name="size">The value that will be applied to the box collider's size property</param>
-        /// <param name="center">The value that will be applied to the box collider's center property</param>
-        public void BoxColliderCheck(Vector3 size, Vector3 center, bool useBoxColliders)
+        public void DisableBoxCollider()
         {
-            BoxCollider myBoxCollider = GetComponent<BoxCollider>();
-            if (!myBoxCollider)
-            {
-                myBoxCollider = gameObject.AddComponent<BoxCollider>();
-            }
-
-            myBoxCollider.size = size;
-            myBoxCollider.center = center;
-
-            if (useBoxColliders)
-            {
-                myBoxCollider.enabled = true;
-            }
-            else
-            {
-                myBoxCollider.enabled = false;
-            }
+            MyBoxCollider.size = Vector3.zero;
+            MyBoxCollider.center = Vector3.zero;
+            MyBoxCollider.enabled = false;
         }
 
         /// <summary>
-        /// Forces this node to look at the next node it is connected to
+        /// Rotates this node to look at the given node.
         /// </summary>
-        /// <param name="nodeOneAdjusted">The position of this node when adjusted to remove height variance.</param>
-        /// <param name="nodeTwoAdjusted">The position of the node this node is connected to when adjusted to remove height variance.</param>
-        public void SetRotation(Vector3 nodeOneAdjusted, Vector3 nodeTwoAdjusted)
+        /// <param name="nextNode">The node that this node is connected to.</param>
+        public void CalculateAndSetRotation(BoundaryNode nextNode)
         {
-            transform.rotation = Quaternion.LookRotation(nodeTwoAdjusted - nodeOneAdjusted);
+            if (nextNode == null)
+            {
+                Debug.LogError("A null node was passed to BoundaryNode.CalculateAndSetRotation(...). Returning.");
+                return;
+            }
+
+            if (transform.position.x == nextNode.transform.position.x && transform.position.z == nextNode.transform.position.z)
+            {
+                Debug.LogErrorFormat("Two connected nodes are stacked on top of each other at [{0}] and [{1}]. A proper boundary segment cannot be created if the X and Z coordinates are the same.", transform.position, nextNode.transform.position);
+                return;
+            }
+
+            // Look at the next node, ignoring height differences
+            transform.rotation = Quaternion.LookRotation(new Vector3(nextNode.transform.position.x, transform.position.y, nextNode.transform.position.z) - transform.position, Vector3.up);
         }
 
         /// <summary>
@@ -211,8 +266,8 @@ namespace UmbraEvolution
             vertices[1] = transform.position + (-transform.forward * ParentBoundary.boundaryThickness / 2f) + (-transform.right * ParentBoundary.boundaryThickness / 2f) + (transform.up * (ParentBoundary.verticalOffset + heightAdjustment));
             vertices[2] = vertices[0] + (transform.up * ParentBoundary.boundaryHeight);
             vertices[3] = vertices[1] + (transform.up * ParentBoundary.boundaryHeight);
-            vertices[4] = vertices[0] + transform.forward * GetComponent<BoxCollider>().size.z;
-            vertices[5] = vertices[1] + transform.forward * GetComponent<BoxCollider>().size.z;
+            vertices[4] = vertices[0] + transform.forward * MyBoxCollider.size.z;
+            vertices[5] = vertices[1] + transform.forward * MyBoxCollider.size.z;
             vertices[6] = vertices[4] + transform.up * ParentBoundary.boundaryHeight;
             vertices[7] = vertices[5] + transform.up * ParentBoundary.boundaryHeight;
 

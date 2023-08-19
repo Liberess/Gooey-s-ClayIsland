@@ -27,7 +27,7 @@ namespace Hun.Camera
         }
 
         /// <summary>
-        /// È¸Àü°ªÀ» Å¸°ÙÀÇ È¸Àü°ªÀ¸·Î ¸®¼ÂÇÕ´Ï´Ù.
+        /// íšŒì „ê°’ì„ íƒ€ê²Ÿì˜ íšŒì „ê°’ìœ¼ë¡œ ë¦¬ì…‹í•©ë‹ˆë‹¤.
         /// </summary>
         public void ResetRotation()
         {
