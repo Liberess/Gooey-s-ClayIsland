@@ -18,8 +18,8 @@ namespace Hun.Player
 
         [SerializeField] private Transform rayPos;
 
-        public bool isBlockedForward;
-        public bool isBlockedForwardBorder;
+        private bool isBlockedForward;
+        private bool isBlockedForwardBorder;
 
         public bool IsInteracting { get; private set; }
         public bool IsCarryingObject { get; private set; }
@@ -85,7 +85,7 @@ namespace Hun.Player
 #if UNITY_EDITOR
             Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
 #endif
-
+            
             //발 밑에 오브젝트가 있는지 판단한다.
             RaycastHit hit;
             if (Physics.Raycast(originVec, (-transform.up * 0.5f), out hit, 0.5f, LayerMask.GetMask("ClayBlock")))
@@ -104,14 +104,6 @@ namespace Hun.Player
                     }
                 }
             }
-            /*else
-            {
-                if (IsSlipIce)
-                {
-                    playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
-                    IsSlipIce = false;
-                }
-            }*/
         }
 
         private void SlidingFlow(ClayBlock clayBlock)
@@ -129,7 +121,7 @@ namespace Hun.Player
                     playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, true);
                     IsSlipIce = true;
                     
-                    startSlipVec = transform.position;
+                    startSlipVec = clayBlock.transform.position;
                     startSlipVec.x = Mathf.FloorToInt(startSlipVec.x);
                     startSlipVec.z = Mathf.FloorToInt(startSlipVec.z);
                 }
@@ -180,7 +172,6 @@ namespace Hun.Player
 
             forwardCols = Physics.OverlapSphere(
                 rayPos.position + (transform.GetChild(0).forward * 0.3f), 0.3f, mask);
-
             isBlockedForward = forwardCols.Length > 0;
 
             if (IsSlipIce)
@@ -191,11 +182,7 @@ namespace Hun.Player
                 {
                     playerCtrl.PlayerMovement.CancelMoveProgress();
 
-                    Vector3 dir = startSlipVec - transform.position;
-                    float roundX = (int)Math.Round(dir.x, MidpointRounding.AwayFromZero);
-                    float roundZ = (int)Math.Round(dir.z, MidpointRounding.AwayFromZero);
-                    dir.x = Mathf.Clamp(roundX, -1.0f, 1.0f);
-                    dir.z = Mathf.Clamp(roundZ, -1.0f, 1.0f);
+                    Vector3 dir = (startSlipVec - transform.position).normalized;
                     dir.y = 0.0f;
                     
                     playerCtrl.PlayerMovement.SetMoveProgress(startSlipVec, dir, false);

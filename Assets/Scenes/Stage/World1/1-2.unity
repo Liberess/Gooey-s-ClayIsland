@@ -25449,7 +25449,7 @@ PrefabInstance:
     - target: {fileID: 13678116037603020, guid: 15bced5e26f04fe44b732a6f4eda422d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 11.18
       objectReference: {fileID: 0}
     - target: {fileID: 13678116037603020, guid: 15bced5e26f04fe44b732a6f4eda422d,
         type: 3}
@@ -25491,6 +25491,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: Test_Character_New
       objectReference: {fileID: 0}
+    - target: {fileID: 1733233854286912547, guid: 15bced5e26f04fe44b732a6f4eda422d,
+        type: 3}
+      propertyPath: nowPrefab
+      value: 
+      objectReference: {fileID: 2227807786554122105, guid: 35e93948f4481244da2ce29c28c72334,
+        type: 3}
+    - target: {fileID: 1733233854286912547, guid: 15bced5e26f04fe44b732a6f4eda422d,
+        type: 3}
+      propertyPath: debugPrefab
+      value: 
+      objectReference: {fileID: 2227807786554122105, guid: 35e93948f4481244da2ce29c28c72334,
+        type: 3}
+    - target: {fileID: 1733233854286912547, guid: 15bced5e26f04fe44b732a6f4eda422d,
+        type: 3}
+      propertyPath: startPrefab
+      value: 
+      objectReference: {fileID: 2227807786554122105, guid: 47e0ec696e4970441b6d77f0fa8d57a4,
+        type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15bced5e26f04fe44b732a6f4eda422d, type: 3}
 --- !u!1001 &905924884

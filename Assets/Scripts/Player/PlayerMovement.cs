@@ -232,7 +232,7 @@ namespace Hun.Player
                     yield return waitForSeconds;
                     break;
                 }
-
+                
                 yield return null;
             }
 
