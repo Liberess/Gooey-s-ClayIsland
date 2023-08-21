@@ -7,8 +7,8 @@ namespace Hun.Utility
     public static class Utility
     {
         /// <summary>
-        /// center¸¦ Áß½ÉÀ¸·Î distance¸¸Å­ÀÇ ¹üÀ§·Î
-        /// areaMask¿¡ Æ÷ÇÔµÇ´Â randomÇÑ ÁÂÇ¥¸¦ ¹İÈ¯ÇÑ´Ù.
+        /// centerë¥¼ ì¤‘ì‹¬ìœ¼ë¡œ distanceë§Œí¼ì˜ ë²”ìœ„ë¡œ
+        /// areaMaskì— í¬í•¨ë˜ëŠ” randomí•œ ì¢Œí‘œë¥¼ ë°˜í™˜í•œë‹¤.
         /// </summary>
         public static Vector3 GetRandPointOnNavMesh(Vector3 center, float distance, int areaMask)
         {
@@ -27,8 +27,8 @@ namespace Hun.Utility
         }
 
         /// <summary>
-        /// Æò±Õ(mean)°ú Ç¥ÁØÆíÂ÷(standard)¸¦ ÅëÇØ
-        /// Á¤±ÔºĞÆ÷ ³­¼ö¸¦ »ı¼ºÇÑ´Ù.
+        /// í‰ê· (mean)ê³¼ í‘œì¤€í¸ì°¨(standard)ë¥¼ í†µí•´
+        /// ì •ê·œë¶„í¬ ë‚œìˆ˜ë¥¼ ìƒì„±í•œë‹¤.
         /// </summary>
         public static float GetRandNormalDistribution(float mean, float standard)
         {
@@ -38,8 +38,8 @@ namespace Hun.Utility
         }
 
         /// <summary>
-        /// ÀÓÀÇÀÇ È®·üÀ» ¼±ÅÃÇÑ´Ù.
-        /// ex) bool epicItem = GCR(0.001) ¡æ 1/1000ÀÇ È®·ü·Î Å©¸®Æ¼ÄÃÀÌ ¶á´Ù.
+        /// ì„ì˜ì˜ í™•ë¥ ì„ ì„ íƒí•œë‹¤.
+        /// ex) bool epicItem = GCR(0.001) â†’ 1/1000ì˜ í™•ë¥ ë¡œ í¬ë¦¬í‹°ì»¬ì´ ëœ¬ë‹¤.
         /// </summary>
         public static bool GetChanceResult(float chance)
         {
@@ -47,7 +47,7 @@ namespace Hun.Utility
                 chance = 0.0000001f;
 
             bool success = false;
-            int randAccuracy = 10000000; // Ãµ¸¸. Ãµ¸¸ºĞÀÇ chanceÀÇ È®·üÀÌ´Ù.
+            int randAccuracy = 10000000; // ì²œë§Œ. ì²œë§Œë¶„ì˜ chanceì˜ í™•ë¥ ì´ë‹¤.
             float randHitRange = chance * randAccuracy;
 
             int rand = Random.Range(1, randAccuracy + 1);
@@ -58,8 +58,8 @@ namespace Hun.Utility
         }
 
         /// <summary>
-        /// ÀÓÀÇÀÇ ÆÛ¼¾Æ® È®·üÀ» ¼±ÅÃÇÑ´Ù.
-        /// ex) bool critical = GPCR(30) ¡æ 30% È®·ü·Î Å©¸®Æ¼ÄÃÀÌ ¶á´Ù.
+        /// ì„ì˜ì˜ í¼ì„¼íŠ¸ í™•ë¥ ì„ ì„ íƒí•œë‹¤.
+        /// ex) bool critical = GPCR(30) â†’ 30% í™•ë¥ ë¡œ í¬ë¦¬í‹°ì»¬ì´ ëœ¬ë‹¤.
         /// </summary>
         public static bool GetPercentageChanceResult(float perChance)
         {
@@ -69,7 +69,7 @@ namespace Hun.Utility
             perChance = perChance / 100;
 
             bool success = false;
-            int randAccuracy = 10000000; // Ãµ¸¸. Ãµ¸¸ºĞÀÇ chanceÀÇ È®·üÀÌ´Ù.
+            int randAccuracy = 10000000; // ì²œë§Œ. ì²œë§Œë¶„ì˜ chanceì˜ í™•ë¥ ì´ë‹¤.
             float randHitRange = perChance * randAccuracy;
 
             int rand = Random.Range(1, randAccuracy + 1);
@@ -81,7 +81,7 @@ namespace Hun.Utility
         
         public static GameObject GetNearestObjectByList(List<GameObject> list, Vector3 pos)
         {
-            float minDistance = 1000.0f;
+            float minDistance = float.MaxValue;
             GameObject tempObj = null;
 
             foreach (var obj in list)

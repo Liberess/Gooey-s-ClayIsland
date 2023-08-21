@@ -39,6 +39,15 @@ namespace Hun.Player
         private RaycastHit forwardRayHit;
         private Collider[] forwardCols;
         private RaycastHit[] forwardBorderRayHits;
+        
+        int closestIndex = -1;
+        int secondClosestIndex = -1;
+                        
+        float closestDist = float.MaxValue;
+        float secondClosestDist = float.MaxValue;
+
+        private ClayBlockTile closestIceBlock;
+        private ClayBlockTile secondClosestIceBlock;
 
         private static readonly int IsSlide = Animator.StringToHash("isSlide");
 
@@ -81,10 +90,6 @@ namespace Hun.Player
             }
 
             originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
-
-#if UNITY_EDITOR
-            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
-#endif
             
             //발 밑에 오브젝트가 있는지 판단한다.
             RaycastHit hit;
@@ -104,6 +109,10 @@ namespace Hun.Player
                     }
                 }
             }
+            
+#if UNITY_EDITOR
+            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
+#endif
         }
 
         private void SlidingFlow(ClayBlock clayBlock)
@@ -127,11 +136,115 @@ namespace Hun.Player
                 }
                 
                 Vector3 targetPos = clayBlock.transform.position;
-                targetPos.y = transform.position.y;
+                Debug.Log($"slide target : {clayBlock.name}");
 
                 Vector3 dir = GetForwardDirection();
+                
+                if (playerCtrl.PlayerMovement.IsDiagonalInput)
+                    FindClosestIceBlockPosition(ref targetPos, ref dir);
+
+                targetPos.y = transform.position.y;
                 if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
                     playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
+            }
+        }
+
+        /// <summary>
+        /// 대각선 입력을 받아서 얼음을 타는 동작을 할때
+        /// 가장 가까운(올바른) 얼음 블럭을 찾아서 해당 위치로 targetPos, dir 세팅
+        /// </summary>
+        /// <param name="targetPos">Target 얼음 블럭의 위치</param>
+        /// <param name="dir">Forward Vector값</param>
+        private void FindClosestIceBlockPosition(ref Vector3 targetPos, ref Vector3 dir)
+        {
+            Debug.Log("슬라이딩인데 대각선?");
+
+            if (gameMgr.IceBlockList.Count > 0)
+            {
+                closestIndex = -1;
+                secondClosestIndex = -1;
+
+                closestDist = float.MaxValue;
+                secondClosestDist = float.MaxValue;
+
+                for (int i = 0; i < gameMgr.IceBlockList.Count; i++)
+                {
+                    /*RaycastHit underHit;
+                    if (Physics.Raycast(transform.position, -transform.up,
+                            out underHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                    {
+                        if (underHit.collider.TryGetComponent(out ClayBlockTile tile))
+                        {
+                            if (tile == gameMgr.IceBlockList[i])
+                            {
+                                Debug.Log("발 밑이랑 리스트랑 같은 얼음 블럭이네? 넘어가");
+                                continue;
+                            }
+                        }
+                    }*/
+                    
+                    Vector3 blockPos = gameMgr.IceBlockList[i].transform.position;
+                    float curDist = Vector3.Distance(transform.position, blockPos);
+
+                    RaycastHit hit;
+                    if (Physics.Raycast(rayPos.position, (blockPos - transform.position).normalized,
+                            out hit, 1.5f, LayerMask.GetMask("ClayBlock")))
+                    {
+                        if (hit.collider.GetComponent<ClayBlockTile>().ClayBlockType != ClayBlockType.Ice)
+                            continue;
+
+                        if (curDist < closestDist)
+                        {
+                            secondClosestIndex = closestIndex;
+                            secondClosestDist = closestDist;
+
+                            closestIndex = i;
+                            closestDist = curDist;
+                            closestIceBlock = closestIndex >= 0 ? gameMgr.IceBlockList[closestIndex] : null;
+                            secondClosestIceBlock = secondClosestIndex >= 0 ? gameMgr.IceBlockList[secondClosestIndex] : null;
+                        }
+                        else if (curDist < secondClosestDist)
+                        {
+                            secondClosestIndex = i;
+                            secondClosestDist = curDist;
+                            secondClosestIceBlock = secondClosestIndex >= 0 ? gameMgr.IceBlockList[secondClosestIndex] : null;
+                        }
+                    }
+                }
+                
+                if (closestIndex >= 0)
+                {
+                    //만약 원래 목표와 가장 가까운 목표의 위치가 동일하다면
+                    //얼음 위에서 가장 가까운 얼음을 찾은 것이기에 올바른 값이 아니다
+                    //그러므로 두 번째로 가까운 목표를 찾아야 한다
+                    if (targetPos == gameMgr.IceBlockList[closestIndex].transform.position)
+                    {
+                        if (secondClosestIndex >= 0)
+                        {
+                            targetPos = gameMgr.IceBlockList[secondClosestIndex].transform.position;
+                            Debug.Log($"second target : {gameMgr.IceBlockList[secondClosestIndex].name}");
+                        }
+                    }
+                    else
+                    {
+                        targetPos = gameMgr.IceBlockList[closestIndex].transform.position;
+                        Debug.Log($"first target : {gameMgr.IceBlockList[closestIndex].name}");
+                    }
+                }
+                
+                Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.magenta, 5f);
+
+                //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
+                //현재 서있던 블럭에서 해당 얼음 블럭을 향한 방향 벡터를 구한다.
+                RaycastHit groundHit;
+                if (Physics.Raycast(transform.position, -transform.up,
+                        out groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                {
+                    dir = (targetPos - groundHit.transform.position).normalized;
+                    dir.y = 0.0f;
+                }
+                
+                Debug.DrawRay(transform.position, dir, Color.blue, 5f);
             }
         }
 

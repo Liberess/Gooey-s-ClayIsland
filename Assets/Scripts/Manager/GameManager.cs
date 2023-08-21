@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Hun.Utility;
@@ -57,6 +58,7 @@ namespace Hun.Manager
         private float curTime;
         private bool isEndTimer = false;
         public float CurTime { get => curTime; }
+        public List<ClayBlockTile> IceBlockList { get; private set; } = new List<ClayBlockTile>();
 
         private void Awake()
         {
@@ -76,6 +78,8 @@ namespace Hun.Manager
             SceneName = SceneManager.GetActiveScene().name;
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
 
+            SetupIceBlockList();
+            
             if (dataMgr.GameData.gameState != GameState.Stage)
                 return;
 
@@ -165,6 +169,13 @@ namespace Hun.Manager
                     }
                 }
             }
+        }
+
+        private void SetupIceBlockList()
+        {
+            var blocks = FindObjectsOfType<ClayBlockTile>();
+            IceBlockList.Clear();
+            IceBlockList = blocks.ToList().FindAll(e => e.ClayBlockType == ClayBlockType.Ice);
         }
 
         public void GetCountTime(float time) => curTime += time;

@@ -45,6 +45,7 @@ namespace Hun.Player
         private bool isInAir = false;
 
         public Vector3 MovingInputValue { get; private set; }
+        public bool IsDiagonalInput => MovingInputValue.x != 0.0f && MovingInputValue.z != 0.0f;
         private Vector3 movingVector = Vector3.zero;
 
         public Vector3 PreviousPos { get; private set; }
@@ -202,7 +203,7 @@ namespace Hun.Player
                 while (true)
                 {
                     distance = Vector3.Distance(transform.position, targetPos);
-                    if (distance <= 0.001f)
+                    if (distance <= 0.05f)
                     {
                         transform.position = targetPos;
                         break;
@@ -239,7 +240,6 @@ namespace Hun.Player
             SetMovement(true);
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
-            IsOverIce = false;
             IsMoveProgressing = false;
 
             yield return null;
