@@ -184,6 +184,8 @@ namespace Hun.Player
             }
         }
 
+        public void SetOverIceState(bool state) => IsOverIce = state;
+
         private IEnumerator SetMoveProgressCo(Vector3 targetPos, Vector3 dir, bool isSyncPos)
         {
             IsOverIce = true;

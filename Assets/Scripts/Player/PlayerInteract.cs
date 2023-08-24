@@ -33,26 +33,30 @@ namespace Hun.Player
         public bool IsCanonInside { get; private set; }
         public bool IsTrampilineInside { get; private set; }
 
+        private bool isCheckForward = false;
+
         private Vector3 originVec;
         private Vector3 startSlipVec;
 
         private RaycastHit forwardRayHit;
         private Collider[] forwardCols;
         private RaycastHit[] forwardBorderRayHits;
-        
+
         int closestIndex = -1;
         int secondClosestIndex = -1;
-                        
+
         float closestDist = float.MaxValue;
         float secondClosestDist = float.MaxValue;
 
-        private ClayBlockTile closestIceBlock;
-        private ClayBlockTile secondClosestIceBlock;
+        private ClayBlockTile targetIceBlock;
+
+        private Rigidbody rigid;
 
         private static readonly int IsSlide = Animator.StringToHash("isSlide");
 
         private void Awake()
         {
+            rigid = GetComponent<Rigidbody>();
             playerCtrl = GetComponent<PlayerController>();
         }
 
@@ -78,19 +82,43 @@ namespace Hun.Player
             CheckGround();
         }
 
+        private void EnabledCheckForward() => isCheckForward = true;
+
         private void CheckGround()
         {
             if (isBlockedForward)
             {
-                if (playerCtrl.PlayerMovement.PlayerState != PlayerState.mouthfulInClay &&
-                    playerCtrl.PlayerMovement.PlayerState != PlayerState.spitInClay)
-                    playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
-                IsSlipIce = false;
+                if (IsSlipIce && isCheckForward)
+                {
+                    if (IsNotInClayState())
+                        playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                    IsSlipIce = false;
+                }
+                else
+                {
+                    if (playerCtrl.PlayerMovement.IsDiagonalInput)
+                    {
+                        isCheckForward = false;
+
+                        Vector3 targetPos = Vector3.zero;
+                        Vector3 dir = Vector3.zero;
+
+                        FindClosestIceBlockPosition(ref targetPos, ref dir);
+
+                        float distance = Vector3.Distance(transform.position, targetPos);
+                        if (distance <= 0.75f)
+                        {
+                            if (targetPos != Vector3.zero && dir != Vector3.zero)
+                                SlidingFlow(targetIceBlock);
+                        }
+                    }
+                }
+                
                 return;
             }
 
             originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
-            
+
             //발 밑에 오브젝트가 있는지 판단한다.
             RaycastHit hit;
             if (Physics.Raycast(originVec, (-transform.up * 0.5f), out hit, 0.5f, LayerMask.GetMask("ClayBlock")))
@@ -101,6 +129,7 @@ namespace Hun.Player
                     if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
                     {
                         playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                        playerCtrl.PlayerMovement.SetOverIceState(false);
                         IsSlipIce = false;
                     }
                     else
@@ -109,10 +138,19 @@ namespace Hun.Player
                     }
                 }
             }
-            
-#if UNITY_EDITOR
-            Debug.DrawRay(originVec, (-transform.up * 0.5f), Color.red);
-#endif
+        }
+        
+        private void HandleSlipIce(ClayBlock clayBlock)
+        {
+            if (!IsCanonInside && !IsTrampilineInside && clayBlock.ClayBlockType != ClayBlockType.Ice)
+            {
+                playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                playerCtrl.PlayerMovement.SetOverIceState(false);
+            }
+            else
+            {
+                SlidingFlow(clayBlock);
+            }
         }
 
         private void SlidingFlow(ClayBlock clayBlock)
@@ -129,23 +167,32 @@ namespace Hun.Player
                 {
                     playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, true);
                     IsSlipIce = true;
-                    
-                    startSlipVec = clayBlock.transform.position;
-                    startSlipVec.x = Mathf.FloorToInt(startSlipVec.x);
-                    startSlipVec.z = Mathf.FloorToInt(startSlipVec.z);
+                    Invoke(nameof(EnabledCheckForward), 0.5f);
                 }
-                
+
                 Vector3 targetPos = clayBlock.transform.position;
-                Debug.Log($"slide target : {clayBlock.name}");
 
                 Vector3 dir = GetForwardDirection();
-                
+
                 if (playerCtrl.PlayerMovement.IsDiagonalInput)
+                {
                     FindClosestIceBlockPosition(ref targetPos, ref dir);
+                }
+                else
+                {
+                    RaycastHit groundHit;
+                    if (Physics.Raycast(transform.position, -transform.up,
+                            out groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                    {
+                        SaveStartSlidingPosition(groundHit.transform.position);
+                    }
+                }
 
                 targetPos.y = transform.position.y;
                 if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
+                {
                     playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
+                }
             }
         }
 
@@ -157,8 +204,6 @@ namespace Hun.Player
         /// <param name="dir">Forward Vector값</param>
         private void FindClosestIceBlockPosition(ref Vector3 targetPos, ref Vector3 dir)
         {
-            Debug.Log("슬라이딩인데 대각선?");
-
             if (gameMgr.IceBlockList.Count > 0)
             {
                 closestIndex = -1;
@@ -169,20 +214,6 @@ namespace Hun.Player
 
                 for (int i = 0; i < gameMgr.IceBlockList.Count; i++)
                 {
-                    /*RaycastHit underHit;
-                    if (Physics.Raycast(transform.position, -transform.up,
-                            out underHit, 0.5f, LayerMask.GetMask("ClayBlock")))
-                    {
-                        if (underHit.collider.TryGetComponent(out ClayBlockTile tile))
-                        {
-                            if (tile == gameMgr.IceBlockList[i])
-                            {
-                                Debug.Log("발 밑이랑 리스트랑 같은 얼음 블럭이네? 넘어가");
-                                continue;
-                            }
-                        }
-                    }*/
-                    
                     Vector3 blockPos = gameMgr.IceBlockList[i].transform.position;
                     float curDist = Vector3.Distance(transform.position, blockPos);
 
@@ -200,38 +231,35 @@ namespace Hun.Player
 
                             closestIndex = i;
                             closestDist = curDist;
-                            closestIceBlock = closestIndex >= 0 ? gameMgr.IceBlockList[closestIndex] : null;
-                            secondClosestIceBlock = secondClosestIndex >= 0 ? gameMgr.IceBlockList[secondClosestIndex] : null;
                         }
                         else if (curDist < secondClosestDist)
                         {
                             secondClosestIndex = i;
                             secondClosestDist = curDist;
-                            secondClosestIceBlock = secondClosestIndex >= 0 ? gameMgr.IceBlockList[secondClosestIndex] : null;
                         }
                     }
                 }
-                
+
                 if (closestIndex >= 0)
                 {
                     //만약 원래 목표와 가장 가까운 목표의 위치가 동일하다면
                     //얼음 위에서 가장 가까운 얼음을 찾은 것이기에 올바른 값이 아니다
                     //그러므로 두 번째로 가까운 목표를 찾아야 한다
-                    if (targetPos == gameMgr.IceBlockList[closestIndex].transform.position)
+                    if (playerCtrl.PlayerMovement.IsOverIce && targetPos == gameMgr.IceBlockList[closestIndex].transform.position)
                     {
                         if (secondClosestIndex >= 0)
                         {
                             targetPos = gameMgr.IceBlockList[secondClosestIndex].transform.position;
-                            Debug.Log($"second target : {gameMgr.IceBlockList[secondClosestIndex].name}");
+                            targetIceBlock = gameMgr.IceBlockList[secondClosestIndex];
                         }
                     }
                     else
                     {
                         targetPos = gameMgr.IceBlockList[closestIndex].transform.position;
-                        Debug.Log($"first target : {gameMgr.IceBlockList[closestIndex].name}");
+                        targetIceBlock = gameMgr.IceBlockList[closestIndex];
                     }
                 }
-                
+
                 Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.magenta, 5f);
 
                 //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
@@ -242,9 +270,20 @@ namespace Hun.Player
                 {
                     dir = (targetPos - groundHit.transform.position).normalized;
                     dir.y = 0.0f;
+
+                    SaveStartSlidingPosition(groundHit.transform.position);
                 }
-                
-                Debug.DrawRay(transform.position, dir, Color.blue, 5f);
+            }
+        }
+
+        private void SaveStartSlidingPosition(Vector3 targetPos)
+        {
+            //만약 이동중이 아니었다면, 새로 이동을 시작하는 원점을 저장한다.
+            if (!playerCtrl.PlayerMovement.IsMoveProgressing)
+            {
+                startSlipVec = targetPos;
+                startSlipVec.x = Mathf.FloorToInt(startSlipVec.x);
+                startSlipVec.z = Mathf.FloorToInt(startSlipVec.z);
             }
         }
 
@@ -257,18 +296,22 @@ namespace Hun.Player
 
             playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
                 Quaternion.LookRotation(forward.normalized);
-            
+
             float currentX = forward.x;
             float currentZ = forward.z;
-            
+
             float posX = (Mathf.Abs(currentX) >= 0.9f) ? forward.x : 0.0f;
             float posZ = (Mathf.Abs(currentZ) >= 0.9f) ? forward.z : 0.0f;
 
             Vector3 dir = new Vector3(posX, 0f, posZ);
             if (dir == Vector3.zero)
             {
-                posX = Mathf.Abs(currentX) > Mathf.Abs(currentZ) ? (int)Math.Round(forward.x, MidpointRounding.AwayFromZero) : 0f;
-                posZ = Mathf.Abs(currentX) <= Mathf.Abs(currentZ) ? (int)Math.Round(forward.z, MidpointRounding.AwayFromZero) : 0f;
+                posX = Mathf.Abs(currentX) > Mathf.Abs(currentZ)
+                    ? (int)Math.Round(forward.x, MidpointRounding.AwayFromZero)
+                    : 0f;
+                posZ = Mathf.Abs(currentX) <= Mathf.Abs(currentZ)
+                    ? (int)Math.Round(forward.z, MidpointRounding.AwayFromZero)
+                    : 0f;
                 dir = new Vector3(posX, 0f, posZ);
             }
 
@@ -289,7 +332,8 @@ namespace Hun.Player
 
             if (IsSlipIce)
             {
-                forwardBorderRayHits = Physics.RaycastAll(rayPos.position, transform.GetChild(0).forward, 1.0f, LayerMask.GetMask("BorderLine"));
+                forwardBorderRayHits = Physics.RaycastAll(rayPos.position, transform.GetChild(0).forward, 1.0f,
+                    LayerMask.GetMask("BorderLine"));
                 isBlockedForwardBorder = forwardBorderRayHits.Length > 0;
                 if (isBlockedForwardBorder)
                 {
@@ -297,10 +341,16 @@ namespace Hun.Player
 
                     Vector3 dir = (startSlipVec - transform.position).normalized;
                     dir.y = 0.0f;
-                    
+
                     playerCtrl.PlayerMovement.SetMoveProgress(startSlipVec, dir, false);
                 }
             }
+        }
+        
+        private bool IsNotInClayState()
+        {
+            PlayerState state = playerCtrl.PlayerMovement.PlayerState;
+            return state != PlayerState.mouthfulInClay && state != PlayerState.spitInClay;
         }
 
         /// <summary>
