@@ -109,7 +109,7 @@ namespace Hun.Player
                         if (distance <= 0.75f)
                         {
                             if (targetPos != Vector3.zero && dir != Vector3.zero)
-                                SlidingFlow(targetIceBlock);
+                                SlipFlow(targetIceBlock);
                         }
                     }
                 }
@@ -120,8 +120,7 @@ namespace Hun.Player
             originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
 
             //발 밑에 오브젝트가 있는지 판단한다.
-            RaycastHit hit;
-            if (Physics.Raycast(originVec, (-transform.up * 0.5f), out hit, 0.5f, LayerMask.GetMask("ClayBlock")))
+            if (Physics.Raycast(originVec, (-transform.up * 0.5f), out var hit, 0.5f, LayerMask.GetMask("ClayBlock")))
             {
                 if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
                 {
@@ -134,26 +133,13 @@ namespace Hun.Player
                     }
                     else
                     {
-                        SlidingFlow(clayBlock);
+                        SlipFlow(clayBlock);
                     }
                 }
             }
         }
         
-        private void HandleSlipIce(ClayBlock clayBlock)
-        {
-            if (!IsCanonInside && !IsTrampilineInside && clayBlock.ClayBlockType != ClayBlockType.Ice)
-            {
-                playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
-                playerCtrl.PlayerMovement.SetOverIceState(false);
-            }
-            else
-            {
-                SlidingFlow(clayBlock);
-            }
-        }
-
-        private void SlidingFlow(ClayBlock clayBlock)
+        private void SlipFlow(ClayBlock clayBlock)
         {
             if (clayBlock == null)
                 return;
@@ -171,7 +157,6 @@ namespace Hun.Player
                 }
 
                 Vector3 targetPos = clayBlock.transform.position;
-
                 Vector3 dir = GetForwardDirection();
 
                 if (playerCtrl.PlayerMovement.IsDiagonalInput)
@@ -180,9 +165,8 @@ namespace Hun.Player
                 }
                 else
                 {
-                    RaycastHit groundHit;
                     if (Physics.Raycast(transform.position, -transform.up,
-                            out groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                            out var groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
                     {
                         SaveStartSlidingPosition(groundHit.transform.position);
                     }
@@ -190,9 +174,7 @@ namespace Hun.Player
 
                 targetPos.y = transform.position.y;
                 if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
-                {
                     playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
-                }
             }
         }
 
@@ -217,9 +199,8 @@ namespace Hun.Player
                     Vector3 blockPos = gameMgr.IceBlockList[i].transform.position;
                     float curDist = Vector3.Distance(transform.position, blockPos);
 
-                    RaycastHit hit;
                     if (Physics.Raycast(rayPos.position, (blockPos - transform.position).normalized,
-                            out hit, 1.5f, LayerMask.GetMask("ClayBlock")))
+                            out var hit, 1.5f, LayerMask.GetMask("ClayBlock")))
                     {
                         if (hit.collider.GetComponent<ClayBlockTile>().ClayBlockType != ClayBlockType.Ice)
                             continue;
@@ -260,13 +241,10 @@ namespace Hun.Player
                     }
                 }
 
-                Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.magenta, 5f);
-
                 //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
                 //현재 서있던 블럭에서 해당 얼음 블럭을 향한 방향 벡터를 구한다.
-                RaycastHit groundHit;
                 if (Physics.Raycast(transform.position, -transform.up,
-                        out groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                        out var groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
                 {
                     dir = (targetPos - groundHit.transform.position).normalized;
                     dir.y = 0.0f;
@@ -338,11 +316,12 @@ namespace Hun.Player
                 if (isBlockedForwardBorder)
                 {
                     playerCtrl.PlayerMovement.CancelMoveProgress();
-
+                    
                     Vector3 dir = (startSlipVec - transform.position).normalized;
                     dir.y = 0.0f;
 
                     playerCtrl.PlayerMovement.SetMoveProgress(startSlipVec, dir, false);
+                    Debug.DrawRay(transform.position, dir, Color.cyan, 5f);
                 }
             }
         }
