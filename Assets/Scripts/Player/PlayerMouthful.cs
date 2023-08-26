@@ -65,10 +65,10 @@ namespace Hun.Player
             if (!playerMovement.getIsGrounded)
                 return;
 
-            lastMouthfulTime = Time.time;
-
             if (playerInteract.IsCanonInside || playerInteract.IsTrampilineInside)
                 return;
+
+            lastMouthfulTime = Time.time;
 
             if (!targetClayBlock)
             {

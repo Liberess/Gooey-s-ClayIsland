@@ -31,6 +31,7 @@ namespace Hun.Obstacle
 
                 anim.SetTrigger("isUsed");
                 player.PlayerInteract.SetCanonState(true);
+                player.PlayerMovement.SetOverIceState(false);
 
                 destPos = hit.transform.position;
                 destPos.y = transform.position .y - 0.5f;
@@ -93,7 +94,7 @@ namespace Hun.Obstacle
             if (!IsMouthful)
                 return;
 
-            // player¿ÀºêÁ§Æ®°¡ targetPos¸¦ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î È¸Àü
+            // playerì˜¤ë¸Œì íŠ¸ê°€ targetPosë¥¼ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ íšŒì „
             Vector3 dir = targetPos - player.gameObject.transform.position;
             dir = dir.normalized;
 

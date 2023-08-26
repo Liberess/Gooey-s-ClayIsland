@@ -29,6 +29,7 @@ namespace Hun.Obstacle
 
             anim.SetTrigger("isUsed");
             player.PlayerInteract.SetTrampilineState(true);
+            player.PlayerMovement.SetOverIceState(false);
             player.PlayerInteract.JumpToPosByTrampiline(force, poses, !isSuccese);
 
             Debug.DrawRay(transform.position, boardCheckPos.position - transform.position, Color.red, 3);
@@ -59,7 +60,7 @@ namespace Hun.Obstacle
             if (!IsMouthful)
                 return;
 
-            // player¿ÀºêÁ§Æ®°¡ targetPos¸¦ ¹Ù¶óº¸´Â ¹æÇâÀ¸·Î È¸Àü
+            // playerì˜¤ë¸Œì íŠ¸ê°€ targetPosë¥¼ ë°”ë¼ë³´ëŠ” ë°©í–¥ìœ¼ë¡œ íšŒì „
             Vector3 dir = targetPos - player.gameObject.transform.position;
             dir = dir.normalized;
 
