@@ -30,7 +30,7 @@ namespace Hun.Player
         {
             get
             {
-                if (!playerCtrl.PlayerMovement.IsOverIce && Time.time >= lastMouthfulTime + minTimeBetMouthful &&
+                if (!playerCtrl.PlayerInteract.IsSlipIce && Time.time >= lastMouthfulTime + minTimeBetMouthful &&
                     !playerMovement.Anim.GetCurrentAnimatorStateInfo(0).IsName("Base Layer.Mouthful"))
                     return true;
 
