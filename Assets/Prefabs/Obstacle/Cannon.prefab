@@ -574,7 +574,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9faee64a85b98247a0f12b2fb72d1e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clayBlockType: 0
+  clayBlockType: 12
   currentClayBlocks:
   - {fileID: 0}
   - {fileID: 0}
+  anim: {fileID: 0}

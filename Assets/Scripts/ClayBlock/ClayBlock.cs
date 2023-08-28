@@ -2,11 +2,12 @@ using Hun.Manager;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Hun.Obstacle;
 using UnityEngine;
 
 public enum ClayBlockType
 {
-    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple, Toolbox, Empty
+    Grass = 0, Mud, Sand, Ice, Lime, Oil, Stone, Water, ShineLamp, Apple, Toolbox, Empty, Temper
 }
 
 public enum TemperObjectType
@@ -21,7 +22,7 @@ public abstract class ClayBlock : MonoBehaviour
 
     public bool IsMouthful => clayBlockType != ClayBlockType.Stone;
 
-    [HideInInspector] public ClayBlock[] currentClayBlocks = new ClayBlock[2];
+    /*[HideInInspector] */public ClayBlock[] currentClayBlocks = new ClayBlock[2];
 
     public abstract void OnEnter();
     public abstract void OnStay();
@@ -57,6 +58,16 @@ public abstract class ClayBlock : MonoBehaviour
     {
         Hun.Player.PlayerMouthful player = FindObjectOfType<Hun.Player.PlayerMouthful>();
 
+        if (currentClayBlocks[0] == null && currentClayBlocks[1] == null)
+        {
+            if(GetComponent<Canon>() != null)
+                currentClayBlocks[0] = GameManager.Instance.InstantiateClayBlockTile(ClayBlockType.Grass);
+            else if(GetComponent<Trampiline>() != null)
+                currentClayBlocks[0] = GameManager.Instance.InstantiateClayBlockTile(ClayBlockType.Sand);
+            
+            currentClayBlocks[1] = GameManager.Instance.InstantiateClayBlockTile(ClayBlockType.Toolbox);
+        }
+        
         var srcClayBlock = currentClayBlocks[0];
         var destClayBlock = currentClayBlocks[1];
 /*
@@ -66,6 +77,7 @@ public abstract class ClayBlock : MonoBehaviour
         var upPos2 = (destClayBlock.transform.localScale * 0.5f)
             + destClayBlock.transform.up;
 */
+
         if(srcClayBlock.clayBlockType == ClayBlockType.Toolbox)
         {
             player.SetTargetClayBlock(srcClayBlock);

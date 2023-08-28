@@ -56,16 +56,19 @@ MonoBehaviour:
   ButtonTxt: {fileID: 0}
   clayBlockTilePrefabList:
   - {fileID: 922733648282355284, guid: a8548cf2541c05341a345e39be14d287, type: 3}
-  - {fileID: 0}
+  - {fileID: 922733648282355284, guid: 01386648af96d4723810572f3bad517b, type: 3}
   - {fileID: 1775663020499218532, guid: f3efd44bc7a64a24cb8a5492d90149d2, type: 3}
   - {fileID: 8697039751060059625, guid: c662629bfe1b2a64aa9f4fbacec8260a, type: 3}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 922733648282355284, guid: f512d2c42a4bd422fabcf728d9c32361, type: 3}
   temperObjPrefabList:
   - {fileID: 1241308611840935574, guid: 0bc269828e1764bf6a1a7943f491aee2, type: 3}
   - {fileID: 1241308611840935574, guid: 39135e427339a42fa89c98194cb658b4, type: 3}
   - {fileID: 8046190941369589386, guid: 50b3988061ea44dac947d27e9ceceeb2, type: 3}
-  GameEndEffect: {fileID: 0}
   stageNum: 2
-  stageTimer: 100
+  stageTimer: 20

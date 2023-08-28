@@ -178,6 +178,12 @@ namespace Hun.Manager
             IceBlockList = blocks.ToList().FindAll(e => e.ClayBlockType == ClayBlockType.Ice);
         }
 
+        public ClayBlockTile InstantiateClayBlockTile(ClayBlockType clayBlockType)
+        {
+            ClayBlockTile tile = Instantiate(clayBlockTilePrefabList[(int)clayBlockType]).GetComponent<ClayBlockTile>();
+            return tile;
+        }
+
         public void GetCountTime(float time) => curTime += time;
 
         private void CountTimer()
