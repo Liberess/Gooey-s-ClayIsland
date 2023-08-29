@@ -225,6 +225,8 @@ namespace Hun.Player
             //실제로 앞으로 슬라이딩하는 물리 처리
             while (true)
             {
+                yield return null;
+                
                 for (int i = 0; i < playerBodys.Length; i++)
                     playerBody.transform.rotation = Quaternion.LookRotation(dir);
                 
@@ -235,15 +237,13 @@ namespace Hun.Player
                     yield return waitForSeconds;
                     break;
                 }
-                
-                yield return null;
             }
 
             SetMovement(true);
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
             IsMoveProgressing = false;
-
+ 
             yield return null;
         }
 
@@ -285,15 +285,14 @@ namespace Hun.Player
         /// <param name="inputValue">�Է� ��</param>
         private void OnMove(InputValue inputValue)
         {
+            if (playerCtrl.PlayerInteract.IsSlipIce)
+            {
+                MovingInputValue = Vector3.zero;
+                return;    
+            }
+            
             var value = inputValue.Get<Vector2>().normalized;
             MovingInputValue = new Vector3(value.x, 0, value.y);
-            
-            /*
-            float posX = (Mathf.Abs(MovingInputValue.x) >= 0.9f) ? MovingInputValue.x : 0.0f;
-            float posZ = (Mathf.Abs(MovingInputValue.z) >= 0.9f) ? MovingInputValue.z : 0.0f;
-            Vector3 dir = new Vector3(posX, 0f, posZ);
-
-            MovingInputValue = dir;*/
         }
 
         /// <summary>
