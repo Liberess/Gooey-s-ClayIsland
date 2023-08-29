@@ -6,17 +6,20 @@ namespace Hun.Obstacle
 {
     public class StageObject : MonoBehaviour
     {
+        [SerializeField] private string stageSceneName;
         [SerializeField] private string stageName;
         [SerializeField] private int stageNum;
         [SerializeField] private int requirementShineLampNum;
 
-        [Header("== Material ==")]
-        [SerializeField] private Material lockMat;
-        [SerializeField] private Material OpenMat;
+        //[Header("== Material ==")]
+        //[SerializeField] private Material lockMat;
+        //[SerializeField] private Material OpenMat;
 
         [Header("== Canvas ==")]
         [SerializeField] private GameObject stageInfoUI;
-        [SerializeField] private TextMeshProUGUI stageInfoTxt;
+        [SerializeField] private TextMeshProUGUI stageNameTxt;
+        [SerializeField] private TextMeshProUGUI stageNumTxt;
+        [SerializeField] private TextMeshProUGUI stageClearSecTxt;
 
         [SerializeField] private Transform cameraTr;
 
@@ -27,29 +30,34 @@ namespace Hun.Obstacle
         private void Awake()
         {
             objRenderer = GetComponentInChildren<Renderer>();
-            stageInfoUI = GetComponentInChildren<Canvas>().gameObject;
-            stageInfoTxt = stageInfoUI.GetComponentInChildren<TextMeshProUGUI>();
-            cameraTr = GameObject.Find("Camera Group").transform.GetChild(1).transform;
+            cameraTr = FindObjectOfType<Hun.Camera.MainCamera>().transform;
         }
 
         private void Start()
         {
             stageInfoUI.SetActive(false);
-            stageInfoTxt.text = "stage" + stageNum.ToString();
+            stageNameTxt.text = stageName.ToString();
+            stageNumTxt.text = stageNum.ToString();
+            stageClearSecTxt.text = "--:--";
 
             CheckShineLamp();
 
-            ////Ω√¿€ Ω√ ¿Ã∫•∆Æ∏¶ µÓ∑œ«ÿ ¡›¥œ¥Ÿ.
+            ////ÏãúÏûë Ïãú Ïù¥Î≤§Ìä∏Î•º Îì±Î°ùÌï¥ Ï§çÎãàÎã§.
             //SceneManager.sceneLoaded += LoadedsceneEvent;
         }
 
         private void Update()
         {
-            if(stageInfoUI.activeSelf)
-                stageInfoUI.transform.LookAt(cameraTr);
+            if (stageInfoUI.activeSelf)
+            {
+                Vector3 dir = -(cameraTr.position - stageInfoUI.transform.position);
+                dir.x = 0f; 
 
-            if(Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
-                Manager.GameManager.Instance.LoadScene(stageName);
+                stageInfoUI.transform.rotation = Quaternion.LookRotation(dir.normalized);
+            }
+
+            if (Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
+                Manager.GameManager.Instance.LoadScene(stageSceneName);
         }
 
         //private void LoadedsceneEvent(Scene scene, LoadSceneMode mode)
@@ -63,7 +71,7 @@ namespace Hun.Obstacle
 
             if (requirementShineLampNum <= value)
             {
-                objRenderer.material = OpenMat;
+                //objRenderer.material = OpenMat;
                 isOpen = true;
             }
         }

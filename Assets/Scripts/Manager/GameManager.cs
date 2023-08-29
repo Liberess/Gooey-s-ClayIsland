@@ -132,7 +132,8 @@ namespace Hun.Manager
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    LobbyControl();
+                    //LobbyControl();
+                    OptionControl();
                 }
             }
             else
