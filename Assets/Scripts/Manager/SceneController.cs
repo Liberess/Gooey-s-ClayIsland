@@ -20,7 +20,8 @@ public class SceneController : MonoBehaviour
     {
         sceneIndex = SceneManager.GetActiveScene().buildIndex;
 
-        AudioManager.Instance.PlayBGM((EBGMName)DataManager.Instance.GameData.gameState);
+        if (sceneIndex != 0)
+            AudioManager.Instance.PlayBGM((EBGMName)DataManager.Instance.GameData.gameState);
 
         if(sceneIndex == 0)
             InputSystem.onAnyButtonPress.CallOnce(x => OnGoToLobby());
@@ -32,7 +33,6 @@ public class SceneController : MonoBehaviour
             return;
         
         isProgressing = true;
-        DataManager.Instance.GameData.gameState = GameState.Lobby;
         AudioManager.Instance.StopBGM();
         AudioManager.Instance.PlayOneShotSUI(ESUIName.TitleBtn);
         VFXManager.Instance.CloudFadeOut();
@@ -48,6 +48,7 @@ public class SceneController : MonoBehaviour
     private IEnumerator LoadScene(string stageName, float delay = 2.0f)
     {
         yield return new WaitForSeconds(delay);
+        DataManager.Instance.GameData.gameState = GameState.Lobby;
         Hun.Manager.LoadingManager.LoadScene(stageName);
     }
 }

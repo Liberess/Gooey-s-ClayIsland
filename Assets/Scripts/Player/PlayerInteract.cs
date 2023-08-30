@@ -537,6 +537,7 @@ namespace Hun.Player
             playerCtrl.PlayerMovement.Anim.SetBool("isTrampiline", true);
 
             yield return new WaitForSeconds(0.5F);
+            AudioManager.Instance.PlayOneShotSFX(ESFXName.Trampiline);
 
             int index = 1;
             while (index < poses.Length)
@@ -607,6 +608,7 @@ namespace Hun.Player
             playerCtrl.PlayerMovement.Anim.SetBool("isCanon", true);
 
             yield return new WaitForSeconds(1.5F);
+            AudioManager.Instance.PlayOneShotSFX(ESFXName.Canon);
 
             while (transform.position != destPos)
             {
