@@ -53,7 +53,6 @@ namespace Hun.Manager
 
         //월드 관련 변수
         [Space(10), Header("== Game Stage =="), Space(5)]
-        [SerializeField] private int stageNum;
         [SerializeField] private float stageTimer;
         private float waitingTime = 5f;
         private float curTime;
@@ -192,6 +191,7 @@ namespace Hun.Manager
             if (!uiManager.SetStageTimerUI((int)(curTime - 1)))
                 return;
             curTime -= Time.deltaTime;
+            PlayTime += Time.deltaTime;
 
             if (curTime <= 0)
             {
@@ -337,6 +337,13 @@ namespace Hun.Manager
             if (IsClear)
             {
                 playerObjInPanelAnim.SetTrigger("Clear");
+
+                var data = dataMgr.GetStageSaveFile(dataMgr.GameData.currentStageIndex);
+                data.isSaved = true;
+                if (data.bestRecord >= PlayTime)
+                    data.bestRecord = PlayTime;
+                data.totalPlayTime += PlayTime;
+
                 yield return delay;
                 resultTxt[0].SetActive(true);
             }

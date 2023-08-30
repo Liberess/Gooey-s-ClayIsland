@@ -39,7 +39,7 @@ namespace Hun.Obstacle
             stageNameTxt.text = stageName;
             stageNumTxt.text = stageNum.ToString();
 
-            var stageData = DataManager.Instance.GetStageSaveFile(stageNum);
+            var stageData = DataManager.Instance.GetStageSaveFile(stageNum - 1);
             if (stageData.isSaved)
             {
                 TimeSpan timeSpan = TimeSpan.FromSeconds(stageData.bestRecord);
@@ -68,6 +68,7 @@ namespace Hun.Obstacle
 
             if (Input.GetKeyDown("space") && stageInfoUI.activeSelf)
             {
+                DataManager.Instance.GameData.currentStageIndex = stageNum - 1;
                 DataManager.Instance.GameData.gameState = GameState.Stage;
                 VFXManager.Instance.ClayFadeOut();
                 StartCoroutine(LoadScene(stageSceneName));
@@ -98,12 +99,14 @@ namespace Hun.Obstacle
 
         private void SetStageBestRecordUI(TimeSpan timeStamp)
         {
-            string dayStr = timeStamp.Days > 0 ? string.Concat(timeStamp.Days, "일") : "";
+            /*string dayStr = timeStamp.Days > 0 ? string.Concat(timeStamp.Days, "일") : "";
             string hourStr = timeStamp.Hours > 0 ? string.Concat(timeStamp.Hours, "시간") : "";
             string minutesStr = timeStamp.Minutes > 0 ? string.Concat(timeStamp.Minutes, "분") : "";
             string secondsStr = timeStamp.Seconds >= 0 ? string.Concat(timeStamp.Seconds, "초") : "";
 
-            stageClearSecTxt.text = string.Concat(dayStr, ":", hourStr, ":", minutesStr, ":", secondsStr);
+            stageClearSecTxt.text = string.Concat(dayStr, ":", hourStr, ":", minutesStr, ":", secondsStr);*/
+
+            stageClearSecTxt.text = Mathf.RoundToInt((float)timeStamp.TotalSeconds).ToString();
         }
 
         private void OnTriggerEnter(Collider other)

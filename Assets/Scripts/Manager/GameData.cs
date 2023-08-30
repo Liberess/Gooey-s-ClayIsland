@@ -21,11 +21,8 @@ namespace Hun.Manager
     [System.Serializable]
     public class GameData
     {
-        [Header("== Game Property ==")]
-        public GameState gameState;
-
         [System.Serializable]
-        public struct StageProperty
+        public class StageProperty
         {
             public int id;
             public int coin;
@@ -46,9 +43,16 @@ namespace Hun.Manager
                 this.isSaved = isSaved;
             }
         }
-        
-        public List<StageProperty> stageSaveFiles = new List<StageProperty>();
 
+        [Header("== Game Property ==")]
+        public bool isNewGame = true;
+        
+        public GameState gameState;
+
+        public int currentStageIndex;
+
+        public List<StageProperty> stageSaveFiles = new List<StageProperty>();
+        
         public float bgm;
         public float sfx;
     }

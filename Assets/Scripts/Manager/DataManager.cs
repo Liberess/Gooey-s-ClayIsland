@@ -43,6 +43,8 @@ namespace Hun.Manager
 
         public void InitializedGameData()
         {
+            mGameData.isNewGame = false;
+            
             mGameData.gameState = GameState.Main;
 
             mGameData.stageSaveFiles = new List<GameData.StageProperty>();
@@ -92,13 +94,14 @@ namespace Hun.Manager
 
         public GameData.StageProperty GetStageSaveFile(int stageIndex)
         {
-            if (stageIndex >= 0 && stageIndex < mGameData.stageSaveFiles.Count)
-                return mGameData.stageSaveFiles[stageIndex];
+            var data = mGameData.stageSaveFiles.Find(x => x.id == stageIndex);
+            if (data != null)
+                return data;
             
-            var newData = new GameData.StageProperty(stageIndex, 0, 0, new int[3], 0f, 0f, false);
-            mGameData.stageSaveFiles.Add(newData);
+            data = new GameData.StageProperty(stageIndex, 0, 0, new int[3], float.MaxValue, 0f, false);
+            mGameData.stageSaveFiles.Add(data);
             mGameData.stageSaveFiles = mGameData.stageSaveFiles.OrderBy(x => x.id).ToList();
-            return newData;
+            return data;
         }
 
         public float GetBestPlayTime(int stageIndex)
