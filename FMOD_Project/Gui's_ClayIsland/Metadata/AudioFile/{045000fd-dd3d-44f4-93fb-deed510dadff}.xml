@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{045000fd-dd3d-44f4-93fb-deed510dadff}">
+		<property name="assetPath">
+			<value>SFX8_GetItem.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.8024489795918368</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ae55c5b4-3504-4491-b1e4-d517b675087c}</destination>
+		</relationship>
+	</object>
+</objects>

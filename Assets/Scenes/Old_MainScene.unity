@@ -330,7 +330,7 @@ MonoBehaviour:
       Data2: 1205780020
       Data3: 2028710811
       Data4: -1713051804
-    Path: event:/Event/Music/MainTheme
+    Path: event:/Event/BGM/MainTheme
   Event: 
   PlayEvent: 1
   StopEvent: 2
@@ -4972,9 +4972,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Space to Start
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ac37b9f124faa443a8900ba18f79f553, type: 2}
-  m_sharedMaterial: {fileID: 2819004286332956939, guid: ac37b9f124faa443a8900ba18f79f553,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5108,9 +5107,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Space to Start
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 227b967277b6a418ebcc9a5768180748, type: 2}
-  m_sharedMaterial: {fileID: 2819004286332956939, guid: 227b967277b6a418ebcc9a5768180748,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

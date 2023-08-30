@@ -397,6 +397,8 @@ retry:
             #if UNITY_PHYSICS_EXIST
             public Rigidbody rigidBody;
             #endif
+            public Vector3 lastFramePosition;
+            public bool allowNonRigidBodyDoppler;
             #if UNITY_PHYSICS2D_EXIST
             public Rigidbody2D rigidBody2D;
             #endif
@@ -500,7 +502,8 @@ retry:
                 studioSystem.update();
             }
         }
-        public static void AttachInstanceToGameObject(FMOD.Studio.EventInstance instance, Transform transform)
+        
+        private static AttachedInstance FindOrAddAttachedInstance(FMOD.Studio.EventInstance instance, Transform transform, FMOD.ATTRIBUTES_3D attributes)
         {
             AttachedInstance attachedInstance = Instance.attachedInstances.Find(x => x.instance.handle == instance.handle);
             if (attachedInstance == null)
@@ -508,10 +511,21 @@ retry:
                 attachedInstance = new AttachedInstance();
                 Instance.attachedInstances.Add(attachedInstance);
             }
-
-            instance.set3DAttributes(RuntimeUtils.To3DAttributes(transform));
-            attachedInstance.transform = transform;
             attachedInstance.instance = instance;
+            attachedInstance.transform = transform;
+            attachedInstance.instance.set3DAttributes(attributes);
+            return attachedInstance;
+        }
+        
+        public static void AttachInstanceToGameObject(FMOD.Studio.EventInstance instance, Transform transform, bool allowNonRigidBodyDoppler = false)
+        {
+            AttachedInstance attachedInstance = FindOrAddAttachedInstance(instance, transform, RuntimeUtils.To3DAttributes(transform));
+
+            if (allowNonRigidBodyDoppler)
+            {
+                attachedInstance.allowNonRigidBodyDoppler = allowNonRigidBodyDoppler;
+                attachedInstance.lastFramePosition = transform.position;
+            }
         }
 
         #if UNITY_PHYSICS_EXIST

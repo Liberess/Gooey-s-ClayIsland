@@ -1,5 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
+using FMODUnity;
+using Hun.Manager;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
@@ -15,7 +20,11 @@ public class SceneController : MonoBehaviour
     private void Start()
     {
         sceneIndex = SceneManager.GetActiveScene().buildIndex;
-        InputSystem.onAnyButtonPress.CallOnce(x => OnGoToLobby());
+
+        AudioManager.Instance.PlayBGM((EBGMName)DataManager.Instance.GameData.gameState);
+
+        if(sceneIndex == 0)
+            InputSystem.onAnyButtonPress.CallOnce(x => OnGoToLobby());
     }
 
     public void OnGoToLobby()
@@ -24,31 +33,14 @@ public class SceneController : MonoBehaviour
             return;
         
         isProgressing = true;
+        DataManager.Instance.GameData.gameState = GameState.Lobby;
+        AudioManager.Instance.StopBGM();
+        AudioManager.Instance.PlayOneShotSUI(ESUIName.TitleBtn);
         VFXManager.Instance.CloudFadeOut();
         DataManager.Instance.GameData.gameState = GameState.Lobby;
         StartCoroutine(LoadScene(LobbySceneName));
     }
 
-    public void ChangePreviousLobbyScene()
-    {
-        if (isProgressing)
-            return;
-        
-        isProgressing = true;
-        VFXManager.Instance.CloudFadeOut();
-        StartCoroutine(LoadScene(sceneIndex - 1));
-    }
-
-    public void ChangeNextLobbyScene()
-    {
-        if (isProgressing)
-            return;
-        
-        isProgressing = true;
-        VFXManager.Instance.CloudFadeOut();
-        StartCoroutine(LoadScene(sceneIndex + 1));
-    }
-    
     private IEnumerator LoadScene(int stageIndex, float delay = 2.0f)
     {
         yield return new WaitForSeconds(delay);

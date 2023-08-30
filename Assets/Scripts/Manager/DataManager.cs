@@ -6,10 +6,12 @@ namespace Hun.Manager
 {
     public class DataManager : MonoBehaviour
     {
-        public static DataManager Instance;
+        public static DataManager Instance { get; private set; }
 
         [SerializeField] private GameData mGameData;
         public GameData GameData { get => mGameData; }
+
+   
 
         private void Awake()
         {

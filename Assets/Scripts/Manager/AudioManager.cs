@@ -1,283 +1,229 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Audio;
-using Newtonsoft.Json.Linq;
-using System;
-using Hun.Manager;
+using FMOD.Studio;
+using FMODUnity;
+using FMODPlus;
+using NaughtyAttributes;
+using STOP_MODE = FMOD.Studio.STOP_MODE;
 
-[System.Serializable]
-public class Sound
+public enum EAudioType
 {
-    public string name;
-    public AudioClip clip;
-
-    public Sound(string _name, AudioClip _clip)
-    {
-        name = _name;
-        clip = _clip;
-    }
+    Master, 
+    BGM, 
+    SFX, 
+    SUI
 }
 
-public enum BGMNames
+public enum EBGMName
 {
     Main,
-    InGame,
-    GameWin,
-    GameFailed,
+    Lobby,
+    Stage
 }
 
-public enum SFXNames
+public enum ESFXName
 {
-    Button,
-    Click,
+    Mouthful,
+    Spit,
     Walk,
-    Fall
+    Run,
+    Canon,
+    Trampiline,
+    TemperFusion,
+    TemperDivision,
+    GetItem
+}
+
+public enum ESUIName
+{
+    TitleBtn,
+    StartBtn,
+    Result,
+    ResultBtn
 }
 
 public class AudioManager : MonoBehaviour
 {
-    #region �ν��Ͻ�ȭ
-    private static AudioManager m_Instance;
-    public static AudioManager Instance
-    {
-        get
-        {
-            /*            if (!m_Instance)
-                        {
-                            m_Container = new GameObject();
-                            m_Container.name = "AudioManager";
-                            m_Instance = m_Container.AddComponent(
-                                typeof(AudioManager)) as AudioManager;
-                            DontDestroyOnLoad(m_Container);
-                        }*/
+    #region Public
 
-            return m_Instance;
-        }
-    }
-
-    private static GameObject m_Container;
+    public static AudioManager Instance { get; private set; }
+    
+    [BoxGroup("Audio Emitter")] public FMODAudioSource BgmAudioSource;
+    [BoxGroup("Bus")] public string[] Buses;
+    
+    [BoxGroup("Audio Clips")] public EventReference[] bgmPaths;
+    [BoxGroup("Audio Clips")] public EventReference[] sfxPaths;
+    [BoxGroup("Audio Clips")] public EventReference[] suiPaths;
+    
     #endregion
 
-    [Header("== Setting Audio Controller ==")]
-    [SerializeField] private GameObject optionPanel;
-    [SerializeField] private AudioMixer masterMixer;
-    [SerializeField] private Slider bgmSlider;
-    [SerializeField] private Slider sfxSlider;
+    #region Private
 
-    [Space(10), Header("== Setting Audio Clip ==")]
-    [SerializeField] private List<Sound> bgm = new List<Sound>();
-    [SerializeField] private List<Sound> sfx = new List<Sound>();
+    private EventInstance bgmInst;
+    private Bus[] _buses;
 
-    [Space(10), Header("== Setting Audio Player ==")]
-    [SerializeField] private AudioSource bgmPlayer = null;
-    [SerializeField] private AudioSource[] sfxPlayer = null;
-
-    [Space(10), Header("== Setting Audio UI ==")]
-    [SerializeField] private Text bgmNumTxt;
-    [SerializeField] private Text sfxNumTxt;
-
+    #endregion
 
     private void Awake()
     {
-        if (m_Instance == null)
-            m_Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else if (Instance != this)
+            Destroy(gameObject);
+        
+        DontDestroyOnLoad(gameObject);
+
+        _buses = new Bus[]
+        {
+            RuntimeManager.GetBus(Buses[0]),
+            RuntimeManager.GetBus(Buses[1]),
+            RuntimeManager.GetBus(Buses[2]),
+            RuntimeManager.GetBus(Buses[3]),
+        };
+    }
+
+    /// <summary>
+    /// Let the sound play.
+    /// </summary>
+    public void PlayBGM() => BgmAudioSource.Play();
+
+    public void PlayBGM(EBGMName bgmName)
+    {
+        BgmAudioSource.Clip = bgmPaths[(int)bgmName];
+        BgmAudioSource.Play();
+    }
+
+    /// <summary>
+    /// Returns whether the background music is paused.
+    /// </summary>
+    /// <returns></returns>
+    public bool IsPlayingBGM() => BgmAudioSource.IsPlaying();
+
+    /// <summary>
+    /// Stop the sound.
+    /// </summary>
+    /// <param name="fadeOut">true이면 페이드를 합니다.</param>
+    public void StopBGM(bool fadeOut = false)
+    {
+        BgmAudioSource.AllowFadeout = fadeOut;
+        _buses[(int)EAudioType.BGM].stopAllEvents(STOP_MODE.ALLOWFADEOUT);
+        BgmAudioSource.Stop();
+    }
+
+    /// <summary>
+    /// Pause or resume playing the sound.
+    /// </summary>
+    /// <param name="pause">true면 정지하고, false면 다시 재생합니다.</param>
+    public void SetPauseBGM(bool pause)
+    {
+        if (pause)
+            BgmAudioSource.Pause();
         else
-            Destroy(this.gameObject);
+            BgmAudioSource.UnPause();
     }
 
-    private void Start()
+    /// <summary>
+    /// Adjust the Audio's volume.
+    /// </summary>
+    /// <param name="type">설정할 대상 오디오의 타입.</param>
+    /// <param name="value">0~1사이의 값, 0이면 뮤트됩니다.</param>
+    public void SetVolume(EAudioType type, float value) => _buses[(int)type].setVolume(value);
+    
+    /// <summary>
+    /// Call Key Off when using Sustain Key Point.
+    /// </summary>
+    public void KeyOff()
     {
-        InitAudioSetting();
+        BgmAudioSource.EventInstance.keyOff();
     }
 
-    #region Setup DataField
-    [ContextMenu("Setup Audio UI")]
-    public void SetAudioObjects()
+    /// <summary>
+    /// Call Key Off when using Sustain Key Point.
+    /// </summary>
+    public void TriggerCue()
     {
-        if (optionPanel == null)
-            optionPanel = GameObject.Find("OptionCanvas").transform.GetChild(0).gameObject;
+        KeyOff();
+    }
 
-        var parent = optionPanel.transform.GetChild(0).gameObject;
+    /// <summary>
+    /// Create an instance in-place, play a sound effect, and destroy it immediately.
+    /// </summary>
+    /// <param name="path">재생할 효과음 경로</param>
+    /// <param name="position">해당 위치에서 소리를 재생합니다.</param>
+    public void PlayOneShot(EventReference path, Vector3 position = default)
+    {
+        RuntimeManager.PlayOneShot(path, position);
+    }
+    
+    /// <summary>
+    /// Create an instance in-place, play a sound effect, and destroy it immediately.
+    /// </summary>
+    /// <param name="sfxName">재생할 효과음</param>
+    /// <param name="position">해당 위치에서 소리를 재생합니다.</param>
+    public void PlayOneShotSFX(ESFXName sfxName, Vector3 position = default)
+    {
+        RuntimeManager.PlayOneShot(sfxPaths[(int)sfxName], position);
+    }
+    
+    /// <summary>
+    /// Create an instance in-place, play a sound effect, and destroy it immediately.
+    /// </summary>
+    /// <param name="suiName">재생할 UI 효과음 경로</param>
+    /// <param name="position">해당 위치에서 소리를 재생합니다.</param>
+    public void PlayOneShotSUI(ESUIName suiName, Vector3 position = default)
+    {
+        RuntimeManager.PlayOneShot(suiPaths[(int)suiName], position);
+    }
 
-        if (bgmSlider == null || sfxSlider == null)
+    /// <summary>
+    /// 파라미터를 호환하고 인스턴스를 내부에서 만들어서 효과음을 재생하고, 즉시 파괴합니다.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="parameterName"></param>
+    /// <param name="parameterValue"></param>
+    /// <param name="position"></param>
+    public void PlayOneShot(EventReference path, string parameterName, float parameterValue,
+        Vector3 position = new Vector3())
+    {
+        try
         {
-            bgmSlider = parent.transform.Find("BGMSlider").GetComponent<Slider>();
-            sfxSlider = parent.transform.Find("SFXSlider").GetComponent<Slider>();
+            PlayOneShot(path.Guid, parameterName, parameterValue, position);
         }
-
-        if (bgmNumTxt == null || sfxNumTxt == null)
+        catch (EventNotFoundException)
         {
-            bgmNumTxt = bgmSlider.transform.Find("NumTxt").GetComponent<Text>();
-            sfxNumTxt = sfxSlider.transform.Find("NumTxt").GetComponent<Text>();
-        }
-    }
-
-    public void InitAudioSetting()
-    {
-        SetAudioObjects();
-
-        bgmSlider.maxValue = 100f;
-        sfxSlider.maxValue = 100f;
-
-        bgmSlider.value = DataManager.Instance.GameData.bgm;
-        sfxSlider.value = DataManager.Instance.GameData.sfx;
-
-        bgmNumTxt.text = Mathf.RoundToInt(bgmSlider.value).ToString();
-        sfxNumTxt.text = Mathf.RoundToInt(sfxSlider.value).ToString();
-
-        masterMixer.SetFloat("BGM", bgmSlider.value / 100f);
-        masterMixer.SetFloat("SFX", sfxSlider.value / 100f);
-    }
-    #endregion
-
-    #region UpdateAudioPlayer
-    [ContextMenu("Update Audio Player Source")]
-    private void UpdateAudioPlayer()
-    {
-        UpdateBGMPlayer();
-        UpdateSFXPlayer();
-    }
-
-    private void UpdateBGMPlayer()
-    {
-        var sfxChild = transform.GetChild(0);
-        bgmPlayer = sfxChild.GetComponent<AudioSource>();
-    }
-
-    private void UpdateSFXPlayer()
-    {
-        var sfxChild = transform.GetChild(1);
-        sfxPlayer = sfxChild.GetComponents<AudioSource>();
-    }
-    #endregion
-
-    #region Update Audio Clip
-    [ContextMenu("Update Audio Clip Resource")]
-    private void UpdateAudioClip()
-    {
-        UpdateBGMResource();
-        UpdateSFXResource();
-    }
-
-    private void UpdateBGMResource()
-    {
-        bgm.Clear();
-
-        AudioClip[] srcs = Resources.LoadAll<AudioClip>("Audio/BGM");
-
-        foreach (var src in srcs)
-            bgm.Add(new Sound(src.name.Substring(6), src));
-    }
-
-    private void UpdateSFXResource()
-    {
-        sfx.Clear();
-
-        AudioClip[] srcs = Resources.LoadAll<AudioClip>("Audio/SFX");
-
-        foreach (var src in srcs)
-            sfx.Add(new Sound(src.name.Substring(6), src));
-    }
-    #endregion
-
-    #region Audio Save
-    public void BGMSave()
-    {
-        bgmNumTxt.text = Mathf.RoundToInt(bgmSlider.value).ToString();
-        bgmPlayer.volume = bgmSlider.value / 100f;
-        DataManager.Instance.GameData.bgm = bgmSlider.value;
-    }
-
-    public void SFXSave()
-    {
-        for (int i = 0; i < sfxPlayer.Length; i++)
-            sfxPlayer[i].volume = sfxSlider.value / 100f;
-
-        sfxNumTxt.text = Mathf.RoundToInt(sfxSlider.value).ToString();
-        DataManager.Instance.GameData.sfx = sfxSlider.value;
-    }
-    #endregion
-
-    #region Audio Play & Stop
-    public void PlayBGM(BGMNames _name)
-    {
-        var bgmName = _name.ToString();
-
-        if (bgmPlayer.clip != null && bgmPlayer.clip.name == bgmName)
-            return;
-
-        for (int i = 0; i < bgm.Count; i++)
-        {
-            if (bgmName == bgm[i].name)
-            {
-                bgmPlayer.clip = bgm[i].clip;
-                bgmPlayer.Play();
-            }
+            RuntimeUtils.DebugLogWarning("[FMOD] Event not found: " + path);
         }
     }
 
-    public void StopBGM() => bgmPlayer.Stop();
-
-    public void PlaySFX(SFXNames _name)
+    /// <summary>
+    /// Parameter compatible, create instance internally, play sound effect, destroy immediately.
+    /// </summary>
+    /// <param name="path"></param>
+    /// <param name="parameterName"></param>
+    /// <param name="parameterValue"></param>
+    /// <param name="position"></param>
+    public void PlayOneShot(string path, string parameterName, float parameterValue,
+        Vector3 position = new Vector3())
     {
-        var sfxName = _name.ToString();
-
-        for (int i = 0; i < sfx.Count; i++)
+        try
         {
-            if (sfxName == sfx[i].name)
-            {
-                for (int x = 0; x < sfxPlayer.Length; x++)
-                {
-                    if (!sfxPlayer[x].isPlaying)
-                    {
-                        sfxPlayer[x].clip = sfx[i].clip;
-                        sfxPlayer[x].Play();
-                        return;
-                    }
-                }
-                return;
-            }
+            PlayOneShot(RuntimeManager.PathToGUID(path), parameterName, parameterValue, position);
+        }
+        catch (EventNotFoundException)
+        {
+            RuntimeUtils.DebugLogWarning("[FMOD] Event not found: " + path);
         }
     }
 
-    public void StopSFX(SFXNames _name)
+    private void PlayOneShot(FMOD.GUID guid, string parameterName, float parameterValue,
+        Vector3 position = new Vector3())
     {
-        var sfxName = _name.ToString();
-
-        for (int i = 0; i < sfx.Count; i++)
-        {
-            if (sfxName == sfx[i].name)
-            {
-                for (int x = 0; x < sfxPlayer.Length; x++)
-                {
-                    if (sfxPlayer[x].isPlaying && sfxPlayer[x].clip == sfx[i].clip)
-                    {
-                        sfxPlayer[x].Stop();
-                        sfxPlayer[x].clip = null;
-                    }
-                }
-                return;
-            }
-        }
+        var instance = RuntimeManager.CreateInstance(guid);
+        instance.set3DAttributes(position.To3DAttributes());
+        instance.setParameterByName(parameterName, parameterValue);
+        instance.start();
+        instance.release();
     }
-    #endregion
-
-    public bool SetActiveOptionPanel()
-    {
-        if (optionPanel.activeSelf)
-        {
-            optionPanel.SetActive(false);
-            return false;
-        }
-        else
-        {
-            optionPanel.SetActive(true);
-            return true;
-        }
-    }
-
-    public AudioClip GetBGMClip(BGMNames bgmName) => bgm[(int)bgmName].clip;
-    public AudioClip GetSFXClip(SFXNames sfxName) => bgm[(int)sfxName].clip;
 }

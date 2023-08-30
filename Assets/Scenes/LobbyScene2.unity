@@ -9150,7 +9150,7 @@ MonoBehaviour:
       Data2: 1286842028
       Data3: -1606571366
       Data4: 942847555
-    Path: event:/Event/Music/WorldMapTheme
+    Path: event:/Event/BGM/WorldMapTheme
   Event: 
   PlayEvent: 1
   StopEvent: 2

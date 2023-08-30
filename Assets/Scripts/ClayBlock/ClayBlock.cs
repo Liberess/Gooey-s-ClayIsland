@@ -48,6 +48,9 @@ public abstract class ClayBlock : MonoBehaviour
     {
         blockA.gameObject.SetActive(false);
         blockB.gameObject.SetActive(false);
+        
+        AudioManager.Instance.PlayOneShotSFX(ESFXName.TemperFusion);
+        
         //Destroy(blockB);
         //Destroy(blockB.gameObject);
         //Destroy(blockA);
@@ -70,6 +73,7 @@ public abstract class ClayBlock : MonoBehaviour
         
         var srcClayBlock = currentClayBlocks[0];
         var destClayBlock = currentClayBlocks[1];
+        
 /*
         var upPos1 = (srcClayBlock.transform.localScale * 0.5f)
             + srcClayBlock.transform.up;
@@ -82,13 +86,14 @@ public abstract class ClayBlock : MonoBehaviour
         {
             player.SetTargetClayBlock(srcClayBlock);
             SetClayBlock(true, player);
+            AudioManager.Instance.PlayOneShotSFX(ESFXName.TemperDivision);
         }
         else
         {
             player.SetTargetClayBlock(destClayBlock);
             SetClayBlock(false, player);
         }
-
+        
         Destroy(gameObject);
     }
 
