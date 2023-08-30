@@ -5,6 +5,7 @@ using UnityEngine;
 public class VFXManager : MonoBehaviour
 {
     public static VFXManager Instance { get; private set; }
+    
     private VFXClay vfxClay;
     private VFXCloud vfxCloud;
 

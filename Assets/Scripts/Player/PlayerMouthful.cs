@@ -39,6 +39,7 @@ namespace Hun.Player
         }
 
         private Animator anim;
+        private static readonly int IsMouthful1 = Animator.StringToHash("isMouthful");
 
         private void Awake()
         {
@@ -74,6 +75,7 @@ namespace Hun.Player
             {
                 Mouthful();
                 StartCoroutine(CheckMouthfulAnimState());
+                AudioManager.Instance.PlayOneShotSFX(ESFXName.Mouthful);
             }
             else //Fusion or Spit or Division
             {
@@ -94,7 +96,8 @@ namespace Hun.Player
                                     GetComponent<ClayBlockTile>(), clayBlock))
                             {
                                 playerMovement.ChangeModel(PlayerState.spit);
-                                playerMovement.Anim.SetTrigger("isMouthful");
+                                playerMovement.Anim.SetTrigger(IsMouthful1);
+                                AudioManager.Instance.PlayOneShotSFX(ESFXName.Spit);
 
                                 targetClayBlock = null;
                                 UIManager.Instance.SetMouthfulUI();
@@ -116,7 +119,8 @@ namespace Hun.Player
                     if (hitBlock.collider.TryGetComponent(out ClayBlock clayBlock))
                     {
                         playerMovement.ChangeModel(PlayerState.mouthful);
-                        playerMovement.Anim.SetTrigger("isMouthful");
+                        playerMovement.Anim.SetTrigger(IsMouthful1);
+                        AudioManager.Instance.PlayOneShotSFX(ESFXName.Mouthful);
 
                         clayBlock.OnDivision();
                         UIManager.Instance.SetMouthfulUI(ClayBlockType.Toolbox);
@@ -134,7 +138,8 @@ namespace Hun.Player
                     mouthfulDistance, LayerMask.GetMask("ClayBlock")))
                 {
                     playerMovement.ChangeModel(PlayerState.spit);
-                    playerMovement.Anim.SetTrigger("isMouthful");
+                    playerMovement.Anim.SetTrigger(IsMouthful1);
+                    AudioManager.Instance.PlayOneShotSFX(ESFXName.Spit);
                     StartCoroutine(CheckMouthfulAnimState());
                     Spit();
                 }
@@ -146,7 +151,7 @@ namespace Hun.Player
         /// </summary>
         private void Mouthful()
         {
-            playerMovement.Anim.SetTrigger("isMouthful");
+            playerMovement.Anim.SetTrigger(IsMouthful1);
 
             RaycastHit hit;
             if (Physics.Raycast(mouthfulRoot.position, mouthfulRoot.forward,

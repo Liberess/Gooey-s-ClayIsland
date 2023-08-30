@@ -1,0 +1,216 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7317182121604584437
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7317182121604584434}
+  - component: {fileID: 7317182121604584435}
+  m_Layer: 0
+  m_Name: BGM
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7317182121604584434
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7317182121604584437}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7317182121873978816}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7317182121604584435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7317182121604584437}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1449e9d6ac108fa4b95501a0f06bfd9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  mute: 0
+  PlayOnAwake: 0
+  volume: 1
+  pitch: 1
+  Params: []
+  AllowFadeout: 0
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
+--- !u!1 &7317182121873978819
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7317182121873978816}
+  - component: {fileID: 7317182121873978817}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7317182121873978816
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7317182121873978819}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 7317182121604584434}
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7317182121873978817
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7317182121873978819}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84547eac09916a441b47497bf6ae1fe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BgmAudioSource: {fileID: 7317182121604584435}
+  Buses:
+  - bus:/Master
+  - bus:/Master/BGM
+  - bus:/Master/SFX
+  - bus:/Master/SUI
+  bgmPaths:
+  - Guid:
+      Data1: -1037036754
+      Data2: 1198300262
+      Data3: 887329458
+      Data4: -1340415567
+    Path: event:/Event/BGM/BGM0_Main
+  - Guid:
+      Data1: -2018971876
+      Data2: 1245562170
+      Data3: -1498679162
+      Data4: 468640423
+    Path: event:/Event/BGM/BGM1_Lobby
+  - Guid:
+      Data1: -1113756282
+      Data2: 1259193540
+      Data3: -130131790
+      Data4: -2036263576
+    Path: event:/Event/BGM/BGM2_Stage
+  sfxPaths:
+  - Guid:
+      Data1: -836800261
+      Data2: 1102770713
+      Data3: 718030720
+      Data4: -415624497
+    Path: event:/Event/SFX/SFX0_Mouthful
+  - Guid:
+      Data1: 901727613
+      Data2: 1273006731
+      Data3: 217995167
+      Data4: -298678863
+    Path: event:/Event/SFX/SFX1_Spit
+  - Guid:
+      Data1: 98981705
+      Data2: 1314823174
+      Data3: 726436480
+      Data4: 705865052
+    Path: event:/Event/SFX/SFX2_Walk
+  - Guid:
+      Data1: 291412594
+      Data2: 1200690874
+      Data3: -15280502
+      Data4: -1461612689
+    Path: event:/Event/SFX/SFX3_Run
+  - Guid:
+      Data1: -534690152
+      Data2: 1115010663
+      Data3: 1184111034
+      Data4: 718246159
+    Path: event:/Event/SFX/SFX4_Canon
+  - Guid:
+      Data1: -1703711640
+      Data2: 1276511686
+      Data3: 3304867
+      Data4: 685156117
+    Path: event:/Event/SFX/SFX5_Trampiline
+  - Guid:
+      Data1: 1211717638
+      Data2: 1150711273
+      Data3: -687701619
+      Data4: -1315762736
+    Path: event:/Event/SFX/SFX6_TemperFusion
+  - Guid:
+      Data1: 1800356946
+      Data2: 1300223364
+      Data3: 2006934947
+      Data4: 779165588
+    Path: event:/Event/SFX/SFX7_TemperDivision
+  - Guid:
+      Data1: -1639746919
+      Data2: 1084957347
+      Data3: 725073840
+      Data4: -2084314165
+    Path: event:/Event/SFX/SFX8_GetItem
+  suiPaths:
+  - Guid:
+      Data1: -2077155689
+      Data2: 1264760507
+      Data3: 1584951945
+      Data4: -735543848
+    Path: event:/Event/SUI/SUI0_TitleBtn
+  - Guid:
+      Data1: -1250688471
+      Data2: 1336975289
+      Data3: 843468718
+      Data4: 1417510998
+    Path: event:/Event/SUI/SUI1_StartBtn
+  - Guid:
+      Data1: -1100103846
+      Data2: 1188477119
+      Data3: -1976944715
+      Data4: 1207208808
+    Path: event:/Event/SUI/SUI2_Result
+  - Guid:
+      Data1: -33152925
+      Data2: 1330059240
+      Data3: 1358374813
+      Data4: -1615491533
+    Path: event:/Event/SUI/SUI3_ResultBtn

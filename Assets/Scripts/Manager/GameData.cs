@@ -24,15 +24,15 @@ namespace Hun.Manager
         [Header("== Game Property ==")]
         public GameState gameState;
 
-        public int life = 3; //ÀÓ½Ã ÄÚµå
+        public int life = 3; //ì„ì‹œ ì½”ë“œ
 
         [System.Serializable]
         public struct GameProperty
         {
             public int coin;
             public int prismPiece;
-            public int[] sweetCandy; // ½ºÅ×ÀÌÁö ´Ş¼º·ü
-            public float[] bestRecord; // ½ºÅ×ÀÌÁö ±â·Ï
+            public int[] sweetCandy; // ìŠ¤í…Œì´ì§€ ë‹¬ì„±ë¥ 
+            public float[] bestRecord; // ìŠ¤í…Œì´ì§€ ê¸°ë¡
             public float playTime;
             public bool isSaved;
         }
