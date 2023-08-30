@@ -369,7 +369,7 @@ namespace Hun.Manager
         {
             gameSaveFile = saveFileNum;
 
-            if (dataMgr.GameData.gameSaveFiles[(int)gameSaveFile].isSaved == false)
+            if (dataMgr.GameData.stageSaveFiles[(int)gameSaveFile].isSaved == false)
             {
                 NewGame();
             }

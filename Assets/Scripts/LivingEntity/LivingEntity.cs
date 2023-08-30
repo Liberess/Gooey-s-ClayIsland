@@ -47,7 +47,7 @@ namespace Hun.Entity
             if(heart <= 0)
             {
                 --Life;
-                Manager.DataManager.Instance.GameData.life = Life;
+                //Manager.DataManager.Instance.GameData.life = Life;
 
                 heart = originHeart;
 
@@ -58,7 +58,7 @@ namespace Hun.Entity
                 else
                 {
                     Life = 3;
-                    Manager.DataManager.Instance.GameData.life = Life;
+                    //Manager.DataManager.Instance.GameData.life = Life;
                 }
             }
 
@@ -91,7 +91,7 @@ namespace Hun.Entity
         {
             IsDead = false;
             Heart = originHeart;
-            Life = Manager.DataManager.Instance.GameData.life;
+            //Life = Manager.DataManager.Instance.GameData.life;
         }
 
         public virtual void ApplyDamage(DamageMessage dmgMsg)
