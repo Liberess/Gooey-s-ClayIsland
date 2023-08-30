@@ -13,6 +13,7 @@ namespace Hun.Manager
         public static GameManager Instance { get; private set; }
         private DataManager dataMgr;
         private UIManager uiManager;
+        private SceneController sceneController;
 
         private GameObject player;
         private Hun.Player.PlayerHealth playerHealth;
@@ -74,6 +75,7 @@ namespace Hun.Manager
         {
             dataMgr = DataManager.Instance;
             uiManager = UIManager.Instance;
+            sceneController = FindObjectOfType<SceneController>();
 
             SceneName = SceneManager.GetActiveScene().name;
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -153,9 +155,7 @@ namespace Hun.Manager
                 {
                     if (IsClear)
                     {
-                        dataMgr.GameData.gameState = GameState.Lobby;
-                        if(stageNum != 3)
-                            LoadScene("LobbyDeco");
+                        GoToLobby();
                     }
                     else if (IsFailed)
                     {
@@ -163,8 +163,7 @@ namespace Hun.Manager
                     }
                     else if (IsGameOver)
                     {
-                        dataMgr.GameData.gameState = GameState.Lobby;
-                        LoadScene("LobbyDeco");
+                        GoToLobby();
                     }
                 }
             }
@@ -202,7 +201,7 @@ namespace Hun.Manager
                 dmgMsg.dmgAmount = 3;
                 //dmgMsg.hitNormal = transform.position;
                 //dmgMsg.hitPoint = transform.position;
-                playerHealth.ApplyDamage(dmgMsg);
+                GameOver();
             }
         }
 
@@ -409,18 +408,13 @@ namespace Hun.Manager
 
         public void GoToLobby()
         {
-            string sceneName = "LobbyScene";
-
-            switch(SceneIndex)
-            {
-                case 5: sceneName = string.Concat(sceneName, "1"); break;
-                case 6: sceneName = string.Concat(sceneName, "2"); break;
-                case 7: sceneName = string.Concat(sceneName, "3"); break;
-            }
+            string sceneName = "LobbyDeco";
 
             Time.timeScale = 1f;
             IsGamePlay = false;
             dataMgr.GameData.gameState = GameState.Lobby;
+            AudioManager.Instance.StopBGM();
+            AudioManager.Instance.PlayOneShotSUI(ESUIName.TitleBtn);
             LoadingManager.LoadScene(sceneName);
         }
        

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
 using Hun.Manager;
 
@@ -25,7 +26,7 @@ namespace Hun.Obstacle
 
         private Renderer objRenderer;
 
-        private bool isOpen = false;
+        //private bool isOpen = false;
 
         private void Awake()
         {
@@ -56,11 +57,18 @@ namespace Hun.Obstacle
                 stageInfoUI.transform.rotation = Quaternion.LookRotation(dir.normalized);
             }
 
-            if (Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
+            if (Input.GetKeyDown("space") && stageInfoUI.activeSelf)
             {
                 DataManager.Instance.GameData.gameState = GameState.Stage;
-                Manager.GameManager.Instance.LoadScene(stageSceneName);
+                VFXManager.Instance.ClayFadeOut();
+                StartCoroutine(LoadScene(stageSceneName));
             }
+        }
+
+        private IEnumerator LoadScene(string stageName, float delay = 2.0f)
+        {
+            yield return new WaitForSeconds(delay);
+            GameManager.Instance.LoadScene(stageSceneName);
         }
 
         //private void LoadedsceneEvent(Scene scene, LoadSceneMode mode)

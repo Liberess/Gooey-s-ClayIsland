@@ -9,7 +9,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
-using Hun.Manager;
 
 public class SceneController : MonoBehaviour
 {
@@ -37,7 +36,6 @@ public class SceneController : MonoBehaviour
         AudioManager.Instance.StopBGM();
         AudioManager.Instance.PlayOneShotSUI(ESUIName.TitleBtn);
         VFXManager.Instance.CloudFadeOut();
-        DataManager.Instance.GameData.gameState = GameState.Lobby;
         StartCoroutine(LoadScene(LobbySceneName));
     }
 
@@ -50,6 +48,6 @@ public class SceneController : MonoBehaviour
     private IEnumerator LoadScene(string stageName, float delay = 2.0f)
     {
         yield return new WaitForSeconds(delay);
-        SceneManager.LoadScene(stageName);
+        Hun.Manager.LoadingManager.LoadScene(stageName);
     }
 }

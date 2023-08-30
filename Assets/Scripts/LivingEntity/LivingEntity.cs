@@ -32,14 +32,14 @@ namespace Hun.Entity
         }
 
         /// <summary>
-        /// »ı¸í º¯°æ½Ã ¹ß»ıÇÏ´Â ¸Ş¼­µå
+        /// ìƒëª… ë³€ê²½ì‹œ ë°œìƒí•˜ëŠ” ë©”ì„œë“œ
         /// </summary>
         private void OnLifeChanged()
         {
             if (life < 0)
                 GameOver();
 
-            Manager.UIManager.Instance.SetLifeUI(life);
+            //Manager.UIManager.Instance.SetLifeUI(life);
         }
 
         private void OnHeartChanged()
@@ -62,7 +62,7 @@ namespace Hun.Entity
                 }
             }
 
-            Manager.UIManager.Instance.SetHeartUI(heart);
+            //Manager.UIManager.Instance.SetHeartUI(heart);
         }
 
         public bool IsDead { get; protected set; }
@@ -70,7 +70,7 @@ namespace Hun.Entity
         public event UnityAction OnDeathEvent;
         public event UnityAction OnGameOverEvent;
 
-        private const float minTimeBetDamaged = 0.1f; // °ø°İ Çã¿ëÇÒ µô·¹ÀÌ
+        private const float minTimeBetDamaged = 0.1f; // ê³µê²© í—ˆìš©í•  ë”œë ˆì´
         private float lastDamagedTime;
 
         protected bool IsInvulerable
@@ -85,7 +85,7 @@ namespace Hun.Entity
         }
 
         /// <summary>
-        /// LivingEntity°¡ SpawnµÇ¸é »óÅÂ¸¦ ÃÊ±âÈ­ ÇØÁÖ´Â ¸Ş¼­µåÀÌ´Ù.
+        /// LivingEntityê°€ Spawnë˜ë©´ ìƒíƒœë¥¼ ì´ˆê¸°í™” í•´ì£¼ëŠ” ë©”ì„œë“œì´ë‹¤.
         /// </summary>
         protected virtual void OnSpawned()
         {

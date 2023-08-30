@@ -60,6 +60,9 @@ namespace Hun.Player
         /// </summary>
         private void OnMouthful()
         {
+            if (DataManager.Instance.GameData.gameState == GameState.Lobby)
+                return;
+
             if (!IsMouthful)
                 return;
 
