@@ -421,7 +421,6 @@ namespace Hun.Manager
             IsGamePlay = false;
             dataMgr.GameData.gameState = GameState.Lobby;
             AudioManager.Instance.StopBGM();
-            AudioManager.Instance.PlayOneShotSUI(ESUIName.TitleBtn);
             LoadingManager.LoadScene(sceneName);
         }
        

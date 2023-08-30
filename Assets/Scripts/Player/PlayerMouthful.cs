@@ -63,6 +63,9 @@ namespace Hun.Player
             if (DataManager.Instance.GameData.gameState == GameState.Lobby)
                 return;
 
+            if (GameManager.Instance.IsClear || GameManager.Instance.IsFailed || GameManager.Instance.IsGameOver)
+                return;
+
             if (!IsMouthful)
                 return;
 
