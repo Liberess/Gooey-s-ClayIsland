@@ -56,6 +56,8 @@ namespace Hun.Player
         [SerializeField] private Animator[] anims = new Animator[2];
         private static readonly int IsWalk = Animator.StringToHash("isWalk");
 
+        private CancellationTokenSource cancelToken = new CancellationTokenSource();
+
         private bool IsGrounded
         {
             get
@@ -163,7 +165,7 @@ namespace Hun.Player
         {
             while(true)
             {
-                await UniTask.Delay(TimeSpan.FromSeconds(0.2f));
+                await UniTask.Delay(TimeSpan.FromSeconds(0.2f), cancellationToken:cancelToken.Token);
                 PreviousPos = transform.position;
             }
         }
@@ -433,6 +435,7 @@ namespace Hun.Player
             InputAction dashAction = playerActionMap.FindAction("Dash");
             dashAction.performed -= Dash;
             dashAction.canceled -= Dash;
+            cancelToken.Cancel();
         }
     }
 }
