@@ -54,7 +54,7 @@ namespace Hun.Manager
         [Space(10), Header("== Game Stage =="), Space(5)]
         [SerializeField] private int stageNum;
         [SerializeField] private float stageTimer;
-        private float waitingTime = 1f;
+        private float waitingTime = 5f;
         private float curTime;
         private bool isEndTimer = false;
         public float CurTime { get => curTime; }
@@ -155,9 +155,7 @@ namespace Hun.Manager
                     {
                         dataMgr.GameData.gameState = GameState.Lobby;
                         if(stageNum != 3)
-                            LoadScene("LobbyScene" + (stageNum + 1));
-                        else
-                            LoadScene("LobbyScene" + stageNum);
+                            LoadScene("LobbyDeco");
                     }
                     else if (IsFailed)
                     {
@@ -166,7 +164,7 @@ namespace Hun.Manager
                     else if (IsGameOver)
                     {
                         dataMgr.GameData.gameState = GameState.Lobby;
-                        LoadScene("LobbyScene" + stageNum);
+                        LoadScene("LobbyDeco");
                     }
                 }
             }
@@ -192,8 +190,9 @@ namespace Hun.Manager
             if (IsClear || isEndTimer)
                 return;
 
+            if (!uiManager.SetStageTimerUI((int)(curTime - 1)))
+                return;
             curTime -= Time.deltaTime;
-            uiManager.SetStageTimerUI((int)(curTime - 1));
 
             if (curTime <= 0)
             {

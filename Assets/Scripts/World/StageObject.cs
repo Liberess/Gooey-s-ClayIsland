@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Hun.Manager;
 
 namespace Hun.Obstacle
 {
@@ -9,7 +10,6 @@ namespace Hun.Obstacle
         [SerializeField] private string stageSceneName;
         [SerializeField] private string stageName;
         [SerializeField] private int stageNum;
-        [SerializeField] private int requirementShineLampNum;
 
         //[Header("== Material ==")]
         //[SerializeField] private Material lockMat;
@@ -57,7 +57,10 @@ namespace Hun.Obstacle
             }
 
             if (Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
+            {
+                DataManager.Instance.GameData.gameState = GameState.Stage;
                 Manager.GameManager.Instance.LoadScene(stageSceneName);
+            }
         }
 
         //private void LoadedsceneEvent(Scene scene, LoadSceneMode mode)
@@ -69,11 +72,11 @@ namespace Hun.Obstacle
         {
             int value = Manager.DataManager.Instance.GameData.gameSaveFiles[0].prismPiece;
 
-            if (requirementShineLampNum <= value)
-            {
-                //objRenderer.material = OpenMat;
-                isOpen = true;
-            }
+            //if (requirementShineLampNum <= value)
+            //{
+            //    //objRenderer.material = OpenMat;
+            //    isOpen = true;
+            //}
         }
 
         private void OnTriggerEnter(Collider other)

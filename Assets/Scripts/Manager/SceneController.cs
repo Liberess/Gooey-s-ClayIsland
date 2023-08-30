@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.SceneManagement;
+using Hun.Manager;
 
 public class SceneController : MonoBehaviour
 {
     private int sceneIndex;
     private bool isProgressing = false;
+    [SerializeField] private string LobbySceneName;
 
     private void Start()
     {
@@ -23,7 +25,8 @@ public class SceneController : MonoBehaviour
         
         isProgressing = true;
         VFXManager.Instance.CloudFadeOut();
-        StartCoroutine(LoadScene("Lobby"));
+        DataManager.Instance.GameData.gameState = GameState.Lobby;
+        StartCoroutine(LoadScene(LobbySceneName));
     }
 
     public void ChangePreviousLobbyScene()
