@@ -24,20 +24,30 @@ namespace Hun.Manager
         [Header("== Game Property ==")]
         public GameState gameState;
 
-        public int life = 3; //임시 코드
-
         [System.Serializable]
-        public struct GameProperty
+        public struct StageProperty
         {
+            public int id;
             public int coin;
             public int prismPiece;
             public int[] sweetCandy; // 스테이지 달성률
-            public float[] bestRecord; // 스테이지 기록
-            public float playTime;
+            public float bestRecord; // 스테이지 최단 기록
+            public float totalPlayTime; // 스테이지 전체 기록
             public bool isSaved;
+            
+            public StageProperty(int id, int coin, int prismPiece, int[] sweetCandy, float bestRecord, float totalPlayTime, bool isSaved)
+            {
+                this.id = id;
+                this.coin = coin;
+                this.prismPiece = prismPiece;
+                this.sweetCandy = sweetCandy;
+                this.bestRecord = bestRecord;
+                this.totalPlayTime = totalPlayTime;
+                this.isSaved = isSaved;
+            }
         }
-
-        public GameProperty[] gameSaveFiles = new GameProperty[3];
+        
+        public List<StageProperty> stageSaveFiles = new List<StageProperty>();
 
         public float bgm;
         public float sfx;

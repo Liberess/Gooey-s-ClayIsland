@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -25,8 +26,6 @@ namespace Hun.Obstacle
 
         private Renderer objRenderer;
 
-        private bool isOpen = false;
-
         private void Awake()
         {
             objRenderer = GetComponentInChildren<Renderer>();
@@ -36,10 +35,20 @@ namespace Hun.Obstacle
         private void Start()
         {
             stageInfoUI.SetActive(false);
-            stageNameTxt.text = stageName.ToString();
+            stageNameTxt.text = stageName;
             stageNumTxt.text = stageNum.ToString();
-            stageClearSecTxt.text = "--:--";
 
+            var stageData = DataManager.Instance.GetStageSaveFile(stageNum);
+            if (stageData.isSaved)
+            {
+                TimeSpan timeSpan = TimeSpan.FromSeconds(stageData.bestRecord);
+                SetStageBestRecordUI(timeSpan);
+            }
+            else
+            {
+                stageClearSecTxt.text = "--:--";
+            }
+            
             CheckShineLamp();
 
             ////시작 시 이벤트를 등록해 줍니다.
@@ -56,7 +65,7 @@ namespace Hun.Obstacle
                 stageInfoUI.transform.rotation = Quaternion.LookRotation(dir.normalized);
             }
 
-            if (Input.GetKeyDown("space") && isOpen && stageInfoUI.activeSelf)
+            if (Input.GetKeyDown("space") && stageInfoUI.activeSelf)
             {
                 DataManager.Instance.GameData.gameState = GameState.Stage;
                 Manager.GameManager.Instance.LoadScene(stageSceneName);
@@ -70,13 +79,23 @@ namespace Hun.Obstacle
 
         public void CheckShineLamp()
         {
-            int value = Manager.DataManager.Instance.GameData.gameSaveFiles[0].prismPiece;
+            int value = Manager.DataManager.Instance.GameData.stageSaveFiles[0].prismPiece;
 
             //if (requirementShineLampNum <= value)
             //{
             //    //objRenderer.material = OpenMat;
             //    isOpen = true;
             //}
+        }
+
+        private void SetStageBestRecordUI(TimeSpan timeStamp)
+        {
+            string dayStr = timeStamp.Days > 0 ? string.Concat(timeStamp.Days, "일") : "";
+            string hourStr = timeStamp.Hours > 0 ? string.Concat(timeStamp.Hours, "시간") : "";
+            string minutesStr = timeStamp.Minutes > 0 ? string.Concat(timeStamp.Minutes, "분") : "";
+            string secondsStr = timeStamp.Seconds >= 0 ? string.Concat(timeStamp.Seconds, "초") : "";
+
+            stageClearSecTxt.text = string.Concat(dayStr, ":", hourStr, ":", minutesStr, ":", secondsStr);
         }
 
         private void OnTriggerEnter(Collider other)
