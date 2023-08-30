@@ -17,6 +17,7 @@ namespace Hun.Player
         private CarriableStageObject interactiveCarriableObject = null;
 
         [SerializeField] private Transform rayPos;
+        private Transform PlayerBody => playerCtrl.PlayerMovement.PlayerBody.transform;
 
         private bool isBlockedForward;
         private bool isBlockedForwardBorder;
@@ -167,7 +168,7 @@ namespace Hun.Player
                 return;
             }
 
-            originVec = transform.GetChild(0).position + (transform.up * 0.3f) + (transform.GetChild(0).forward * 0.3f);
+            originVec = PlayerBody.position + (transform.up * 0.3f) + (PlayerBody.forward * 0.3f);
 
             //발 밑에 오브젝트가 있는지 판단한다.
             if (Physics.Raycast(originVec, (-transform.up * 0.5f), out var hit, 0.5f, LayerMask.GetMask("ClayBlock")))
@@ -341,10 +342,9 @@ namespace Hun.Player
         /// </summary>
         private Vector3 GetForwardDirection()
         {
-            Vector3 forward = playerCtrl.PlayerMovement.PlayerBody.transform.forward;
+            Vector3 forward = PlayerBody.forward;
 
-            playerCtrl.PlayerMovement.PlayerBody.transform.rotation =
-                Quaternion.LookRotation(forward.normalized);
+            PlayerBody.rotation = Quaternion.LookRotation(forward.normalized);
 
             float currentX = forward.x;
             float currentZ = forward.z;
@@ -376,12 +376,12 @@ namespace Hun.Player
                              LayerMask.GetMask("BorderLine");
 
             forwardCols = Physics.OverlapSphere(
-                rayPos.position + (transform.GetChild(0).forward * 0.3f), 0.3f, mask);
+                rayPos.position + (PlayerBody.forward * 0.3f), 0.3f, mask);
             isBlockedForward = forwardCols.Length > 0;
 
             if (IsSlipIce || playerCtrl.PlayerMovement.IsOverIce)
             {
-                forwardBorderRayHits = Physics.RaycastAll(rayPos.position, transform.GetChild(0).forward, 1.0f,
+                forwardBorderRayHits = Physics.RaycastAll(rayPos.position, PlayerBody.forward, 1.0f,
                     LayerMask.GetMask("BorderLine"));
                 isBlockedForwardBorder = forwardBorderRayHits.Length > 0;
                 if (isBlockedForwardBorder && isCheckForward)
