@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8838095989224090794}
   - component: {fileID: 3103050034810417233}
   - component: {fileID: 1720687264958808517}
+  - component: {fileID: 1630737654}
   m_Layer: 13
   m_Name: mod_ShineLamp
   m_TagString: ClayBlock
@@ -63,6 +64,27 @@ MonoBehaviour:
   currentClayBlocks:
   - {fileID: 0}
   - {fileID: 0}
+  moveSpeed: 2
+--- !u!95 &1630737654
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 814540933014850027}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 105d2ff3a08d6e541ad6dd511f4d1346, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &6733859530879294721
 PrefabInstance:
   m_ObjectHideFlags: 0
