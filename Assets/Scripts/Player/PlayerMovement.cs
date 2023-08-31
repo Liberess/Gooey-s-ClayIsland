@@ -36,13 +36,14 @@ namespace Hun.Player
         public float MoveSpeedInCanon { get => moveSpeedInCanon; }
         [HideInInspector] public float playerGravityY = 1f;
         public bool IsMove { get; private set; }
+        public bool IsDash { get; private set; }
         public bool IsOverIce { get; private set; }
 
         public bool IsDie { get; private set; }
 
         [SerializeField] private float fallDamageValue = 3f;
         [SerializeField] private float maxPositionY;
-        private bool isInAir = false;
+        public bool IsInAir { get; private set; }
 
         public Vector3 MovingInputValue { get; private set; }
         public bool IsDiagonalInput => MovingInputValue.x != 0.0f && MovingInputValue.z != 0.0f;
@@ -68,7 +69,7 @@ namespace Hun.Player
                 }
                 else
                 {
-                    var colliders = Physics.OverlapSphere(transform.position, 0.3f,
+                    var colliders = Physics.OverlapSphere(transform.position, 0.1f,
                         LayerMask.GetMask("ClayBlock"));
 
                     if (colliders.Length > 0)
@@ -76,7 +77,7 @@ namespace Hun.Player
                 }
 
                 if(!playerCtrl.PlayerInteract.IsCanonInside && !playerCtrl.PlayerInteract.IsTrampilineInside)
-                    anim.SetBool("isInAir", true);
+                    anim.SetBool(InAir, true);
 
                 return false;
             }
@@ -85,6 +86,8 @@ namespace Hun.Player
 
         public bool IsMoveProgressing { get; private set; } = false;
         private Coroutine moveProgressCo;
+        private static readonly int WalkSpeed = Animator.StringToHash("walkSpeed");
+        private static readonly int InAir = Animator.StringToHash("isInAir");
 
         private void Awake()
         {
@@ -196,6 +199,8 @@ namespace Hun.Player
             SetMovement(false);
             anim.SetBool(IsWalk, false);
             
+            AudioManager.Instance.PlayOneShotSFX(ESFXName.SlipIce);
+            
             rigid.velocity = rigid.angularVelocity = Vector3.zero;
 
             float distance = 0f;
@@ -302,7 +307,7 @@ namespace Hun.Player
         /// </summary>
         private void UpdateMovement()
         {
-            if (!IsMove || isInAir)
+            if (!IsMove || IsInAir)
                 return;
 
             if (playerCtrl.PlayerInteract.IsTrampilineInside || playerCtrl.PlayerInteract.IsCanonInside
@@ -312,6 +317,11 @@ namespace Hun.Player
             if (MovingInputValue != Vector3.zero) //������ �Է°��� �ִٸ�
             {
                 anim.SetBool(IsWalk, true);
+                
+                if(IsDash)
+                    AudioManager.Instance.PlayFootstep(false);
+                else
+                    AudioManager.Instance.PlayFootstep(true);
 
                 if (playerCtrl.PlayerInteract.IsLadderInside)
                 {
@@ -361,7 +371,7 @@ namespace Hun.Player
 
         private void CountFallDamage()
         {
-            if (isInAir && IsGrounded)
+            if (IsInAir && IsGrounded)
             {
                 if (maxPositionY - Mathf.Round(transform.position.y) >= fallDamageValue)
                 {
@@ -375,12 +385,12 @@ namespace Hun.Player
 
                 maxPositionY = Mathf.Round(transform.position.y);
                 anim.SetBool("isInAir", false);
-                isInAir = false;
+                IsInAir = false;
             }
-            else if(!isInAir && !IsGrounded)
+            else if(!IsInAir && !IsGrounded)
             {
                 maxPositionY = Mathf.Round(transform.position.y);
-                isInAir = true;
+                IsInAir = true;
             }
         }
 
@@ -410,12 +420,14 @@ namespace Hun.Player
             if (context.action.phase == InputActionPhase.Performed)
             {
                 currentDashSpeed = dashSpeed;
-                anim.SetFloat("walkSpeed", 1.5f);
+                IsDash = true;
+                anim.SetFloat(WalkSpeed, 1.5f);
             }
             else if (context.action.phase == InputActionPhase.Canceled)
             {
                 currentDashSpeed = 1f;
-                anim.SetFloat("walkSpeed", 1);
+                IsDash = false;
+                anim.SetFloat(WalkSpeed, 1);
             }
         }
 

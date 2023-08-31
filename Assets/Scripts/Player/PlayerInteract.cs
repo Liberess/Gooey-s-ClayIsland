@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using Hun.Manager;
 using UnityEngine;
 using Hun.Obstacle;
@@ -87,110 +88,122 @@ namespace Hun.Player
 
         private void HandleSlipIce()
         {
-            if (isBlockedForward)
+            //현재 얼음에서 미끄러지는 중이라면
+            if (IsSlipIce)
             {
-                if (IsSlipIce)
+                //만약 정면이 막혔고 정면을 감지할 수 있다면, 얼음에서 멈춘다.
+                if (isBlockedForward && isCheckForward)
                 {
-                    if (isCheckForward)
-                    {
-                        if (IsNotInClayState())
-                            playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
-                        startSlipVec = Vector3.zero;
-                        IsSlipIce = false;
-                        Debug.Log("막혀서 멈춤");
-                    }
-                }
-                else if(!playerCtrl.PlayerMovement.IsMoveProgressing || !playerCtrl.PlayerMovement.IsOverIce)
-                {
-                    //만약 앞이 막혀있는데 대각선으로 이동을 한다면
-                    if (playerCtrl.PlayerMovement.IsDiagonalInput)
-                    {
-                        Vector3 targetPos = Vector3.zero;
-                        Vector3 dir = Vector3.zero;
-
-                        FindClosestIceBlockPosition(ref targetPos, ref dir);
-                        
-                        Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.magenta, 5f);
-                        Debug.Log($"targetPos = {targetPos}, dir = {dir}");
-                        float distance = Vector3.Distance(transform.position, targetPos);
-                        if (distance <= 0.75f)
-                        {
-                            Debug.DrawRay(rayPos.position, dir, Color.blue, 5f);
-                            if (targetPos != Vector3.zero && dir != Vector3.zero)
-                            {
-                                isCheckForward = false;
-                                SlipFlow(targetIceBlock);
-                            }
-                        }
-                    }
-                    //만약 앞이 막혀있는데 카메라를 회전하여 대각선 방향으로 움직인다면
-                    else if (playerCtrl.PlayerMovement.MovingInputValue != Vector3.zero)
-                    {
-                        Vector3 targetPos = Vector3.zero;
-                        Vector3 dir = Vector3.zero;
-
-                        FindClosestIceBlockPosition(ref targetPos, ref dir);
-                        targetPos.y = transform.position.y;
-                        Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.red, 5f);
-                        float distance = Vector3.Distance(transform.position, targetPos);
-                        Debug.Log($"cur : {transform.position}, target : {targetPos}, distance : {distance}, dir : {dir}");
-                        if (distance <= 0.75f)
-                        {
-                            if (targetPos != Vector3.zero && dir != Vector3.zero)
-                            {
-                                playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, true);
-                                IsSlipIce = true;
-                                
-                                isCheckForward = false;
-                                Invoke(nameof(EnabledCheckForward), 0.5f);
-                                
-                                //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
-                                //현재 서있던 블럭에서 해당 얼음 블럭을 향한 방향 벡터를 구한다.
-                                if (Physics.Raycast(transform.position, -transform.up,
-                                        out var groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
-                                {
-                                    dir = (targetPos - groundHit.transform.position).normalized;
-                                    dir.y = 0.0f;
-
-                                    SaveStartSlidingPosition(groundHit.transform.position);
-                                }
-
-                                if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
-                                {
-                                    Debug.DrawRay(rayPos.position, dir, Color.blue, 5f);
-                                    playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                return;
-            }
-
-            originVec = PlayerBody.position + (transform.up * 0.3f) + (PlayerBody.forward * 0.3f);
-
-            //발 밑에 오브젝트가 있는지 판단한다.
-            if (Physics.Raycast(originVec, (-transform.up * 0.5f), out var hit, 0.5f, LayerMask.GetMask("ClayBlock")))
-            {
-                if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
-                {
-                    //현재 슬라이딩 중인데, 다음 발 밑이 얼음이 아니라면 멈춰야 한다.
-                    if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
-                    {
+                    if (IsNotInClayState())
                         playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
-                        playerCtrl.PlayerMovement.SetOverIceState(false);
-                        IsSlipIce = false;
-                    }
-                    else
+                    startSlipVec = Vector3.zero;
+                    IsSlipIce = false;
+                }
+                else
+                {
+                    //다음 발 밑이 얼음이 아니라면 멈추는 동작을 한다.
+                    originVec = PlayerBody.position + (transform.up * 0.3f) + (PlayerBody.forward * 0.3f);
+
+                    //발 밑에 오브젝트가 있는지 판단한다.
+                    if (Physics.Raycast(originVec, (-transform.up * 0.5f), out var hit, 0.5f,
+                            LayerMask.GetMask("ClayBlock")))
                     {
-                        SlipFlow(clayBlock);
+                        if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
+                        {
+                            //현재 슬라이딩 중인데, 다음 발 밑이 얼음이 아니라면 멈춰야 한다.
+                            if (IsSlipIce && clayBlock.ClayBlockType != ClayBlockType.Ice)
+                            {
+                                playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, false);
+                                playerCtrl.PlayerMovement.SetOverIceState(false);
+                                IsSlipIce = false;
+                            }
+                        }
+                    }
+                }
+            }
+            //만약 미끄러지는 중이 아니거나 얼음 위가 아니라면 수행한다.
+            else if (!playerCtrl.PlayerMovement.IsMoveProgressing || !playerCtrl.PlayerMovement.IsOverIce)
+            {
+                //만약 앞이 막혀있는데 대각선으로 이동을 한다면
+                if (playerCtrl.PlayerMovement.IsDiagonalInput)
+                {
+                    Vector3 targetPos = Vector3.zero;
+                    Vector3 dir = Vector3.zero;
+
+                    FindClosestIceBlockPosition(ref targetPos, ref dir);
+
+                    //Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.magenta, 5f);
+                    //Debug.Log($"targetPos = {targetPos}, dir = {dir}");
+                    float distance = Vector3.Distance(transform.position, targetPos);
+                    if (distance <= 0.75f)
+                    {
+                        //Debug.DrawRay(rayPos.position, dir, Color.blue, 5f);
+                        if (targetPos != Vector3.zero && dir != Vector3.zero)
+                        {
+                            isCheckForward = false;
+                            SlipFlow(targetIceBlock).Forget();
+                        }
+                    }
+                }
+                //만약 앞이 막혀있는데 카메라를 회전하여 대각선 방향으로 움직인다면
+                else if (playerCtrl.PlayerMovement.MovingInputValue != Vector3.zero)
+                {
+                    Vector3 targetPos = Vector3.zero;
+                    Vector3 dir = Vector3.zero;
+
+                    FindClosestIceBlockPosition(ref targetPos, ref dir);
+                    targetPos.y = transform.position.y;
+                    //Debug.DrawRay(rayPos.position, (targetPos - rayPos.position).normalized, Color.red, 5f);
+                    float distance = Vector3.Distance(transform.position, targetPos);
+                    //Debug.Log($"cur : {transform.position}, target : {targetPos}, distance : {distance}, dir : {dir}");
+                    if (distance <= 0.75f)
+                    {
+                        if (targetPos != Vector3.zero && dir != Vector3.zero)
+                        {
+                            playerCtrl.PlayerMovement.Anim.SetBool(IsSlide, true);
+                            IsSlipIce = true;
+
+                            isCheckForward = false;
+                            Invoke(nameof(EnabledCheckForward), 0.5f);
+
+                            //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
+                            //현재 서있던 블럭에서 해당 얼음 블럭을 향한 방향 벡터를 구한다.
+                            if (Physics.Raycast(transform.position, -transform.up,
+                                    out var groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
+                            {
+                                dir = (targetPos - groundHit.transform.position).normalized;
+                                dir.y = 0.0f;
+
+                                SaveStartSlidingPosition(groundHit.transform.position);
+                            }
+
+                            if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
+                            {
+                                //Debug.DrawRay(rayPos.position, dir, Color.blue, 5f);
+                                playerCtrl.PlayerMovement.SetMoveProgress(targetPos, dir);
+                            }
+                        }
+                    }
+                }
+                //위의 둘 다 아니고 바닥에 얼음이 있다면 미끄러져야 한다.
+                //공중에서 얼음으로 떨어졌을 때의 상황이다.
+                else if(playerCtrl.PlayerMovement.IsInAir)
+                {
+                    //발 밑에 오브젝트가 있는지 판단한다.
+                    if (Physics.Raycast(transform.position, (-transform.up * 0.5f), out var hit, 0.2f,
+                            LayerMask.GetMask("ClayBlock")))
+                    {
+                        if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
+                        {
+                            if (clayBlock.ClayBlockType == ClayBlockType.Ice)
+                                SlipFlow(clayBlock, 0.2f).Forget();
+                        }
                     }
                 }
             }
         }
-        
-        private void SlipFlow(ClayBlock clayBlock)
+
+        private async UniTaskVoid SlipFlow(ClayBlock clayBlock, float delay = 0.0f)
         {
             if (clayBlock == null)
                 return;
@@ -206,6 +219,8 @@ namespace Hun.Player
                     IsSlipIce = true;
                     Invoke(nameof(EnabledCheckForward), 1.0f);
                 }
+                
+                await UniTask.Delay(TimeSpan.FromSeconds(delay));
 
                 Vector3 targetPos = clayBlock.transform.position;
                 Vector3 dir = GetForwardDirection();
@@ -223,7 +238,7 @@ namespace Hun.Player
                     }
                 }
 
-                Debug.DrawRay(rayPos.position, dir, Color.green, 5f);
+                //Debug.DrawRay(rayPos.position, dir, Color.green, 5f);
 
                 targetPos.y = transform.position.y;
                 if (dir != Vector3.zero && !playerCtrl.PlayerMovement.IsMoveProgressing)
@@ -255,7 +270,8 @@ namespace Hun.Player
                     if (Physics.Raycast(rayPos.position, (blockPos - transform.position).normalized,
                             out var hit, 1.5f, LayerMask.GetMask("ClayBlock")))
                     {
-                        if (!hit.collider.TryGetComponent(out ClayBlockTile clayTile) || clayTile.ClayBlockType != ClayBlockType.Ice)
+                        if (!hit.collider.TryGetComponent(out ClayBlockTile clayTile) ||
+                            clayTile.ClayBlockType != ClayBlockType.Ice)
                             continue;
 
                         if (curDist < closestDist)
@@ -279,7 +295,8 @@ namespace Hun.Player
                     //만약 원래 목표와 가장 가까운 목표의 위치가 동일하다면
                     //얼음 위에서 가장 가까운 얼음을 찾은 것이기에 올바른 값이 아니다
                     //그러므로 두 번째로 가까운 목표를 찾아야 한다
-                    if (playerCtrl.PlayerMovement.IsOverIce && targetPos == gameMgr.IceBlockList[closestIndex].transform.position)
+                    if (playerCtrl.PlayerMovement.IsOverIce &&
+                        targetPos == gameMgr.IceBlockList[closestIndex].transform.position)
                     {
                         if (secondClosestIndex >= 0)
                         {
@@ -298,7 +315,7 @@ namespace Hun.Player
 
                 //최종 얼음 블럭을 향해 이동을 해야 하기 때문에,
                 //현재 서있던 블럭에서 해당 얼음 블럭을 향한 방향 벡터를 구한다.
-                if (Physics.Raycast(transform.position, -transform.up, 
+                if (Physics.Raycast(transform.position, -transform.up,
                         out var groundHit, 0.5f, LayerMask.GetMask("ClayBlock")))
                 {
                     Vector3 groundPos = groundHit.transform.position;
@@ -309,17 +326,17 @@ namespace Hun.Player
 
                         if (startSlipVec == Vector3.zero)
                             startSlipVec = transform.position;
-                        
+
                         dir = (targetPos - startSlipVec).normalized;
-                        Debug.Log("targetPos == groundPos");
+                        //Debug.Log("targetPos == groundPos");
                     }
                     else
                     {
                         dir = (targetPos - groundHit.transform.position).normalized;
                     }
-                    
+
                     dir.y = 0.0f;
-                    Debug.Log($"ground : {groundHit.collider.name}, groundPos : {groundHit.transform.position}, targetPos : {targetPos}, dir : {dir}");
+                    //Debug.Log($"ground : {groundHit.collider.name}, groundPos : {groundHit.transform.position}, targetPos : {targetPos}, dir : {dir}");
 
                     SaveStartSlidingPosition(groundHit.transform.position);
                 }
@@ -390,7 +407,7 @@ namespace Hun.Player
 
                     Vector3 dir = startSlipVec;
                     Vector3 targetPos = Vector3.zero;
-                    
+
                     if (startSlipVec != Vector3.zero)
                     {
                         dir = (startSlipVec - transform.position).normalized;
@@ -402,12 +419,12 @@ namespace Hun.Player
                     }
 
                     //Invoke(nameof(EnabledCheckForward), 1f);
+                    //Debug.DrawRay(transform.position, dir, Color.cyan, 5f);
                     playerCtrl.PlayerMovement.SetMoveProgress(startSlipVec, dir, false);
-                    Debug.DrawRay(transform.position, dir, Color.cyan, 5f);
                 }
             }
         }
-        
+
         private bool IsNotInClayState()
         {
             PlayerState state = playerCtrl.PlayerMovement.PlayerState;

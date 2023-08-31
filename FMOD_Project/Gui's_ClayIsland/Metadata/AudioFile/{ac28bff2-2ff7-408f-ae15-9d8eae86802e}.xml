@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{ac28bff2-2ff7-408f-ae15-9d8eae86802e}">
+		<property name="assetPath">
+			<value>SFX2_Walk.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.5412244897959184</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{ae55c5b4-3504-4491-b1e4-d517b675087c}</destination>
+		</relationship>
+	</object>
+</objects>

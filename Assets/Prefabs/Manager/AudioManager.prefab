@@ -1,5 +1,69 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5929972946411897015
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6569877230646205647}
+  - component: {fileID: 6858168954106864761}
+  m_Layer: 0
+  m_Name: Footstep
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6569877230646205647
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5929972946411897015}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7317182121873978816}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6858168954106864761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5929972946411897015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1449e9d6ac108fa4b95501a0f06bfd9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clip:
+    Guid:
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
+  Event: 
+  mute: 0
+  PlayOnAwake: 0
+  volume: 1
+  pitch: 1
+  Params: []
+  AllowFadeout: 0
+  TriggerOnce: 0
+  Preload: 0
+  AllowNonRigidbodyDoppler: 0
+  OverrideAttenuation: 0
+  OverrideMinDistance: -1
+  OverrideMaxDistance: -1
 --- !u!1 &7317182121604584437
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,6 +158,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7317182121604584434}
+  - {fileID: 6569877230646205647}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -109,8 +174,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84547eac09916a441b47497bf6ae1fe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BgmAudioSource: {fileID: 7317182121604584435}
-  Buses:
+  bgmAudioSrc: {fileID: 7317182121604584435}
+  footstepAudioSrc: {fileID: 6858168954106864761}
+  buses:
   - bus:/Master
   - bus:/Master/BGM
   - bus:/Master/SFX
@@ -189,6 +255,12 @@ MonoBehaviour:
       Data3: 725073840
       Data4: -2084314165
     Path: event:/Event/SFX/SFX8_GetItem
+  - Guid:
+      Data1: 1980379197
+      Data2: 1191354015
+      Data3: 1368819083
+      Data4: -904390759
+    Path: event:/Event/SFX/SFX9_SlipIce
   suiPaths:
   - Guid:
       Data1: -2077155689

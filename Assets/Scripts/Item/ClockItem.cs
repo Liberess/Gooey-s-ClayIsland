@@ -18,9 +18,9 @@ public class ClockItem : MonoBehaviour, IItem
 
     public void UseItem()
     {
-        //°ÔÀÓ¸Å´ÏÀú ½Ã°£ 20ÃÊ Ãß°¡
+        //ê²Œìž„ë§¤ë‹ˆì € ì‹œê°„ 20ì´ˆ ì¶”ê°€
         GameManager.Instance.GetCountTime(20);
-        Debug.Log("»ç¿îµå s019 1È¸ Àç»ý");
+        AudioManager.Instance.PlayOneShotSFX(ESFXName.GetItem);
         Destroy(gameObject);
     }
 }
