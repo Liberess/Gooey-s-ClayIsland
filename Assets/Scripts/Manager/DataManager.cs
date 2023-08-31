@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -13,8 +14,7 @@ namespace Hun.Manager
 
         private readonly string GameDataFileName = "/GameData.json";
 
-        [SerializeField] private GameData mGameData;
-
+        [SerializeField] private GameData mGameData = null;
         public GameData GameData
         {
             get
@@ -39,6 +39,11 @@ namespace Hun.Manager
             DontDestroyOnLoad(gameObject);
         }
 
+        private void Start()
+        {
+            LoadGameData();
+        }
+
         #region Init, Save, Load Data
 
         public void InitializedGameData()
@@ -51,8 +56,6 @@ namespace Hun.Manager
             
             mGameData.sfx = 50f;
             mGameData.bgm = 50f;
-            
-            SaveGameData();
         }
 
         public void LoadGameData()
@@ -69,15 +72,16 @@ namespace Hun.Manager
             {
                 mGameData = new GameData();
                 File.Create(Application.persistentDataPath + GameDataFileName);
-
                 InitializedGameData();
             }
         }
 
         public void SaveGameData()
         {
-            string filePath = Application.persistentDataPath + GameDataFileName;
+            if (mGameData == null)
+                return;
 
+            string filePath = Application.persistentDataPath + GameDataFileName;
             string toJsonData = JsonUtility.ToJson(mGameData);
             byte[] bytes = System.Text.Encoding.UTF8.GetBytes(toJsonData);
             string code = System.Convert.ToBase64String(bytes);
@@ -111,5 +115,7 @@ namespace Hun.Manager
             
             return -1;
         }
+
+        private void OnApplicationQuit() => SaveGameData();
     }
 }

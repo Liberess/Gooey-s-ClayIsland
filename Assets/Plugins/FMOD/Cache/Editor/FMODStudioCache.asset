@@ -423,7 +423,7 @@ MonoBehaviour:
   - {fileID: -9188226967927030542}
   StringsBanks:
   - {fileID: -8623229094330830717}
-  cacheTime: 638291041078871240
+  cacheTime: 638291170681618474
   cacheVersion: 131592
 --- !u!114 &228721942656011316
 MonoBehaviour:
@@ -572,8 +572,8 @@ MonoBehaviour:
     Data3: 725073840
     Data4: -2084314165
   Banks:
-  - {fileID: -9188226967927030542}
   - {fileID: 3381478643105869802}
+  - {fileID: -9188226967927030542}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -704,7 +704,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 638290175336679329
+  lastModified: 638291170681618474
   FileSizes:
   - Name: Desktop
     Value: 3907296

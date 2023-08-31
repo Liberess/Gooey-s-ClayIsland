@@ -350,6 +350,8 @@ namespace Hun.Manager
                 if (data.bestRecord >= PlayTime)
                     data.bestRecord = PlayTime;
                 data.totalPlayTime += PlayTime;
+                
+                dataMgr.SaveGameData();
 
                 yield return delay;
                 resultTxt[0].SetActive(true);

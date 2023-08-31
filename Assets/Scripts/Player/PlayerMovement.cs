@@ -85,6 +85,7 @@ namespace Hun.Player
         public bool getIsGrounded { get => IsGrounded; }
 
         public bool IsMoveProgressing { get; private set; } = false;
+        public bool IsRotateComplete { get; private set; }
         private Coroutine moveProgressCo;
         private static readonly int WalkSpeed = Animator.StringToHash("walkSpeed");
         private static readonly int InAir = Animator.StringToHash("isInAir");
@@ -177,7 +178,14 @@ namespace Hun.Player
         public void SetMoveProgress(Vector3 targetPos, Vector3 dir, bool isSyncPos = true)
         {
             if (!IsMoveProgressing)
+            {
+                /*if (moveProgressCo != null)
+                {
+                    StopCoroutine(moveProgressCo);
+                    Debug.Log("이미 돌던 거 삭제");
+                }*/
                 moveProgressCo = StartCoroutine(SetMoveProgressCo(targetPos, dir, isSyncPos));
+            }
         }
 
         public void CancelMoveProgress()
@@ -190,6 +198,8 @@ namespace Hun.Player
         }
 
         public void SetOverIceState(bool state) => IsOverIce = state;
+
+        public void SetIsRotateComplete(bool value) => IsRotateComplete = value;
 
         private IEnumerator SetMoveProgressCo(Vector3 targetPos, Vector3 dir, bool isSyncPos)
         {
@@ -205,16 +215,19 @@ namespace Hun.Player
 
             float distance = 0f;
             WaitForFixedUpdate fixedUpdate = new WaitForFixedUpdate();
-
+            
             //슬라이딩이 시작되는 얼음의 중앙으로 이동
             if (isSyncPos)
             {
+                IsRotateComplete = false;
+                
                 while (true)
                 {
                     distance = Vector3.Distance(transform.position, targetPos);
                     if (distance <= 0.05f)
                     {
                         transform.position = targetPos;
+                        IsRotateComplete = true;
                         break;
                     }
 
