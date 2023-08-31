@@ -62,10 +62,6 @@ public class ClayBlockShineLamp : ClayBlock
             float newRotate = 3.0f * moveSpeed;
             transform.Rotate(newRotate, newRotate, newRotate, Space.Self);
             
-            //float newRotate = Mathf.Lerp(transform.rotation.x, -360f, moveSpeed * 2f * Time.deltaTime);
-            //transform.localRotation = Quaternion.Euler(newRotate, newRotate, newRotate);
-            //transform.eulerAngles = new Vector3(newRotate, newRotate, newRotate);
-                
             float distance = Vector3.Distance(transform.position, playerMouthRoot.transform.position);
             if (distance <= 0.0001f)
             {
@@ -118,9 +114,6 @@ public class ClayBlockShineLamp : ClayBlock
 
             float newRotate = 3.0f * moveSpeed;
             transform.Rotate(newRotate, newRotate, newRotate, Space.Self);
-            //float newRotate = Mathf.Lerp(transform.rotation.x, 0f, moveSpeed * 2f * Time.deltaTime);
-            //transform.localRotation = Quaternion.Euler(newRotate, newRotate, newRotate);
-            //transform.eulerAngles = new Vector3(newRotate, newRotate, newRotate);
             
             float distance = Vector3.Distance(transform.position, targetPos);
             if (distance <= 0.0001f)
