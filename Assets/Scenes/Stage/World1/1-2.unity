@@ -13683,6 +13683,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1033720201}
     m_Modifications:
+    - target: {fileID: 7521059943108937760, guid: bddc37bc75fc7fd4fad34c78b73bfc26,
+        type: 3}
+      propertyPath: mGameData.gameState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7521059943108937761, guid: bddc37bc75fc7fd4fad34c78b73bfc26,
         type: 3}
       propertyPath: m_Name
@@ -22420,7 +22425,7 @@ PrefabInstance:
     - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
         type: 3}
       propertyPath: stageTimer
-      value: 20
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 5379791760422926804, guid: 94068aebab2fb344b9328a98acbe248c,
         type: 3}

@@ -112,13 +112,9 @@ namespace Hun.Manager
             lifeTxt.text = value.ToString();
         }
 
-        public bool SetStageTimerUI(int value)
+        public void SetStageTimerUI(int value)
         {
-            if (stageTimerTxt == null)
-                return false;
-
             stageTimerTxt.text = value.ToString();
-            return true;
         }
 
         public void SetSelectStageUI(bool value)
