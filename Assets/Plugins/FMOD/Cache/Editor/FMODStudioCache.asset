@@ -15,7 +15,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638291032868130713
+  lastModified: 638290289898866643
   FileSizes:
   - Name: Desktop
     Value: 5830688
@@ -35,7 +35,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638291032868140701
+  lastModified: 638291068698926544
   FileSizes:
   - Name: Desktop
     Value: 1976
@@ -423,7 +423,7 @@ MonoBehaviour:
   - {fileID: -9188226967927030542}
   StringsBanks:
   - {fileID: -8623229094330830717}
-  cacheTime: 638291170681618474
+  cacheTime: 638291198220022011
   cacheVersion: 131592
 --- !u!114 &228721942656011316
 MonoBehaviour:
@@ -548,7 +548,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638291041078871240
+  lastModified: 638291068698933807
   FileSizes:
   - Name: Desktop
     Value: 103872
@@ -572,8 +572,8 @@ MonoBehaviour:
     Data3: 725073840
     Data4: -2084314165
   Banks:
-  - {fileID: 3381478643105869802}
   - {fileID: -9188226967927030542}
+  - {fileID: 3381478643105869802}
   IsStream: 0
   Is3D: 0
   IsOneShot: 1
@@ -704,7 +704,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/BGM.bank
   Name: BGM
   StudioPath: bank:/BGM
-  lastModified: 638291170681618474
+  lastModified: 638291198220022011
   FileSizes:
   - Name: Desktop
     Value: 3907296
@@ -805,7 +805,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/SUI.bank
   Name: SUI
   StudioPath: bank:/SUI
-  lastModified: 638290163874722231
+  lastModified: 638290289898877001
   FileSizes:
   - Name: Desktop
     Value: 210752
