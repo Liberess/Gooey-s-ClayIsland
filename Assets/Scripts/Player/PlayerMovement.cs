@@ -69,7 +69,7 @@ namespace Hun.Player
                 }
                 else
                 {
-                    var colliders = Physics.OverlapSphere(transform.position, 0.1f,
+                    var colliders = Physics.OverlapSphere(transform.position, 0.25f,
                         LayerMask.GetMask("ClayBlock"));
 
                     if (colliders.Length > 0)
@@ -395,7 +395,7 @@ namespace Hun.Player
                     dmgMsg.hitPoint = transform.position;
                     gameObject.GetComponent<PlayerHealth>().ApplyDamage(dmgMsg);
                 }
-
+                
                 maxPositionY = Mathf.Round(transform.position.y);
                 anim.SetBool("isInAir", false);
                 IsInAir = false;

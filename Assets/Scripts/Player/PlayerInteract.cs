@@ -194,7 +194,7 @@ namespace Hun.Player
                     else if (playerCtrl.PlayerMovement.IsInAir)
                     {
                         //발 밑에 오브젝트가 있는지 판단한다.
-                        if (Physics.Raycast(transform.position, (-transform.up * 0.5f), out var hit, 0.2f,
+                        if (Physics.Raycast(transform.position, (-transform.up * 0.5f), out var hit, 0.26f,
                                 LayerMask.GetMask("ClayBlock")))
                         {
                             if (hit.collider.TryGetComponent(out ClayBlock clayBlock))
