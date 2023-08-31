@@ -431,14 +431,12 @@ namespace Hun.Player
                     //얼음이 아닌 블럭 위에서 미끄러졌는데, BorderLine에 닿은 경우
                     if (startSlipVec != Vector3.zero)
                     {
-                        Debug.Log("다른 블럭에서 미끄러짐");
                         dir = (startSlipVec - transform.position).normalized;
                         dir.y = 0.0f;
                     }
                     //처음 시작 지점이 없는 상태에서 미끄러져서 되돌아갈 때
                     else
                     {
-                        Debug.Log("zero부터 미끄러짐");
                         FindClosestIceBlockPosition(ref targetPos, ref dir);
                     }
                     
