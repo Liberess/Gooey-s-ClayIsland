@@ -15,7 +15,7 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638290186057626472
+  lastModified: 638291032868130713
   FileSizes:
   - Name: Desktop
     Value: 5830688
@@ -35,10 +35,10 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638290186057636433
+  lastModified: 638291032868140701
   FileSizes:
   - Name: Desktop
-    Value: 1936
+    Value: 1976
   Exists: 1
 --- !u!114 &-8234839194537638014
 MonoBehaviour:
@@ -93,7 +93,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 261
+  Length: 130
 --- !u!114 &-7973307991604892767
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,7 +248,7 @@ MonoBehaviour:
   Parameters: []
   MinDistance: 1
   MaxDistance: 20
-  Length: 261
+  Length: 1541
 --- !u!114 &-4838024494124719857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,13 +417,41 @@ MonoBehaviour:
   - {fileID: -3401997924335857494}
   - {fileID: 6541787471592221849}
   - {fileID: -7383221515582228014}
+  - {fileID: 228721942656011316}
   EditorParameters: []
   MasterBanks:
   - {fileID: -9188226967927030542}
   StringsBanks:
   - {fileID: -8623229094330830717}
-  cacheTime: 638290186057925659
+  cacheTime: 638291041078871240
   cacheVersion: 131592
+--- !u!114 &228721942656011316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Event/SFX/SFX9_SlipIce
+  m_EditorClassIdentifier: 
+  Path: event:/Event/SFX/SFX9_SlipIce
+  Guid:
+    Data1: 1980379197
+    Data2: 1191354015
+    Data3: 1368819083
+    Data4: -904390759
+  Banks:
+  - {fileID: 3381478643105869802}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 900
 --- !u!114 &947293585307600406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -520,10 +548,10 @@ MonoBehaviour:
   Path: FMOD_Project/Gui's_ClayIsland/Build/Desktop/SFX.bank
   Name: SFX
   StudioPath: bank:/SFX
-  lastModified: 638290186057925659
+  lastModified: 638291041078871240
   FileSizes:
   - Name: Desktop
-    Value: 93216
+    Value: 103872
   Exists: 1
 --- !u!114 &4110247900293580185
 MonoBehaviour:

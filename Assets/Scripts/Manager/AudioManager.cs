@@ -33,7 +33,8 @@ public enum ESFXName
     Trampiline,
     TemperFusion,
     TemperDivision,
-    GetItem
+    GetItem,
+    SlipIce
 }
 
 public enum ESUIName
@@ -50,8 +51,9 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager Instance { get; private set; }
     
-    [BoxGroup("Audio Emitter")] public FMODAudioSource BgmAudioSource;
-    [BoxGroup("Bus")] public string[] Buses;
+    [BoxGroup("Audio Emitter")] public FMODAudioSource bgmAudioSrc;
+    [BoxGroup("Audio Emitter")] public FMODAudioSource footstepAudioSrc;
+    [BoxGroup("Bus")] public string[] buses;
     
     [BoxGroup("Audio Clips")] public EventReference[] bgmPaths;
     [BoxGroup("Audio Clips")] public EventReference[] sfxPaths;
@@ -62,6 +64,7 @@ public class AudioManager : MonoBehaviour
     #region Private
 
     private EventInstance bgmInst;
+    private EventInstance footstepInst;
     private Bus[] _buses;
 
     #endregion
@@ -77,29 +80,34 @@ public class AudioManager : MonoBehaviour
 
         _buses = new Bus[]
         {
-            RuntimeManager.GetBus(Buses[0]),
-            RuntimeManager.GetBus(Buses[1]),
-            RuntimeManager.GetBus(Buses[2]),
-            RuntimeManager.GetBus(Buses[3]),
+            RuntimeManager.GetBus(buses[0]),
+            RuntimeManager.GetBus(buses[1]),
+            RuntimeManager.GetBus(buses[2]),
+            RuntimeManager.GetBus(buses[3]),
         };
+    }
+
+    private void Start()
+    {
+        footstepInst = RuntimeManager.CreateInstance(sfxPaths[(int)ESFXName.Walk]);
     }
 
     /// <summary>
     /// Let the sound play.
     /// </summary>
-    public void PlayBGM() => BgmAudioSource.Play();
+    public void PlayBGM() => bgmAudioSrc.Play();
 
     public void PlayBGM(EBGMName bgmName)
     {
-        BgmAudioSource.Clip = bgmPaths[(int)bgmName];
-        BgmAudioSource.Play();
+        bgmAudioSrc.Clip = bgmPaths[(int)bgmName];
+        bgmAudioSrc.Play();
     }
 
     /// <summary>
     /// Returns whether the background music is paused.
     /// </summary>
     /// <returns></returns>
-    public bool IsPlayingBGM() => BgmAudioSource.IsPlaying();
+    public bool IsPlayingBGM() => bgmAudioSrc.IsPlaying();
 
     /// <summary>
     /// Stop the sound.
@@ -107,9 +115,9 @@ public class AudioManager : MonoBehaviour
     /// <param name="fadeOut">true이면 페이드를 합니다.</param>
     public void StopBGM(bool fadeOut = false)
     {
-        BgmAudioSource.AllowFadeout = fadeOut;
+        bgmAudioSrc.AllowFadeout = fadeOut;
         _buses[(int)EAudioType.BGM].stopAllEvents(STOP_MODE.ALLOWFADEOUT);
-        BgmAudioSource.Stop();
+        bgmAudioSrc.Stop();
     }
 
     /// <summary>
@@ -119,9 +127,9 @@ public class AudioManager : MonoBehaviour
     public void SetPauseBGM(bool pause)
     {
         if (pause)
-            BgmAudioSource.Pause();
+            bgmAudioSrc.Pause();
         else
-            BgmAudioSource.UnPause();
+            bgmAudioSrc.UnPause();
     }
 
     /// <summary>
@@ -136,7 +144,7 @@ public class AudioManager : MonoBehaviour
     /// </summary>
     public void KeyOff()
     {
-        BgmAudioSource.EventInstance.keyOff();
+        bgmAudioSrc.EventInstance.keyOff();
     }
 
     /// <summary>
@@ -145,6 +153,23 @@ public class AudioManager : MonoBehaviour
     public void TriggerCue()
     {
         KeyOff();
+    }
+
+    public void PlayFootstep(bool isWalk)
+    {
+        var curClip = footstepAudioSrc.Clip;
+        var nextClip = isWalk ? sfxPaths[(int)ESFXName.Walk] : sfxPaths[(int)ESFXName.Run];
+        if (curClip.Guid == nextClip.Guid)
+        {
+           if(!footstepAudioSrc.IsPlaying())
+               footstepAudioSrc.Play();
+        }
+        else
+        {
+            footstepAudioSrc.Clip = nextClip;
+            footstepAudioSrc.Stop();
+            footstepAudioSrc.Play();
+        }
     }
 
     /// <summary>
@@ -164,6 +189,7 @@ public class AudioManager : MonoBehaviour
     /// <param name="position">해당 위치에서 소리를 재생합니다.</param>
     public void PlayOneShotSFX(ESFXName sfxName, Vector3 position = default)
     {
+        //RuntimeManager.
         RuntimeManager.PlayOneShot(sfxPaths[(int)sfxName], position);
     }
     
