@@ -25,11 +25,13 @@ namespace Hun.Obstacle
 
         [SerializeField] private Transform cameraTr;
 
-        private Renderer objRenderer;
+        //private Renderer objRenderer;
+
+        private bool isPlayVFX = false;
 
         private void Awake()
         {
-            objRenderer = GetComponentInChildren<Renderer>();
+            //objRenderer = GetComponentInChildren<Renderer>();
             cameraTr = FindObjectOfType<Hun.Camera.MainCamera>().transform;
         }
 
@@ -66,10 +68,10 @@ namespace Hun.Obstacle
                 stageInfoUI.transform.rotation = Quaternion.LookRotation(dir.normalized);
             }
 
-            if (Input.GetKeyDown("space") && stageInfoUI.activeSelf)
+            if (Input.GetKeyDown("space") && stageInfoUI.activeSelf && !isPlayVFX)
             {
+                isPlayVFX = true;
                 DataManager.Instance.GameData.currentStageIndex = stageNum - 1;
-                DataManager.Instance.GameData.gameState = GameState.Stage;
                 VFXManager.Instance.ClayFadeOut();
                 StartCoroutine(LoadScene(stageSceneName));
             }
@@ -78,6 +80,7 @@ namespace Hun.Obstacle
         private IEnumerator LoadScene(string stageName, float delay = 2.0f)
         {
             yield return new WaitForSeconds(delay);
+            DataManager.Instance.GameData.gameState = GameState.Stage;
             GameManager.Instance.LoadScene(stageSceneName);
         }
 
