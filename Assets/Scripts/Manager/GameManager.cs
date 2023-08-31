@@ -14,6 +14,7 @@ namespace Hun.Manager
         private DataManager dataMgr;
         private UIManager uiManager;
         private SceneController sceneController;
+        private TimelineController timelineController;
 
         private GameObject player;
         private Hun.Player.PlayerHealth playerHealth;
@@ -54,7 +55,8 @@ namespace Hun.Manager
         //월드 관련 변수
         [Space(10), Header("== Game Stage =="), Space(5)]
         [SerializeField] private float stageTimer;
-        private float waitingTime = 5f;
+
+        private float waitingTime = 1f;
         private float curTime;
         private bool isEndTimer = false;
         public float CurTime { get => curTime; }
@@ -75,6 +77,7 @@ namespace Hun.Manager
             dataMgr = DataManager.Instance;
             uiManager = UIManager.Instance;
             sceneController = FindObjectOfType<SceneController>();
+            timelineController = FindObjectOfType<TimelineController>();
 
             SceneName = SceneManager.GetActiveScene().name;
             SceneIndex = SceneManager.GetActiveScene().buildIndex;
@@ -120,6 +123,7 @@ namespace Hun.Manager
             IsGameOver = false;
 
             curTime = stageTimer + waitingTime;
+            uiManager.SetStageTimerUI((int)(curTime - 1));
 
             isEndTimer = false;
         }
@@ -188,8 +192,11 @@ namespace Hun.Manager
             if (IsClear || isEndTimer)
                 return;
 
-            if (!uiManager.SetStageTimerUI((int)(curTime - 1)))
+            if (timelineController.PlayableDirector.state == UnityEngine.Playables.PlayState.Playing)
                 return;
+
+            uiManager.SetStageTimerUI((int)(curTime - 1));
+
             curTime -= Time.deltaTime;
             PlayTime += Time.deltaTime;
 

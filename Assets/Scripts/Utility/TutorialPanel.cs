@@ -45,14 +45,6 @@ namespace Hun
             }
         }
 
-        private void Update()
-        {
-            if(Input.GetMouseButtonDown(0))
-            {
-                TurnTutorialPageNext();
-            }
-        }
-
         public void TurnTutorialPageNext()
         {
             if (curPage >= pageNum)
@@ -87,12 +79,29 @@ namespace Hun
             curPage = page;
         }
 
+        public void TurnOnTutorialPage()
+        {
+            Time.timeScale = 0f;
+            curPage = 0;
+
+            foreach (Image image in pages)
+            {
+                image.gameObject.SetActive(false);
+            }
+
+            pages[0].gameObject.SetActive(true);
+        }
+
         private void TurnOffTutorialPage()
         {
-            player.SetActive(true);
-            DummyPlayer.SetActive(false);
+            Time.timeScale = 1f;
 
-            Manager.DataManager.Instance.GameData.isNewGame = false;
+            if(Manager.DataManager.Instance.GameData.isNewGame)
+            {
+                player.SetActive(true);
+                DummyPlayer.SetActive(false);
+                Manager.DataManager.Instance.GameData.isNewGame = false;
+            }
 
             gameObject.SetActive(false);
         }

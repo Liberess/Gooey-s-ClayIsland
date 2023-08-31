@@ -7,6 +7,8 @@ using UnityEngine.Timeline;
 public class TimelineController : MonoBehaviour
 {
     [SerializeField] private PlayableDirector playableDirector;
+    public PlayableDirector PlayableDirector { get => playableDirector; }
+
     [SerializeField] private TimelineAsset timeline;
 
     [SerializeField] private Hun.TutorialPanel tutorialPanel;
@@ -21,10 +23,11 @@ public class TimelineController : MonoBehaviour
     {
         if(playableDirector.state != PlayState.Playing && isTutorialPlay == false)
         {
-            isTutorialPlay = true;
-
             if(tutorialPanel != null)
+            {
+                isTutorialPlay = true;
                 tutorialPanel.gameObject.SetActive(true);
+            } 
         }
     }
 
